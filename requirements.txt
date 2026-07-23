@@ -1,0 +1,15 @@
+# Install PyTorch FIRST from the official index, matching your CUDA build.
+# PyTorch no longer ships conda packages - use pip inside the conda env.
+#
+#   Local (RTX 3050 Ti, driver 581.29 -> CUDA 12.6 wheels):
+#     pip install torch torchvision --index-url https://download.pytorch.org/whl/cu126
+#   Cloud GPU (check the host's CUDA, cu124/cu126/cu128 as appropriate)
+#   CPU only:
+#     pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+#
+# Then: pip install -r requirements.txt
+
+numpy>=1.26
+onnx>=1.16
+onnxruntime>=1.18
+tqdm>=4.66
