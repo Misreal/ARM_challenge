@@ -82,11 +82,14 @@ def unwrap_compiled(model: nn.Module) -> nn.Module:
 
 
 def _package_versions() -> dict[str, str]:
-    versions = {"torch": torch.__version__}
+    # Newer PyTorch represents __version__ as TorchVersion, a str subclass
+    # that weights_only=True will not deserialize unless it is allowlisted.
+    # Store plain strings so checkpoints contain only ordinary metadata.
+    versions = {"torch": str(torch.__version__)}
     try:  # torchvision is a training-only dependency; the Pi never has it.
         import torchvision
 
-        versions["torchvision"] = torchvision.__version__
+        versions["torchvision"] = str(torchvision.__version__)
     except ImportError:
         pass
     return versions
@@ -146,7 +149,16 @@ def load_checkpoint(
     """Load a checkpoint, refusing one trained under a different data split."""
     # weights_only=True: the document holds only tensors and plain Python types,
     # so there is no reason to allow arbitrary pickle execution.
-    payload = torch.load(path, map_location="cpu", weights_only=True)
+    # Older checkpoints may contain PyTorch's TorchVersion object in their
+    # package-version metadata. It is a trusted PyTorch built-in, so allow it
+    # while retaining weights_only=True for every other object.
+    try:
+        from torch.torch_version import TorchVersion
+
+        with torch.serialization.safe_globals([TorchVersion]):
+            payload = torch.load(path, map_location="cpu", weights_only=True)
+    except (ImportError, AttributeError):  # PyTorch versions before safe_globals
+        payload = torch.load(path, map_location="cpu", weights_only=True)
 
     fingerprint = payload["split_fingerprint"]
     if expected_split_fingerprint is not None and fingerprint != expected_split_fingerprint:
