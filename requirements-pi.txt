@@ -1,0 +1,19 @@
+# Raspberry Pi 5 benchmark agent dependencies. Deliberately minimal.
+#
+# Install on a 64-bit Raspberry Pi OS (Bookworm). A 32-bit OS has no aarch64
+# onnxruntime wheel and is not supported by this project.
+#
+#   python3 -m venv ~/armopt && source ~/armopt/bin/activate
+#   pip install -r requirements-pi.txt
+#
+# NEVER install torch or torchvision here. The agent loads ONNX only; a torch
+# install on the Pi invites accidental torch-vs-ORT comparisons that would not
+# reflect the deployment target.
+#
+# The onnxruntime version MUST match the PC exactly for the whole campaign --
+# kernel changes between releases shift both accuracy and latency. Pin the
+# resolved version here once the PC side is installed.
+
+numpy>=1.26
+onnxruntime>=1.18
+psutil>=5.9

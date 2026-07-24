@@ -23,6 +23,10 @@ __pycache__/
 *.egg-info/
 .ipynb_checkpoints/
 
+# Test runner output
+.pytest_cache/
+.pytest_temp/
+
 # Environments
 .venv/
 venv/
@@ -41,3 +45,4 @@ CLAUDE.md
 PLAN.md
 project_idea.md
 .claude/
+personal_notes.md

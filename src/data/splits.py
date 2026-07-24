@@ -126,6 +126,15 @@ def create_split(labels: list[int], seed: int = 42) -> SplitIndices:
     return SplitIndices(seed=seed, **indices)
 
 
+def split_fingerprint(split: SplitIndices) -> str:
+    """Public accessor for the split's content hash.
+
+    Every trained checkpoint records this, so a model can never be silently
+    evaluated against a split it was not trained under (see src/checkpoint.py).
+    """
+    return _fingerprint(split.as_dict(), split.seed)
+
+
 def save_split(split: SplitIndices, path: Path = DEFAULT_SPLIT_PATH) -> None:
     indices = split.as_dict()
     path.parent.mkdir(parents=True, exist_ok=True)

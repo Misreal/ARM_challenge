@@ -13,3 +13,9 @@ numpy>=1.26
 onnx>=1.16
 onnxruntime>=1.18
 tqdm>=4.66
+
+# Testing. Scope is deliberately narrow: correctness-critical pure logic only
+# (split guards, LR schedule, later config hashing and gate decisions).
+# Measurement code is validated by parity checks against a reference, not by
+# unit tests -- a mocked benchmark proves nothing about a real Pi.
+pytest>=8.0
