@@ -7,6 +7,12 @@
 artifacts/checkpoints/
 artifacts/onnx/
 
+# Pi evaluation bundles: ~12 MB of raw pixels, regenerated bit-for-bit by
+# `python -m src.data.export_pi_data` from the committed split. The manifest
+# beside them is NOT ignored -- it carries the preprocessing contract and the
+# checksums that let the Pi verify it received the right arrays.
+artifacts/pi_data/*.npy
+
 # NOTE: artifacts/splits/ and artifacts/reports/ are deliberately NOT ignored.
 #
 #   splits/cifar100_split.json  MUST travel with the repo. Stage 0 (local) and

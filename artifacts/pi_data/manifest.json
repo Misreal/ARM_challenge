@@ -1,0 +1,77 @@
+{
+  "split_fingerprint": "d692cdcdeddfac3b",
+  "splits": {
+    "optval": {
+      "images": {
+        "file": "optval_images_uint8.npy",
+        "sha256": "c02a8cfc3aba992579db96272fbca91ca5d7dc194b20f76dc00cea8cda8308f7",
+        "shape": [
+          3000,
+          3,
+          32,
+          32
+        ],
+        "dtype": "uint8"
+      },
+      "labels": {
+        "file": "optval_labels.npy",
+        "sha256": "e98b39f95f355a4660622a78058085a96b6c52e148a4041ef89b2fa066186e9d",
+        "shape": [
+          3000
+        ],
+        "dtype": "int64"
+      },
+      "max_abs_delta_vs_torchvision": 0.0
+    },
+    "calib": {
+      "images": {
+        "file": "calib_images_uint8.npy",
+        "sha256": "1fc1a9b7d0ecd17fad711ecffeb149212ce2c6e87a2ee617c65bf8fdfe999e49",
+        "shape": [
+          1000,
+          3,
+          32,
+          32
+        ],
+        "dtype": "uint8"
+      },
+      "labels": {
+        "file": "calib_labels.npy",
+        "sha256": "9cbb583bc92d53e634d714153aa7525e88ac6b2ff9900c6a07a5c4a1ec84f701",
+        "shape": [
+          1000
+        ],
+        "dtype": "int64"
+      },
+      "max_abs_delta_vs_torchvision": 0.0
+    }
+  },
+  "preprocessing": {
+    "layout": "NCHW",
+    "stored_dtype": "uint8",
+    "stored_range": "[0, 255]",
+    "mean": [
+      0.5071,
+      0.4865,
+      0.4409
+    ],
+    "std": [
+      0.2673,
+      0.2564,
+      0.2762
+    ],
+    "recipe": "x = images.astype(float32) / 255.0; x = (x - mean) / std",
+    "reference_implementation": "src.data.export_pi_data.normalize_uint8_nchw",
+    "note": "Normalization is NOT in the ONNX graph; the consumer applies it. Any divergence from this recipe shows up as unexplained accuracy loss."
+  },
+  "excluded": {
+    "test": "Sealed until Phase 7 final evaluation (PLAN.md DO-NOT #3); never ship to the Pi.",
+    "train": "Not needed on device; Stage 0 training is frozen.",
+    "trainval": "Checkpoint-selection split; has no role in deployment measurement."
+  },
+  "package_versions": {
+    "numpy": "2.4.4",
+    "torch": "2.13.0+cu126"
+  },
+  "created_at_utc": "2026-07-25T11:54:29.732088+00:00"
+}
