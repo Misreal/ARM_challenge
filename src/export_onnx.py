@@ -17,6 +17,7 @@ from typing import Any
 import onnx
 import onnxruntime as ort
 import torch
+from onnxruntime.quantization import quant_pre_process
 
 import src.models  # noqa: F401 -- register model builders
 from src.checkpoint import load_checkpoint
@@ -82,6 +83,72 @@ def export_model(model: torch.nn.Module, output_path: Path) -> None:
         dynamo=False,
     )
     onnx.checker.check_model(str(output_path))
+
+
+def preprocess_for_quantization(source_path: Path, output_path: Path) -> None:
+    """Write the shape-inferred, fused graph that Phase 4 must quantize.
+
+    Running `quantize_static` against the raw export instead of this file is the
+    single most common ONNX Runtime quantization mistake (PLAN.md DO-NOT #4):
+    anything left unfused gets wrapped in QDQ nodes, making the result both
+    slower and less accurate. Static calibration also needs the inferred shapes
+    this pass adds. The deployable FP32 graph is kept separately -- this variant
+    is an optimizer input, not a deliverable.
+    """
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    quant_pre_process(
+        input_model=str(source_path),
+        output_model_path=str(output_path),
+        skip_optimization=False,
+        skip_onnx_shape=False,
+        skip_symbolic_shape=False,
+    )
+    onnx.checker.check_model(str(output_path))
+
+
+@torch.inference_mode()
+def compare_sessions(
+    reference: ort.InferenceSession,
+    candidate: ort.InferenceSession,
+    loader: torch.utils.data.DataLoader,
+    limit: int,
+) -> dict[str, float | int]:
+    """Compare two ONNX graphs fed identical inputs.
+
+    Fusion and shape inference are supposed to be numerically transparent, so a
+    real delta here means preprocessing changed the model. Catching that now
+    keeps it from being misread in Phase 4 as quantization damage.
+    """
+    if limit <= 0:
+        raise ValueError("parity-samples must be positive")
+
+    seen = 0
+    agreements = 0
+    max_logit_delta = 0.0
+    ref_input = reference.get_inputs()[0].name
+    ref_output = reference.get_outputs()[0].name
+    cand_input = candidate.get_inputs()[0].name
+    cand_output = candidate.get_outputs()[0].name
+
+    for images, _ in loader:
+        remaining = limit - seen
+        if remaining <= 0:
+            break
+        batch = images[:remaining].numpy()
+        ref_logits = torch.from_numpy(reference.run([ref_output], {ref_input: batch})[0])
+        cand_logits = torch.from_numpy(candidate.run([cand_output], {cand_input: batch})[0])
+
+        agreements += int((ref_logits.argmax(dim=1) == cand_logits.argmax(dim=1)).sum().item())
+        max_logit_delta = max(max_logit_delta, float((ref_logits - cand_logits).abs().max().item()))
+        seen += batch.shape[0]
+
+    if seen == 0:
+        raise ValueError("Parity loader produced zero images")
+    return {
+        "samples": seen,
+        "top1_agreement": agreements / seen,
+        "max_logit_delta": max_logit_delta,
+    }
 
 
 @torch.inference_mode()
@@ -165,6 +232,7 @@ def main() -> None:
     stem = artifact_stem(args.model, args.tag)
     checkpoint_path = args.checkpoint_path or args.checkpoint_dir / f"{stem}.pt"
     onnx_path = args.onnx_dir / f"{stem}.onnx"
+    quant_ready_path = args.onnx_dir / f"{stem}_quant_ready.onnx"
     report_path = args.report_dir / f"{stem}_baseline.json"
 
     labels = load_base_dataset(args.data_root, train=True).targets
@@ -179,8 +247,12 @@ def main() -> None:
     model = build_model(args.model, num_classes=100).float()
     model.load_state_dict(checkpoint.state_dict, strict=True)
     export_model(model, onnx_path)
+    preprocess_for_quantization(onnx_path, quant_ready_path)
 
     session = ort.InferenceSession(str(onnx_path), providers=["CPUExecutionProvider"])
+    quant_ready_session = ort.InferenceSession(
+        str(quant_ready_path), providers=["CPUExecutionProvider"]
+    )
     device = resolve_device(args.device)
     model = model.to(device).eval()
     # The exported graph is intentionally static at batch size 1, so ORT must
@@ -193,6 +265,17 @@ def main() -> None:
             f"got {parity['top1_agreement']:.2%} and {parity['max_logit_delta']:.6g}"
         )
 
+    quant_ready_parity = compare_sessions(
+        session, quant_ready_session, optval_loader, args.parity_samples
+    )
+    if quant_ready_parity["top1_agreement"] < 0.998 or quant_ready_parity["max_logit_delta"] >= 1e-3:
+        raise RuntimeError(
+            "Quantization-preprocessed graph diverges from the deployable export: expected "
+            ">=99.8% top-1 agreement and max logit delta < 1e-3, got "
+            f"{quant_ready_parity['top1_agreement']:.2%} and "
+            f"{quant_ready_parity['max_logit_delta']:.6g}"
+        )
+
     optval_top1 = accuracy(session, optval_loader)
     test_top1: float | None = None
     if args.seal_test:
@@ -200,6 +283,7 @@ def main() -> None:
         test_top1 = accuracy(session, test_loader)
 
     onnx_model = onnx.load(str(onnx_path))
+    quant_ready_model = onnx.load(str(quant_ready_path))
     report: dict[str, Any] = {
         "model": args.model,
         "checkpoint": {"path": str(checkpoint_path), "sha256": sha256_file(checkpoint_path)},
@@ -214,22 +298,40 @@ def main() -> None:
             "output_name": OUTPUT_NAME,
             "operators": operator_inventory(onnx_model),
         },
+        "onnx_quant_ready": {
+            "path": str(quant_ready_path),
+            "sha256": sha256_file(quant_ready_path),
+            "bytes": quant_ready_path.stat().st_size,
+            "operators": operator_inventory(quant_ready_model),
+            "note": (
+                "Shape-inferred and fused graph. Phase 4 must quantize THIS file, "
+                "never the deployable export (PLAN.md DO-NOT #4)."
+            ),
+        },
         "preprocessing": {
             "input": "normalized_float32_nchw",
             "mean": list(CIFAR100_MEAN),
             "std": list(CIFAR100_STD),
         },
         "metrics": {"optval_top1": optval_top1, "test_top1_sealed": test_top1},
-        "verification": {"torch_vs_onnx": parity},
+        "verification": {
+            "torch_vs_onnx": parity,
+            "onnx_vs_quant_ready": quant_ready_parity,
+        },
         "package_versions": {"torch": str(torch.__version__), "onnxruntime": ort.__version__},
         "created_at_utc": datetime.now(UTC).isoformat(),
     }
     write_report(report_path, report)
 
     print(f"Exported {onnx_path}")
+    print(f"Quantization-ready graph: {quant_ready_path}")
     print(
         f"Parity: {parity['top1_agreement']:.2%} agreement, "
         f"max logit delta {parity['max_logit_delta']:.6g} over {parity['samples']} optval images"
+    )
+    print(
+        f"Quant-ready parity: {quant_ready_parity['top1_agreement']:.2%} agreement, "
+        f"max logit delta {quant_ready_parity['max_logit_delta']:.6g}"
     )
     print(f"ONNX Runtime optval top-1: {optval_top1:.2f}%")
     if test_top1 is None:
