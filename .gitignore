@@ -7,6 +7,11 @@
 artifacts/checkpoints/
 artifacts/onnx/
 
+# Quantized candidates: one .onnx per config hash, thousands over a campaign.
+# Regenerated deterministically from the config in the sidecar .json; the
+# summary numbers that matter live in artifacts/reports/.
+artifacts/quant/
+
 # Pi evaluation bundles: ~12 MB of raw pixels, regenerated bit-for-bit by
 # `python -m src.data.export_pi_data` from the committed split. The manifest
 # beside them is NOT ignored -- it carries the preprocessing contract and the
@@ -53,3 +58,4 @@ project_idea.md
 .claude/
 personal_notes.md
 CODEX_WORK.md
+.agents/
