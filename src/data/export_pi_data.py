@@ -8,10 +8,10 @@ accuracy drop that looks like quantization damage (PLAN.md DO-NOT #7).
 Two defences, both implemented here:
 
 1. Images ship as raw **uint8**, never as pre-normalized floats. Normalization
-   happens on device, from the constants recorded in the manifest, using
-   `normalize_uint8_nchw` below -- a numpy-only function the agent copies
-   verbatim. Shipping floats would instead bake one machine's arithmetic into
-   the artifact and hide any divergence.
+   happens on device via `src.portable.preprocess.normalize_uint8_nchw`, which
+   is torch-free precisely so the Pi imports the same file rather than a copy.
+   Shipping floats would instead bake one machine's arithmetic into the
+   artifact and hide any divergence.
 2. Before writing anything, the numpy path is checked against the torchvision
    path image-by-image. If they disagree, the export fails rather than handing
    the Pi a subtly wrong dataset.
@@ -47,6 +47,7 @@ from src.data.loaders import (
     load_base_dataset,
 )
 from src.data.splits import DEFAULT_SPLIT_PATH, SplitIndices, load_or_create_split, split_fingerprint
+from src.portable.preprocess import normalize_uint8_nchw
 
 DEFAULT_OUTPUT_DIR = Path("artifacts/pi_data")
 
@@ -58,27 +59,6 @@ EXPORTED_SPLITS: tuple[str, ...] = ("optval", "calib")
 # operations in the same order, so anything above float noise means the
 # documented recipe is not what the PC actually does.
 MAX_ALLOWED_DELTA = 1e-6
-
-
-def normalize_uint8_nchw(images: np.ndarray) -> np.ndarray:
-    """Convert uint8 NCHW images to the normalized float32 the ONNX graph expects.
-
-    This is the preprocessing contract. The Pi agent must apply exactly this,
-    with the constants from the manifest -- it is reproduced here in pure numpy
-    precisely so it can be copied to a torch-free device.
-
-    Mirrors torchvision `ToTensor()` followed by `Normalize(mean, std)`:
-    scale to [0, 1], then subtract the per-channel mean and divide by the
-    per-channel standard deviation.
-    """
-    if images.dtype != np.uint8:
-        raise TypeError(f"Expected uint8 images, got {images.dtype}")
-    if images.ndim != 4 or images.shape[1] != 3:
-        raise ValueError(f"Expected NCHW images with 3 channels, got shape {images.shape}")
-
-    mean = np.asarray(CIFAR100_MEAN, dtype=np.float32).reshape(1, 3, 1, 1)
-    std = np.asarray(CIFAR100_STD, dtype=np.float32).reshape(1, 3, 1, 1)
-    return (images.astype(np.float32) / 255.0 - mean) / std
 
 
 def extract_uint8_nchw(data_hwc: np.ndarray, indices: tuple[int, ...]) -> np.ndarray:
@@ -201,7 +181,7 @@ def main() -> None:
             "mean": list(CIFAR100_MEAN),
             "std": list(CIFAR100_STD),
             "recipe": "x = images.astype(float32) / 255.0; x = (x - mean) / std",
-            "reference_implementation": "src.data.export_pi_data.normalize_uint8_nchw",
+            "reference_implementation": "src.portable.preprocess.normalize_uint8_nchw",
             "note": (
                 "Normalization is NOT in the ONNX graph; the consumer applies it. "
                 "Any divergence from this recipe shows up as unexplained accuracy loss."

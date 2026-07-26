@@ -18,9 +18,19 @@ from torchvision.datasets import CIFAR100
 
 from src.data.splits import SplitIndices
 
-# Channel statistics of the CIFAR-100 training set.
-CIFAR100_MEAN: tuple[float, float, float] = (0.5071, 0.4865, 0.4409)
-CIFAR100_STD: tuple[float, float, float] = (0.2673, 0.2564, 0.2762)
+# Re-exported from the torch-free package that ships to the Pi. The constants
+# have to live on that side so the device is never asked to duplicate them.
+from src.portable.preprocess import CIFAR100_MEAN, CIFAR100_STD
+
+__all__ = [
+    "CIFAR100_MEAN",
+    "CIFAR100_STD",
+    "DEFAULT_DATA_ROOT",
+    "build_loader",
+    "build_train_loader",
+    "build_transforms",
+    "load_base_dataset",
+]
 
 DEFAULT_DATA_ROOT = Path("data")
 
