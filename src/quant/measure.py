@@ -32,7 +32,6 @@ from typing import Any
 
 import onnxruntime as ort
 
-from src.models.registry import available_models
 from src.portable.benchmark import (
     DEFAULT_ITERATIONS,
     DEFAULT_WARMUP,
@@ -41,7 +40,7 @@ from src.portable.benchmark import (
     peak_rss_mb,
 )
 from src.quant.baselines import BASELINE_CONFIGS
-from src.quant.config import QuantConfig, RunConfig
+from src.quant.config import EXPORTED_MODELS, QuantConfig, RunConfig
 from src.quant.quantize import QuantizationFailure, build_artifact, build_session
 
 DEFAULT_REPORT_DIR = Path("artifacts/reports")
@@ -54,7 +53,7 @@ FP32_KEY = "fp32"
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--model", required=True, choices=available_models())
+    parser.add_argument("--model", required=True, choices=EXPORTED_MODELS)
     parser.add_argument("--warmup", type=int, default=DEFAULT_WARMUP)
     parser.add_argument("--iterations", type=int, default=DEFAULT_ITERATIONS)
     parser.add_argument("--threads", type=int, default=4)

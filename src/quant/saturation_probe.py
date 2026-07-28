@@ -53,8 +53,7 @@ from typing import Any
 
 import onnxruntime as ort
 
-from src.models.registry import available_models
-from src.quant.config import QuantConfig, RunConfig
+from src.quant.config import EXPORTED_MODELS, QuantConfig, RunConfig
 from src.quant.evaluate import score_artifact
 from src.quant.quantize import build_artifact
 
@@ -63,7 +62,7 @@ DEFAULT_REPORT_DIR = Path("artifacts/reports")
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--model", required=True, choices=available_models())
+    parser.add_argument("--model", required=True, choices=EXPORTED_MODELS)
     parser.add_argument("--limit", type=int, default=1000)
     parser.add_argument("--threads", type=int, default=4)
     parser.add_argument("--report-dir", type=Path, default=DEFAULT_REPORT_DIR)

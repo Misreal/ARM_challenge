@@ -33,8 +33,7 @@ from typing import Any
 
 import onnxruntime as ort
 
-from src.models.registry import available_models
-from src.quant.config import QuantConfig, RunConfig
+from src.quant.config import EXPORTED_MODELS, QuantConfig, RunConfig
 from src.quant.evaluate import score_artifact
 from src.quant.quantize import (
     DEFAULT_CACHE_DIR,
@@ -55,7 +54,7 @@ BASELINE_CONFIGS: dict[str, QuantConfig] = {
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--model", required=True, choices=available_models())
+    parser.add_argument("--model", required=True, choices=EXPORTED_MODELS)
     parser.add_argument("--onnx-dir", type=Path, default=DEFAULT_ONNX_DIR)
     parser.add_argument("--cache-dir", type=Path, default=DEFAULT_CACHE_DIR)
     parser.add_argument("--report-dir", type=Path, default=DEFAULT_REPORT_DIR)
