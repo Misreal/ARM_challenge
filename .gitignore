@@ -37,6 +37,7 @@ __pycache__/
 # Test runner output
 .pytest_cache/
 .pytest_temp/
+artifacts/reports/custom_cnn_latency_amd64.json
 
 # Environments
 .venv/
@@ -59,3 +60,4 @@ project_idea.md
 personal_notes.md
 CODEX_WORK.md
 .agents/
+competition_rules.md
