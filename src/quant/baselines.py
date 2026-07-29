@@ -27,6 +27,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import platform
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -114,18 +115,33 @@ def main() -> None:
             + (f"  ({delta:+.2f} pt vs fp32)" if delta is not None else "")
         )
 
+    # Accuracy, unlike latency, is not gated on the host machine -- an x86 run is
+    # still a real measurement. But INT8 kernels differ between x86 and ARM, so the
+    # report has to say which one produced it rather than assuming the PC.
+    on_target = platform.machine().lower() in ("aarch64", "arm64")
+    note = (
+        "Measured on the aarch64 target (Raspberry Pi 5). These are deployment "
+        "numbers, not screening numbers."
+        if on_target
+        else "PC (x86) screening numbers. INT8 kernels differ between x86 and ARM "
+        "by roughly +/-0.1 pt; finalists are re-verified on the Pi."
+    )
+
     report = {
         "model": args.model,
         "eval_split": "optval",
         "eval_limit": args.limit,
+        "on_target": on_target,
+        "host": {
+            "platform": platform.platform(),
+            "machine": platform.machine(),
+            "processor": platform.processor(),
+        },
         "run_config": run.as_dict(),
         "baselines": results,
         "onnxruntime": ort.__version__,
         "created_at_utc": datetime.now(UTC).isoformat(),
-        "note": (
-            "PC (x86) screening numbers. INT8 kernels differ between x86 and ARM by "
-            "roughly +/-0.1 pt; finalists are re-verified on the Pi."
-        ),
+        "note": note,
     }
     args.report_dir.mkdir(parents=True, exist_ok=True)
     report_path = args.report_dir / f"{args.model}_quant_baselines.json"

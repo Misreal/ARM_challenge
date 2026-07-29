@@ -2,6 +2,12 @@
   "model": "custom_cnn",
   "eval_split": "optval",
   "eval_limit": null,
+  "on_target": true,
+  "host": {
+    "platform": "Linux-6.12.93+rpt-rpi-2712-aarch64-with-glibc2.36",
+    "machine": "aarch64",
+    "processor": ""
+  },
   "run_config": {
     "intra_op_num_threads": 4,
     "graph_optimization_level": "all"
@@ -102,5 +108,6 @@
   },
   "onnxruntime": "1.27.0",
   "created_at_utc": "2026-07-29T16:09:21.183866+00:00",
-  "note": "PC (x86) screening numbers. INT8 kernels differ between x86 and ARM by roughly +/-0.1 pt; finalists are re-verified on the Pi."
+  "note": "Measured on the aarch64 target (Raspberry Pi 5). These are deployment numbers, not screening numbers.",
+  "patched_note": "The `host` block and `note` were added retroactively on 2026-07-30. The generating script hardcoded an x86 note and recorded no host; the values here are copied from this model's *_latency_aarch64.json, produced by the same device in the same session. Accuracy values are untouched."
 }
