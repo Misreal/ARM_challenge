@@ -1,0 +1,45 @@
+{
+  "model": "custom_cnn",
+  "eval_split": "optval",
+  "eval_limit": 1000,
+  "host": {
+    "platform": "Linux-6.12.93+rpt-rpi-2712-aarch64-with-glibc2.36",
+    "machine": "aarch64",
+    "processor": ""
+  },
+  "run_config": {
+    "intra_op_num_threads": 4,
+    "graph_optimization_level": "all"
+  },
+  "cells": [
+    {
+      "per_channel": false,
+      "reduce_range": false,
+      "top1": 73.3,
+      "quant_hash": "06e1b9094831a2a6"
+    },
+    {
+      "per_channel": false,
+      "reduce_range": true,
+      "top1": 70.5,
+      "quant_hash": "d9a9b701c59000af"
+    },
+    {
+      "per_channel": true,
+      "reduce_range": false,
+      "top1": 72.8,
+      "quant_hash": "6c2712900e73dc56"
+    },
+    {
+      "per_channel": true,
+      "reduce_range": true,
+      "top1": 72.7,
+      "quant_hash": "2f0a4d9ec7c27665"
+    }
+  ],
+  "per_channel_reduce_range_recovery": -0.1,
+  "per_tensor_reduce_range_recovery": -2.8,
+  "saturation_suspected": false,
+  "onnxruntime": "1.27.0",
+  "created_at_utc": "2026-07-29T16:07:36.613061+00:00"
+}

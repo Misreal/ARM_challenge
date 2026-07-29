@@ -1,0 +1,106 @@
+{
+  "model": "resnet18_cifar",
+  "eval_split": "optval",
+  "eval_limit": null,
+  "run_config": {
+    "intra_op_num_threads": 4,
+    "graph_optimization_level": "all"
+  },
+  "baselines": {
+    "fp32": {
+      "status": "ok",
+      "config": {
+        "quant_type": "none",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [],
+        "reduce_range": false
+      },
+      "quant_hash": "621cee21bf4b25e3",
+      "bytes": 44870838,
+      "qdq_nodes": 0,
+      "build_seconds": 0.0,
+      "accuracy": {
+        "samples": 3000,
+        "top1": 78.5,
+        "top5": 93.23333333333333
+      },
+      "top1_delta_vs_fp32": 0.0
+    },
+    "dynamic": {
+      "status": "ok",
+      "config": {
+        "quant_type": "dynamic",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [],
+        "reduce_range": false
+      },
+      "quant_hash": "9965282d98520e1e",
+      "bytes": 11272580,
+      "qdq_nodes": 0,
+      "build_seconds": 0.0,
+      "accuracy": {
+        "samples": 3000,
+        "top1": 78.33333333333333,
+        "top5": 93.4
+      },
+      "top1_delta_vs_fp32": -0.17
+    },
+    "static_per_tensor": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [],
+        "reduce_range": false
+      },
+      "quant_hash": "06e1b9094831a2a6",
+      "bytes": 11273804,
+      "qdq_nodes": 106,
+      "build_seconds": 0.0,
+      "accuracy": {
+        "samples": 3000,
+        "top1": 78.13333333333334,
+        "top5": 93.1
+      },
+      "top1_delta_vs_fp32": -0.37
+    },
+    "static_per_channel": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [],
+        "reduce_range": false
+      },
+      "quant_hash": "6c2712900e73dc56",
+      "bytes": 11338184,
+      "qdq_nodes": 106,
+      "build_seconds": 0.0,
+      "accuracy": {
+        "samples": 3000,
+        "top1": 78.4,
+        "top5": 93.23333333333333
+      },
+      "top1_delta_vs_fp32": -0.1
+    }
+  },
+  "onnxruntime": "1.27.0",
+  "created_at_utc": "2026-07-29T15:53:24.314863+00:00",
+  "note": "PC (x86) screening numbers. INT8 kernels differ between x86 and ARM by roughly +/-0.1 pt; finalists are re-verified on the Pi."
+}

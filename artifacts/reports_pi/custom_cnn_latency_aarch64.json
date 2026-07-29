@@ -1,0 +1,166 @@
+{
+  "model": "custom_cnn",
+  "admissible": true,
+  "admissibility_reason": "aarch64 host; latency is a measured result",
+  "host": {
+    "platform": "Linux-6.12.93+rpt-rpi-2712-aarch64-with-glibc2.36",
+    "machine": "aarch64",
+    "processor": ""
+  },
+  "run_config": {
+    "intra_op_num_threads": 4,
+    "graph_optimization_level": "all"
+  },
+  "warmup": 20,
+  "iterations": 100,
+  "seed": 0,
+  "peak_rss_mb_final": 100.875,
+  "results": {
+    "dynamic": {
+      "status": "ok",
+      "config": {
+        "quant_type": "dynamic",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [],
+        "reduce_range": false
+      },
+      "quant_hash": "9965282d98520e1e",
+      "bytes": 1811350,
+      "latency": {
+        "iterations": 100,
+        "warmup": 20,
+        "batch_size": 1,
+        "mean_ms": 16.5537,
+        "median_ms": 16.5493,
+        "p90_ms": 16.58,
+        "p95_ms": 16.5938,
+        "p99_ms": 16.6541,
+        "min_ms": 16.4966,
+        "max_ms": 16.7575,
+        "stdev_ms": 0.0323,
+        "throughput_ips": 60.41,
+        "drift_ratio": 0.9995,
+        "stable": true
+      },
+      "peak_rss_mb_cumulative": 88.796875,
+      "temperature_start_c": 51.8,
+      "temperature_end_c": 55.65,
+      "speedup_vs_fp32": 0.412,
+      "size_ratio_vs_fp32": 0.2538
+    },
+    "fp32": {
+      "status": "ok",
+      "config": {
+        "quant_type": "none",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [],
+        "reduce_range": false
+      },
+      "quant_hash": "621cee21bf4b25e3",
+      "bytes": 7137449,
+      "latency": {
+        "iterations": 100,
+        "warmup": 20,
+        "batch_size": 1,
+        "mean_ms": 6.822,
+        "median_ms": 6.8185,
+        "p90_ms": 6.8619,
+        "p95_ms": 6.8829,
+        "p99_ms": 6.9223,
+        "min_ms": 6.747,
+        "max_ms": 7.0937,
+        "stdev_ms": 0.0416,
+        "throughput_ips": 146.58,
+        "drift_ratio": 1.0001,
+        "stable": true
+      },
+      "peak_rss_mb_cumulative": 100.375,
+      "temperature_start_c": 56.2,
+      "temperature_end_c": 57.3,
+      "speedup_vs_fp32": 1.0,
+      "size_ratio_vs_fp32": 1.0
+    },
+    "static_per_channel": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [],
+        "reduce_range": false
+      },
+      "quant_hash": "6c2712900e73dc56",
+      "bytes": 1839387,
+      "latency": {
+        "iterations": 100,
+        "warmup": 20,
+        "batch_size": 1,
+        "mean_ms": 1.8032,
+        "median_ms": 1.7956,
+        "p90_ms": 1.8241,
+        "p95_ms": 1.8342,
+        "p99_ms": 1.8846,
+        "min_ms": 1.7713,
+        "max_ms": 1.8909,
+        "stdev_ms": 0.0226,
+        "throughput_ips": 554.58,
+        "drift_ratio": 1.0019,
+        "stable": true
+      },
+      "peak_rss_mb_cumulative": 100.875,
+      "temperature_start_c": 58.4,
+      "temperature_end_c": 56.75,
+      "speedup_vs_fp32": 3.797,
+      "size_ratio_vs_fp32": 0.2577
+    },
+    "static_per_tensor": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [],
+        "reduce_range": false
+      },
+      "quant_hash": "06e1b9094831a2a6",
+      "bytes": 1811932,
+      "latency": {
+        "iterations": 100,
+        "warmup": 20,
+        "batch_size": 1,
+        "mean_ms": 1.7838,
+        "median_ms": 1.7762,
+        "p90_ms": 1.8081,
+        "p95_ms": 1.8173,
+        "p99_ms": 1.8289,
+        "min_ms": 1.7532,
+        "max_ms": 1.8386,
+        "stdev_ms": 0.0202,
+        "throughput_ips": 560.59,
+        "drift_ratio": 0.9984,
+        "stable": true
+      },
+      "peak_rss_mb_cumulative": 100.875,
+      "temperature_start_c": 57.3,
+      "temperature_end_c": 59.5,
+      "speedup_vs_fp32": 3.839,
+      "size_ratio_vs_fp32": 0.2539
+    }
+  },
+  "onnxruntime": "1.27.0",
+  "created_at_utc": "2026-07-29T16:10:23.628455+00:00"
+}
