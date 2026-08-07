@@ -52,6 +52,10 @@ venv/
 Thumbs.db
 .DS_Store
 
+# Device connection settings: one operator's hostname, user and key path.
+# Committing them would point a fresh clone at a machine that isn't theirs.
+pi_target.json
+
 # Personal file
 CLAUDE.md
 PLAN.md

@@ -1054,3 +1054,107 @@ and the `get_throttled` sticky bits are cleared. Re-do the relevant checklist it
 | Run latency measurement | `python -m src.quant.measure --model <model>` |
 | Shut down | `sudo shutdown -h now` (wait for the LED to stop, then unplug) |
 | Reboot | `sudo reboot` |
+
+---
+
+## Section 12 — Unattended operation (Phase 3 automation)
+
+Sections 1–11 describe driving the Pi **by hand**. That is how every number in
+`artifacts/reports_pi/` was produced, and it does not survive contact with Phase 6, which
+needs on the order of 300 measurements across three models. This section switches the Pi
+from "a machine you log into" to "a machine your laptop calls".
+
+Three things have to be true before that works.
+
+### 12.1 Key-based SSH (mandatory, not a convenience)
+
+With password authentication an unattended run does not fail — it **hangs**, waiting at a
+prompt nobody will answer, until a timeout fires hours later. The driver therefore forces
+`BatchMode=yes`, which turns a missing key into an immediate error instead. That makes key
+auth a requirement.
+
+```powershell
+# Laptop (PowerShell). Creates a key only if you don't already have one. Instant.
+if (-not (Test-Path "$env:USERPROFILE\.ssh\id_ed25519")) { ssh-keygen -t ed25519 -C "armopt-pi" }
+```
+
+```powershell
+# Laptop (PowerShell). Appends your public key to the Pi's authorized_keys.
+# This is the ONE time you still type the Pi password.
+$key = Get-Content "$env:USERPROFILE\.ssh\id_ed25519.pub"
+ssh <PI_USER>@<PI_IP> "mkdir -p ~/.ssh && chmod 700 ~/.ssh && echo '$key' >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys"
+```
+
+```powershell
+# Laptop (PowerShell). Must print 'key-auth-ok' WITHOUT prompting for a password.
+ssh -o BatchMode=yes <PI_USER>@<PI_IP> "echo key-auth-ok"
+```
+
+If that last command says `Permission denied (publickey)`, the key did not land. Check
+permissions on the Pi: `~/.ssh` must be `700` and `authorized_keys` must be `600`, or sshd
+silently ignores the file.
+
+### 12.2 `pi_target.json` — where the laptop looks for the device
+
+Create this file in the project root on the **laptop**. It is gitignored, because a
+hostname and username are specific to one operator's setup.
+
+```json
+{
+  "host": "<PI_IP>",
+  "user": "<PI_USER>",
+  "remote_root": "/home/<PI_USER>/ARM_challenge",
+  "python": "/home/<PI_USER>/armopt/bin/python"
+}
+```
+
+Note `python` points **inside the venv**. The driver does not run `source activate`; it
+invokes the venv interpreter directly, which is equivalent and cannot be forgotten.
+
+### 12.3 `pi_prepare.sh` — run after every boot
+
+The CPU governor resets to the image default on reboot, so pinning it is not one-time setup:
+it is the first thing done in every benchmarking session.
+
+```bash
+# Pi. Run once per boot, before any measurement. Instant.
+cd ~/ARM_challenge && sudo bash scripts/pi_prepare.sh
+```
+
+It pins `performance` on every core, verifies the readback, prints clock/temp/throttle, and
+exits non-zero if the board is throttling or undervolted. The agent (`src/bench/agent.py`)
+**refuses to measure** if this was skipped — deliberately, because a campaign run under
+`ondemand` measures the frequency scheduler and there is no way to tell from the numbers
+afterwards.
+
+### 12.4 Driving it from the laptop
+
+```powershell
+# Laptop (PowerShell). Refresh the Pi's copy of src/, then probe the device. ~5 seconds.
+python -m src.bench.remote --push-code --check
+```
+
+That prints the device's governor, clock, temperature and throttle mask, and warns if the
+governor is not pinned. Once it looks right:
+
+```powershell
+# Laptop (PowerShell). Measures fp32 at 1, 2 and 4 threads. Results cached by config hash.
+python -m src.bench.remote --model resnet18_cifar --configs fp32 --threads 1 2 4
+```
+
+Each measurement runs as **two** processes on the Pi: one that quantizes and caches the
+artifact, and one that loads and times it. That split is what makes peak RAM attributable —
+a process that builds *and* times a candidate reports the calibrator's memory, not the
+model's.
+
+### 12.5 What the driver refuses to do
+
+| Situation | Behaviour | Why |
+| --- | --- | --- |
+| Governor not `performance` | Refuses to measure | The timing would describe the scheduler |
+| Throttle bit set during a run | Records the result, marks it inadmissible | It describes thermodynamics, not the model |
+| Timings drift between halves | Marks it inadmissible | The device was still warming up |
+| SSH link drops | Retries 3× with backoff | Transport failures are transient |
+| Quantization fails | Returns the failure, no retry | Deterministic — retrying costs Pi time to reach the same answer |
+| Same config asked for twice | Serves from cache | Nothing is ever measured twice |
+| Inadmissible result | **Not** cached | An environmental fact must not be replayed as a candidate's number |

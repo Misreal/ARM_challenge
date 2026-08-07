@@ -34,6 +34,9 @@ PI_ENTRYPOINTS = (
     "src.quant.measure",
     "src.quant.baselines",
     "src.quant.saturation_probe",
+    # The Phase 3 agent. `src.bench.remote` is deliberately absent: it is the
+    # host half of the pair and never runs on the device.
+    "src.bench.agent",
 )
 
 
