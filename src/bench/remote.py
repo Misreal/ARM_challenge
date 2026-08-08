@@ -13,10 +13,12 @@ import argparse
 import hashlib
 import json
 import os
+import statistics
 import subprocess
 import tempfile
 import time
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from pathlib import Path, PurePosixPath
 from typing import Any, Iterable, Sequence
 
@@ -393,6 +395,56 @@ class RemoteBenchmarker:
         }
 
 
+def summarize_sentinel(spec: BenchSpec, trials: list[dict[str, Any]]) -> dict[str, Any]:
+    """Run-to-run spread of repeated measurements of one config."""
+    # Spread is (max-min)/median of the per-trial medians, matching how the
+    # July 2026 baseline was computed so the two are comparable.
+    medians = [t["latency"]["median_ms"] for t in trials if t.get("status") == "ok"]
+    spread = None
+    if len(medians) >= 2:
+        spread = (max(medians) - min(medians)) / statistics.median(medians)
+
+    return {
+        "schema": "sentinel/1",
+        "model": spec.model,
+        "config": spec.config.as_dict(),
+        "trials": len(trials),
+        "admissible_trials": sum(1 for t in trials if t.get("admissible")),
+        "medians_ms": [round(value, 4) for value in medians],
+        "median_of_medians_ms": round(statistics.median(medians), 4) if medians else None,
+        "min_ms": round(min(medians), 4) if medians else None,
+        "max_ms": round(max(medians), 4) if medians else None,
+        "spread_fraction": round(spread, 5) if spread is not None else None,
+        "spread_percent": round(spread * 100, 2) if spread is not None else None,
+        "created_at_utc": datetime.now(UTC).isoformat(),
+        "results": trials,
+    }
+
+
+def run_sentinel(
+    runner: RemoteBenchmarker,
+    spec: BenchSpec,
+    repeats: int,
+    spacing_s: float,
+    sleep=time.sleep,
+) -> dict[str, Any]:
+    """Measure one config repeatedly, spaced out, to characterise drift."""
+    # Cache is bypassed on purpose: identical configs are exactly what a
+    # sentinel repeats, and a cache hit would return one run five times.
+    trials: list[dict[str, Any]] = []
+    for index in range(repeats):
+        if index and spacing_s:
+            sleep(spacing_s)
+        result = runner.measure(spec, use_cache=False)
+        trials.append(result)
+        median = result.get("latency", {}).get("median_ms")
+        print(
+            f"  trial {index + 1}/{repeats}  "
+            + (f"{median:.4f} ms" if median else f"{result['status']}")
+        )
+    return summarize_sentinel(spec, trials)
+
+
 def _specs_for(
     model: str, configs: Iterable[str], threads: Iterable[int], warmup: int, iterations: int
 ) -> list[BenchSpec]:
@@ -423,6 +475,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--warmup", type=int, default=DEFAULT_WARMUP)
     parser.add_argument("--iterations", type=int, default=DEFAULT_ITERATIONS)
     parser.add_argument("--no-cache", action="store_true", help="Re-measure even if cached")
+    parser.add_argument(
+        "--repeat", type=int, default=1, help="Repeat one config N times as a drift sentinel"
+    )
+    parser.add_argument(
+        "--spacing-s", type=float, default=600.0, help="Seconds between sentinel trials"
+    )
+    parser.add_argument("--report", type=Path, help="Write the sentinel summary here")
     parser.add_argument("--target-file", type=Path, default=DEFAULT_TARGET_FILE)
     return parser.parse_args()
 
@@ -447,6 +506,26 @@ def main() -> None:
         return
 
     specs = _specs_for(args.model, args.configs, args.threads, args.warmup, args.iterations)
+
+    if args.repeat > 1:
+        if len(specs) != 1:
+            raise SystemExit("--repeat needs exactly one config and one thread count")
+        print(
+            f"Sentinel: {args.repeat} trials of {specs[0].quant.describe()} "
+            f"@ {specs[0].run.intra_op_num_threads}t, {args.spacing_s:.0f}s apart\n"
+        )
+        summary = run_sentinel(runner, specs[0], args.repeat, args.spacing_s)
+        print(
+            f"\n  spread {summary['spread_percent']}%  "
+            f"(min {summary['min_ms']} / max {summary['max_ms']} ms, "
+            f"{summary['admissible_trials']}/{summary['trials']} admissible)"
+        )
+        if args.report:
+            args.report.parent.mkdir(parents=True, exist_ok=True)
+            args.report.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+            print(f"  wrote {args.report}")
+        return
+
     print(f"{len(specs)} measurement(s) on {connection.target}\n")
     for spec in specs:
         label = f"{spec.quant.describe()} @ {spec.run.intra_op_num_threads}t"
