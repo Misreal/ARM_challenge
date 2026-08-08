@@ -1,0 +1,3468 @@
+{
+  "model": "mobilenetv2_cifar",
+  "eval_split": "optval",
+  "eval_limit": null,
+  "samples": 3000,
+  "split_fingerprint": "d692cdcdeddfac3b",
+  "on_target": true,
+  "host": {
+    "platform": "Linux-6.12.96+rpt-rpi-2712-aarch64-with-glibc2.36",
+    "machine": "aarch64"
+  },
+  "run_config": {
+    "intra_op_num_threads": 4,
+    "graph_optimization_level": "all"
+  },
+  "refined_group": null,
+  "group_sizes": {
+    "features.0": 2,
+    "features.1": 3,
+    "features.2": 5,
+    "features.3": 6,
+    "features.4": 5,
+    "features.5": 6,
+    "features.6": 6,
+    "features.7": 5,
+    "features.8": 6,
+    "features.9": 6,
+    "features.10": 6,
+    "features.11": 5,
+    "features.12": 6,
+    "features.13": 6,
+    "features.14": 5,
+    "features.15": 6,
+    "features.16": 6,
+    "features.17": 5,
+    "features.18": 2,
+    "_unscoped": 2,
+    "classifier.1": 1
+  },
+  "reference": {
+    "top1": 77.4,
+    "top5": 93.33333333333333
+  },
+  "anchors": {
+    "static_per_tensor": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [],
+        "reduce_range": false
+      },
+      "quant_hash": "06e1b9094831a2a6",
+      "seconds": 4.81,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.003970471676439047,
+        "logit_mse": 0.0032736059452666533,
+        "flip_rate": 3.0,
+        "top1": 77.3,
+        "top5": 93.26666666666667,
+        "top1_delta": -0.10000000000000853
+      },
+      "bytes": 2503586,
+      "qdq_nodes": 238
+    },
+    "static_per_channel": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [],
+        "reduce_range": false
+      },
+      "quant_hash": "6c2712900e73dc56",
+      "seconds": 5.02,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0022500434424728155,
+        "logit_mse": 0.0018525854558871207,
+        "flip_rate": 2.2333333333333334,
+        "top1": 77.4,
+        "top5": 93.43333333333334,
+        "top1_delta": 0.0
+      },
+      "bytes": 2728300,
+      "qdq_nodes": 238
+    }
+  },
+  "probes": {
+    "per_channel/leave_one_out/features.0": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.0"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "64e22c96d0668e06",
+      "seconds": 11.63,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0018555399728938937,
+        "logit_mse": 0.0016143067330676797,
+        "flip_rate": 2.0,
+        "top1": 77.16666666666666,
+        "top5": 93.30000000000001,
+        "top1_delta": -0.2333333333333485
+      },
+      "bytes": 2730008,
+      "qdq_nodes": 234
+    },
+    "per_channel/leave_one_out/features.1": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.1"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "b67f4372a7ad85f1",
+      "seconds": 11.73,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0021253323648124933,
+        "logit_mse": 0.0017931590651457199,
+        "flip_rate": 2.3666666666666667,
+        "top1": 77.33333333333333,
+        "top5": 93.53333333333333,
+        "top1_delta": -0.06666666666667709
+      },
+      "bytes": 2728489,
+      "qdq_nodes": 232
+    },
+    "per_channel/leave_one_out/features.2": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.2"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "e717b60d6d666951",
+      "seconds": 12.38,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.002151605673134327,
+        "logit_mse": 0.001810726400045741,
+        "flip_rate": 2.1333333333333333,
+        "top1": 77.16666666666666,
+        "top5": 93.30000000000001,
+        "top1_delta": -0.2333333333333485
+      },
+      "bytes": 2736833,
+      "qdq_nodes": 228
+    },
+    "per_channel/leave_one_out/features.3": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.3"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "a69e3c80ba0f5f67",
+      "seconds": 13.23,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.002146284794434905,
+        "logit_mse": 0.001812323877628665,
+        "flip_rate": 2.1333333333333333,
+        "top1": 77.26666666666667,
+        "top5": 93.4,
+        "top1_delta": -0.13333333333333997
+      },
+      "bytes": 2745279,
+      "qdq_nodes": 226
+    },
+    "per_channel/leave_one_out/features.4": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.4"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "238cd7d06f5e3450",
+      "seconds": 12.37,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.002140396973118186,
+        "logit_mse": 0.0018169307833922244,
+        "flip_rate": 2.5,
+        "top1": 77.36666666666666,
+        "top5": 93.2,
+        "top1_delta": -0.03333333333334565
+      },
+      "bytes": 2749438,
+      "qdq_nodes": 228
+    },
+    "per_channel/leave_one_out/features.5": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.5"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "5c8241f455351995",
+      "seconds": 11.91,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0021319922525435686,
+        "logit_mse": 0.001805121768922317,
+        "flip_rate": 2.433333333333333,
+        "top1": 77.36666666666666,
+        "top5": 93.4,
+        "top1_delta": -0.03333333333334565
+      },
+      "bytes": 2761351,
+      "qdq_nodes": 226
+    },
+    "per_channel/leave_one_out/features.6": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.6"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "cabe354ac7c19712",
+      "seconds": 11.94,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0021679410710930824,
+        "logit_mse": 0.001842248115937234,
+        "flip_rate": 2.466666666666667,
+        "top1": 77.3,
+        "top5": 93.36666666666666,
+        "top1_delta": -0.10000000000000853
+      },
+      "bytes": 2761352,
+      "qdq_nodes": 226
+    },
+    "per_channel/leave_one_out/features.7": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.7"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "fcc439ec4aee5ec1",
+      "seconds": 11.92,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0022054596338421106,
+        "logit_mse": 0.001840660186552405,
+        "flip_rate": 2.2333333333333334,
+        "top1": 77.3,
+        "top5": 93.36666666666666,
+        "top1_delta": -0.10000000000000853
+      },
+      "bytes": 2780176,
+      "qdq_nodes": 228
+    },
+    "per_channel/leave_one_out/features.8": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.8"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "826a7c2adeb163a1",
+      "seconds": 11.93,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.002133487956598401,
+        "logit_mse": 0.0018340956165872043,
+        "flip_rate": 1.9666666666666666,
+        "top1": 77.60000000000001,
+        "top5": 93.23333333333333,
+        "top1_delta": 0.20000000000000284
+      },
+      "bytes": 2871716,
+      "qdq_nodes": 226
+    },
+    "per_channel/leave_one_out/features.9": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "9534d056c1876fad",
+      "seconds": 11.88,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.002226445125415921,
+        "logit_mse": 0.0018550530804727638,
+        "flip_rate": 2.533333333333333,
+        "top1": 77.43333333333334,
+        "top5": 93.33333333333333,
+        "top1_delta": 0.03333333333333144
+      },
+      "bytes": 2871716,
+      "qdq_nodes": 226
+    },
+    "per_channel/leave_one_out/features.10": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.10"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "23ce1d6f3a3736ce",
+      "seconds": 11.95,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0021503537427634,
+        "logit_mse": 0.0018293444936923584,
+        "flip_rate": 2.1333333333333333,
+        "top1": 77.23333333333333,
+        "top5": 93.36666666666666,
+        "top1_delta": -0.1666666666666714
+      },
+      "bytes": 2871685,
+      "qdq_nodes": 226
+    },
+    "per_channel/leave_one_out/features.11": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.11"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "0cbd25fd4cc32ea5",
+      "seconds": 11.96,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.002161898883059621,
+        "logit_mse": 0.0018321707409136184,
+        "flip_rate": 2.1999999999999997,
+        "top1": 77.53333333333333,
+        "top5": 93.46666666666667,
+        "top1_delta": 0.13333333333332575
+      },
+      "bytes": 2908953,
+      "qdq_nodes": 228
+    },
+    "per_channel/leave_one_out/features.12": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.12"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "cd76a92b9f6932f6",
+      "seconds": 12.25,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0021850462071597576,
+        "logit_mse": 0.0018332875661661524,
+        "flip_rate": 2.2666666666666666,
+        "top1": 77.63333333333333,
+        "top5": 93.5,
+        "top1_delta": 0.23333333333332007
+      },
+      "bytes": 3055783,
+      "qdq_nodes": 226
+    },
+    "per_channel/leave_one_out/features.13": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.13"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "db3a38474b9e82bf",
+      "seconds": 12.16,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0022066060919314623,
+        "logit_mse": 0.0018313595022861598,
+        "flip_rate": 2.166666666666667,
+        "top1": 77.4,
+        "top5": 93.46666666666667,
+        "top1_delta": 0.0
+      },
+      "bytes": 3055782,
+      "qdq_nodes": 226
+    },
+    "per_channel/leave_one_out/features.14": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.14"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "f61b09f5c7e641b1",
+      "seconds": 11.98,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0021728852298110723,
+        "logit_mse": 0.0018011127608198963,
+        "flip_rate": 2.1,
+        "top1": 77.3,
+        "top5": 93.36666666666666,
+        "top1_delta": -0.10000000000000853
+      },
+      "bytes": 3166358,
+      "qdq_nodes": 228
+    },
+    "per_channel/leave_one_out/features.15": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.15"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "3300ef061a5fde20",
+      "seconds": 12.05,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0022024004720151424,
+        "logit_mse": 0.001804224973596603,
+        "flip_rate": 2.3,
+        "top1": 77.43333333333334,
+        "top5": 93.43333333333334,
+        "top1_delta": 0.03333333333333144
+      },
+      "bytes": 3645153,
+      "qdq_nodes": 226
+    },
+    "per_channel/leave_one_out/features.16": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.16"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "8469aa861b654f45",
+      "seconds": 12.06,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.002127805259078741,
+        "logit_mse": 0.0017733278488877438,
+        "flip_rate": 2.3333333333333335,
+        "top1": 77.60000000000001,
+        "top5": 93.36666666666666,
+        "top1_delta": 0.20000000000000284
+      },
+      "bytes": 3645154,
+      "qdq_nodes": 226
+    },
+    "per_channel/leave_one_out/features.17": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.17"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "3021c2fd648635a0",
+      "seconds": 12.25,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.002198045141994953,
+        "logit_mse": 0.0017959423119634176,
+        "flip_rate": 2.2333333333333334,
+        "top1": 77.46666666666667,
+        "top5": 93.46666666666667,
+        "top1_delta": 0.06666666666666288
+      },
+      "bytes": 4104694,
+      "qdq_nodes": 228
+    },
+    "per_channel/leave_one_out/features.18": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.18"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "76a3528abaa31083",
+      "seconds": 11.36,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0022455682046711445,
+        "logit_mse": 0.0018566481187252827,
+        "flip_rate": 2.2666666666666666,
+        "top1": 77.36666666666666,
+        "top5": 93.46666666666667,
+        "top1_delta": -0.03333333333334565
+      },
+      "bytes": 3940319,
+      "qdq_nodes": 236
+    },
+    "per_channel/leave_one_out/classifier.1": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "classifier.1"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "d8230904d7e2d227",
+      "seconds": 11.56,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.002169884042814374,
+        "logit_mse": 0.0015846366224499659,
+        "flip_rate": 2.166666666666667,
+        "top1": 77.36666666666666,
+        "top5": 93.43333333333334,
+        "top1_delta": -0.03333333333334565
+      },
+      "bytes": 3109602,
+      "qdq_nodes": 232
+    },
+    "per_channel/isolate/features.0": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.1",
+          "features.10",
+          "features.11",
+          "features.12",
+          "features.13",
+          "features.14",
+          "features.15",
+          "features.16",
+          "features.17",
+          "features.18",
+          "features.2",
+          "features.3",
+          "features.4",
+          "features.5",
+          "features.6",
+          "features.7",
+          "features.8",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "341f6de4ec2d4a50",
+      "seconds": 16.63,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.000447979400632903,
+        "logit_mse": 0.0002978269022345963,
+        "flip_rate": 1.2666666666666666,
+        "top1": 77.36666666666666,
+        "top5": 93.5,
+        "top1_delta": -0.03333333333334565
+      },
+      "bytes": 9384009,
+      "qdq_nodes": 6
+    },
+    "per_channel/isolate/features.1": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.0",
+          "features.10",
+          "features.11",
+          "features.12",
+          "features.13",
+          "features.14",
+          "features.15",
+          "features.16",
+          "features.17",
+          "features.18",
+          "features.2",
+          "features.3",
+          "features.4",
+          "features.5",
+          "features.6",
+          "features.7",
+          "features.8",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "3b00e9c42617947d",
+      "seconds": 16.69,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0003471077361609787,
+        "logit_mse": 0.0002488243045823279,
+        "flip_rate": 1.0,
+        "top1": 77.46666666666667,
+        "top5": 93.36666666666666,
+        "top1_delta": 0.06666666666666288
+      },
+      "bytes": 9386336,
+      "qdq_nodes": 10
+    },
+    "per_channel/isolate/features.2": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.0",
+          "features.1",
+          "features.10",
+          "features.11",
+          "features.12",
+          "features.13",
+          "features.14",
+          "features.15",
+          "features.16",
+          "features.17",
+          "features.18",
+          "features.3",
+          "features.4",
+          "features.5",
+          "features.6",
+          "features.7",
+          "features.8",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "98cdf5da9c2a3dd0",
+      "seconds": 16.75,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0002382189268246293,
+        "logit_mse": 0.00016965086011711862,
+        "flip_rate": 0.6333333333333333,
+        "top1": 77.66666666666666,
+        "top5": 93.43333333333334,
+        "top1_delta": 0.2666666666666515
+      },
+      "bytes": 9378004,
+      "qdq_nodes": 14
+    },
+    "per_channel/isolate/features.3": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.0",
+          "features.1",
+          "features.10",
+          "features.11",
+          "features.12",
+          "features.13",
+          "features.14",
+          "features.15",
+          "features.16",
+          "features.17",
+          "features.18",
+          "features.2",
+          "features.4",
+          "features.5",
+          "features.6",
+          "features.7",
+          "features.8",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "4e41a3540a2389c6",
+      "seconds": 16.37,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0001238581317011267,
+        "logit_mse": 8.526066655739909e-05,
+        "flip_rate": 0.4333333333333333,
+        "top1": 77.36666666666666,
+        "top5": 93.43333333333334,
+        "top1_delta": -0.03333333333334565
+      },
+      "bytes": 9369402,
+      "qdq_nodes": 16
+    },
+    "per_channel/isolate/features.4": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.0",
+          "features.1",
+          "features.10",
+          "features.11",
+          "features.12",
+          "features.13",
+          "features.14",
+          "features.15",
+          "features.16",
+          "features.17",
+          "features.18",
+          "features.2",
+          "features.3",
+          "features.5",
+          "features.6",
+          "features.7",
+          "features.8",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "200155549aa98434",
+      "seconds": 16.45,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0001367374206893146,
+        "logit_mse": 9.468771828349842e-05,
+        "flip_rate": 0.5,
+        "top1": 77.53333333333333,
+        "top5": 93.4,
+        "top1_delta": 0.13333333333332575
+      },
+      "bytes": 9365244,
+      "qdq_nodes": 14
+    },
+    "per_channel/isolate/features.5": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.0",
+          "features.1",
+          "features.10",
+          "features.11",
+          "features.12",
+          "features.13",
+          "features.14",
+          "features.15",
+          "features.16",
+          "features.17",
+          "features.18",
+          "features.2",
+          "features.3",
+          "features.4",
+          "features.6",
+          "features.7",
+          "features.8",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "8276884cbe02f237",
+      "seconds": 16.51,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.00011274036660324782,
+        "logit_mse": 8.27977490461551e-05,
+        "flip_rate": 0.4333333333333333,
+        "top1": 77.33333333333333,
+        "top5": 93.30000000000001,
+        "top1_delta": -0.06666666666667709
+      },
+      "bytes": 9353355,
+      "qdq_nodes": 16
+    },
+    "per_channel/isolate/features.6": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.0",
+          "features.1",
+          "features.10",
+          "features.11",
+          "features.12",
+          "features.13",
+          "features.14",
+          "features.15",
+          "features.16",
+          "features.17",
+          "features.18",
+          "features.2",
+          "features.3",
+          "features.4",
+          "features.5",
+          "features.7",
+          "features.8",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "16292cc30c7c79de",
+      "seconds": 16.62,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0001368032390018925,
+        "logit_mse": 9.558094496802485e-05,
+        "flip_rate": 0.7000000000000001,
+        "top1": 77.53333333333333,
+        "top5": 93.36666666666666,
+        "top1_delta": 0.13333333333332575
+      },
+      "bytes": 9353174,
+      "qdq_nodes": 16
+    },
+    "per_channel/isolate/features.7": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.0",
+          "features.1",
+          "features.10",
+          "features.11",
+          "features.12",
+          "features.13",
+          "features.14",
+          "features.15",
+          "features.16",
+          "features.17",
+          "features.18",
+          "features.2",
+          "features.3",
+          "features.4",
+          "features.5",
+          "features.6",
+          "features.8",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "815ebeb87137f297",
+      "seconds": 16.49,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.00014366136747412384,
+        "logit_mse": 0.00010019210940080508,
+        "flip_rate": 0.46666666666666673,
+        "top1": 77.36666666666666,
+        "top5": 93.46666666666667,
+        "top1_delta": -0.03333333333334565
+      },
+      "bytes": 9334507,
+      "qdq_nodes": 14
+    },
+    "per_channel/isolate/features.8": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.0",
+          "features.1",
+          "features.10",
+          "features.11",
+          "features.12",
+          "features.13",
+          "features.14",
+          "features.15",
+          "features.16",
+          "features.17",
+          "features.18",
+          "features.2",
+          "features.3",
+          "features.4",
+          "features.5",
+          "features.6",
+          "features.7",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "942979ab0b998b10",
+      "seconds": 16.61,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.00012010044883936644,
+        "logit_mse": 8.785557135972023e-05,
+        "flip_rate": 0.6333333333333333,
+        "top1": 77.66666666666666,
+        "top5": 93.36666666666666,
+        "top1_delta": 0.2666666666666515
+      },
+      "bytes": 9242990,
+      "qdq_nodes": 16
+    },
+    "per_channel/isolate/features.9": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.0",
+          "features.1",
+          "features.10",
+          "features.11",
+          "features.12",
+          "features.13",
+          "features.14",
+          "features.15",
+          "features.16",
+          "features.17",
+          "features.18",
+          "features.2",
+          "features.3",
+          "features.4",
+          "features.5",
+          "features.6",
+          "features.7",
+          "features.8"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "3e88b63ddf6e4032",
+      "seconds": 16.49,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.00011494027421576902,
+        "logit_mse": 8.369362888586878e-05,
+        "flip_rate": 0.6,
+        "top1": 77.66666666666666,
+        "top5": 93.4,
+        "top1_delta": 0.2666666666666515
+      },
+      "bytes": 9242833,
+      "qdq_nodes": 16
+    },
+    "per_channel/isolate/features.10": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.0",
+          "features.1",
+          "features.11",
+          "features.12",
+          "features.13",
+          "features.14",
+          "features.15",
+          "features.16",
+          "features.17",
+          "features.18",
+          "features.2",
+          "features.3",
+          "features.4",
+          "features.5",
+          "features.6",
+          "features.7",
+          "features.8",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "6a77482d6b3cd920",
+      "seconds": 16.51,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.00010709311754908413,
+        "logit_mse": 7.990238375175003e-05,
+        "flip_rate": 0.5,
+        "top1": 77.63333333333333,
+        "top5": 93.43333333333334,
+        "top1_delta": 0.23333333333332007
+      },
+      "bytes": 9242853,
+      "qdq_nodes": 16
+    },
+    "per_channel/isolate/features.11": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.0",
+          "features.1",
+          "features.10",
+          "features.12",
+          "features.13",
+          "features.14",
+          "features.15",
+          "features.16",
+          "features.17",
+          "features.18",
+          "features.2",
+          "features.3",
+          "features.4",
+          "features.5",
+          "features.6",
+          "features.7",
+          "features.8",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "7203fc194628f7e3",
+      "seconds": 16.46,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0001328364305663854,
+        "logit_mse": 9.737003742913805e-05,
+        "flip_rate": 0.5333333333333333,
+        "top1": 77.63333333333333,
+        "top5": 93.36666666666666,
+        "top1_delta": 0.23333333333332007
+      },
+      "bytes": 9205753,
+      "qdq_nodes": 14
+    },
+    "per_channel/isolate/features.12": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.0",
+          "features.1",
+          "features.10",
+          "features.11",
+          "features.13",
+          "features.14",
+          "features.15",
+          "features.16",
+          "features.17",
+          "features.18",
+          "features.2",
+          "features.3",
+          "features.4",
+          "features.5",
+          "features.6",
+          "features.7",
+          "features.8",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "83064796495ed508",
+      "seconds": 16.41,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.00011207862553419545,
+        "logit_mse": 8.522399657422927e-05,
+        "flip_rate": 0.4,
+        "top1": 77.53333333333333,
+        "top5": 93.36666666666666,
+        "top1_delta": 0.13333333333332575
+      },
+      "bytes": 9058946,
+      "qdq_nodes": 16
+    },
+    "per_channel/isolate/features.13": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.0",
+          "features.1",
+          "features.10",
+          "features.11",
+          "features.12",
+          "features.14",
+          "features.15",
+          "features.16",
+          "features.17",
+          "features.18",
+          "features.2",
+          "features.3",
+          "features.4",
+          "features.5",
+          "features.6",
+          "features.7",
+          "features.8",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "7fce748558913338",
+      "seconds": 16.38,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.00013056985335424542,
+        "logit_mse": 9.521152982892248e-05,
+        "flip_rate": 0.8333333333333334,
+        "top1": 77.66666666666666,
+        "top5": 93.33333333333333,
+        "top1_delta": 0.2666666666666515
+      },
+      "bytes": 9058767,
+      "qdq_nodes": 16
+    },
+    "per_channel/isolate/features.14": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.0",
+          "features.1",
+          "features.10",
+          "features.11",
+          "features.12",
+          "features.13",
+          "features.15",
+          "features.16",
+          "features.17",
+          "features.18",
+          "features.2",
+          "features.3",
+          "features.4",
+          "features.5",
+          "features.6",
+          "features.7",
+          "features.8",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "ea1994d452ab3f87",
+      "seconds": 16.34,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0001763602631399408,
+        "logit_mse": 0.00014492534331179228,
+        "flip_rate": 0.7333333333333333,
+        "top1": 77.53333333333333,
+        "top5": 93.4,
+        "top1_delta": 0.13333333333332575
+      },
+      "bytes": 8948347,
+      "qdq_nodes": 14
+    },
+    "per_channel/isolate/features.15": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.0",
+          "features.1",
+          "features.10",
+          "features.11",
+          "features.12",
+          "features.13",
+          "features.14",
+          "features.16",
+          "features.17",
+          "features.18",
+          "features.2",
+          "features.3",
+          "features.4",
+          "features.5",
+          "features.6",
+          "features.7",
+          "features.8",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "267f0229b4ba85b1",
+      "seconds": 16.32,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.00019034375145565718,
+        "logit_mse": 0.00016302371526189907,
+        "flip_rate": 0.5666666666666667,
+        "top1": 77.56666666666666,
+        "top5": 93.4,
+        "top1_delta": 0.1666666666666572
+      },
+      "bytes": 8469576,
+      "qdq_nodes": 16
+    },
+    "per_channel/isolate/features.16": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.0",
+          "features.1",
+          "features.10",
+          "features.11",
+          "features.12",
+          "features.13",
+          "features.14",
+          "features.15",
+          "features.17",
+          "features.18",
+          "features.2",
+          "features.3",
+          "features.4",
+          "features.5",
+          "features.6",
+          "features.7",
+          "features.8",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "154adfc03107a066",
+      "seconds": 16.32,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.00022772880038246512,
+        "logit_mse": 0.00020468629197859485,
+        "flip_rate": 0.6,
+        "top1": 77.53333333333333,
+        "top5": 93.4,
+        "top1_delta": 0.13333333333332575
+      },
+      "bytes": 8469395,
+      "qdq_nodes": 16
+    },
+    "per_channel/isolate/features.17": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.0",
+          "features.1",
+          "features.10",
+          "features.11",
+          "features.12",
+          "features.13",
+          "features.14",
+          "features.15",
+          "features.16",
+          "features.18",
+          "features.2",
+          "features.3",
+          "features.4",
+          "features.5",
+          "features.6",
+          "features.7",
+          "features.8",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "c836b5db8a1cee6f",
+      "seconds": 16.07,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.00013554329052567482,
+        "logit_mse": 0.00013332338119474742,
+        "flip_rate": 0.5,
+        "top1": 77.66666666666666,
+        "top5": 93.36666666666666,
+        "top1_delta": 0.2666666666666515
+      },
+      "bytes": 8009988,
+      "qdq_nodes": 14
+    },
+    "per_channel/isolate/features.18": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.0",
+          "features.1",
+          "features.10",
+          "features.11",
+          "features.12",
+          "features.13",
+          "features.14",
+          "features.15",
+          "features.16",
+          "features.17",
+          "features.2",
+          "features.3",
+          "features.4",
+          "features.5",
+          "features.6",
+          "features.7",
+          "features.8",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "b6fa4dad66526fcf",
+      "seconds": 16.29,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 4.650163646147121e-06,
+        "logit_mse": 7.150538858282041e-06,
+        "flip_rate": 0.1,
+        "top1": 77.43333333333334,
+        "top5": 93.33333333333333,
+        "top1_delta": 0.03333333333333144
+      },
+      "bytes": 8174544,
+      "qdq_nodes": 6
+    },
+    "per_channel/isolate/classifier.1": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "features.0",
+          "features.1",
+          "features.10",
+          "features.11",
+          "features.12",
+          "features.13",
+          "features.14",
+          "features.15",
+          "features.16",
+          "features.17",
+          "features.18",
+          "features.2",
+          "features.3",
+          "features.4",
+          "features.5",
+          "features.6",
+          "features.7",
+          "features.8",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "ab52ec51e0ba812b",
+      "seconds": 16.37,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 6.809447950217873e-05,
+        "logit_mse": 0.0002779105020804252,
+        "flip_rate": 0.5,
+        "top1": 77.5,
+        "top5": 93.36666666666666,
+        "top1_delta": 0.09999999999999432
+      },
+      "bytes": 9003449,
+      "qdq_nodes": 6
+    },
+    "per_tensor/leave_one_out/features.0": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.0"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "35d01f3744620357",
+      "seconds": 10.36,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0036954053211957216,
+        "logit_mse": 0.0030183690150987104,
+        "flip_rate": 2.6,
+        "top1": 77.7,
+        "top5": 93.36666666666666,
+        "top1_delta": 0.29999999999999716
+      },
+      "bytes": 2505738,
+      "qdq_nodes": 234
+    },
+    "per_tensor/leave_one_out/features.1": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.1"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "a4ec6ad10b2f3185",
+      "seconds": 10.69,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0036419664975255728,
+        "logit_mse": 0.0029482398229407234,
+        "flip_rate": 2.533333333333333,
+        "top1": 77.43333333333334,
+        "top5": 93.33333333333333,
+        "top1_delta": 0.03333333333333144
+      },
+      "bytes": 2504449,
+      "qdq_nodes": 232
+    },
+    "per_tensor/leave_one_out/features.2": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.2"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "94e4c7d0d407cd23",
+      "seconds": 11.14,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.004055873025208712,
+        "logit_mse": 0.003290345185767809,
+        "flip_rate": 2.433333333333333,
+        "top1": 77.03333333333333,
+        "top5": 93.2,
+        "top1_delta": -0.36666666666667425
+      },
+      "bytes": 2515009,
+      "qdq_nodes": 228
+    },
+    "per_tensor/leave_one_out/features.3": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.3"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "8df7421dae394c49",
+      "seconds": 11.98,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.003986198455095291,
+        "logit_mse": 0.0032504578308733324,
+        "flip_rate": 2.7333333333333334,
+        "top1": 77.26666666666667,
+        "top5": 93.26666666666667,
+        "top1_delta": -0.13333333333333997
+      },
+      "bytes": 2524713,
+      "qdq_nodes": 226
+    },
+    "per_tensor/leave_one_out/features.4": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.4"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "f33656d10e2cd781",
+      "seconds": 11.13,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0037952454295009375,
+        "logit_mse": 0.0031578645082220307,
+        "flip_rate": 2.7333333333333334,
+        "top1": 77.23333333333333,
+        "top5": 93.10000000000001,
+        "top1_delta": -0.1666666666666714
+      },
+      "bytes": 2528980,
+      "qdq_nodes": 228
+    },
+    "per_tensor/leave_one_out/features.5": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.5"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "f5a06608cb4bd321",
+      "seconds": 10.69,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.003950884100049734,
+        "logit_mse": 0.0032477595476035023,
+        "flip_rate": 2.7333333333333334,
+        "top1": 76.96666666666667,
+        "top5": 93.4,
+        "top1_delta": -0.4333333333333371
+      },
+      "bytes": 2542141,
+      "qdq_nodes": 226
+    },
+    "per_tensor/leave_one_out/features.6": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.6"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "594a4985e7beb3a4",
+      "seconds": 10.7,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.003972710110247135,
+        "logit_mse": 0.0032643229545538466,
+        "flip_rate": 2.7666666666666666,
+        "top1": 77.4,
+        "top5": 93.10000000000001,
+        "top1_delta": 0.0
+      },
+      "bytes": 2542142,
+      "qdq_nodes": 226
+    },
+    "per_tensor/leave_one_out/features.7": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.7"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "2f33073804910364",
+      "seconds": 10.63,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0038026878610253334,
+        "logit_mse": 0.00317508286383973,
+        "flip_rate": 2.466666666666667,
+        "top1": 77.23333333333333,
+        "top5": 93.10000000000001,
+        "top1_delta": -0.1666666666666714
+      },
+      "bytes": 2561382,
+      "qdq_nodes": 228
+    },
+    "per_tensor/leave_one_out/features.8": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.8"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "9cbe90fb2ca32f53",
+      "seconds": 10.78,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.003933700732886791,
+        "logit_mse": 0.0032434758555282025,
+        "flip_rate": 2.833333333333333,
+        "top1": 77.33333333333333,
+        "top5": 93.36666666666666,
+        "top1_delta": -0.06666666666667709
+      },
+      "bytes": 2657914,
+      "qdq_nodes": 226
+    },
+    "per_tensor/leave_one_out/features.9": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "1bcfda151a07d1e9",
+      "seconds": 10.71,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.004004840273410082,
+        "logit_mse": 0.0032793135692070685,
+        "flip_rate": 2.4,
+        "top1": 77.3,
+        "top5": 93.16666666666666,
+        "top1_delta": -0.10000000000000853
+      },
+      "bytes": 2657914,
+      "qdq_nodes": 226
+    },
+    "per_tensor/leave_one_out/features.10": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.10"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "8601d5488731e22f",
+      "seconds": 10.72,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.004006389528512955,
+        "logit_mse": 0.0032758926970674757,
+        "flip_rate": 2.533333333333333,
+        "top1": 77.3,
+        "top5": 93.23333333333333,
+        "top1_delta": -0.10000000000000853
+      },
+      "bytes": 2657883,
+      "qdq_nodes": 226
+    },
+    "per_tensor/leave_one_out/features.11": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.11"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "5161a9798581b27c",
+      "seconds": 10.78,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.003903196658939123,
+        "logit_mse": 0.003138487310006118,
+        "flip_rate": 2.7333333333333334,
+        "top1": 77.43333333333334,
+        "top5": 93.30000000000001,
+        "top1_delta": 0.03333333333333144
+      },
+      "bytes": 2695568,
+      "qdq_nodes": 228
+    },
+    "per_tensor/leave_one_out/features.12": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.12"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "9254b00c02167abc",
+      "seconds": 11.04,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.003948877099901438,
+        "logit_mse": 0.003254036827402033,
+        "flip_rate": 2.666666666666667,
+        "top1": 77.33333333333333,
+        "top5": 93.2,
+        "top1_delta": -0.06666666666667709
+      },
+      "bytes": 2847390,
+      "qdq_nodes": 226
+    },
+    "per_tensor/leave_one_out/features.13": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.13"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "de3778a575300e04",
+      "seconds": 11.04,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.003953567706048489,
+        "logit_mse": 0.003238706472120253,
+        "flip_rate": 2.7666666666666666,
+        "top1": 77.13333333333333,
+        "top5": 93.03333333333333,
+        "top1_delta": -0.26666666666667993
+      },
+      "bytes": 2847389,
+      "qdq_nodes": 226
+    },
+    "per_tensor/leave_one_out/features.14": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.14"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "dec0c1d9102f6571",
+      "seconds": 10.78,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0037689374294131994,
+        "logit_mse": 0.0030870717469195386,
+        "flip_rate": 2.833333333333333,
+        "top1": 77.26666666666667,
+        "top5": 93.30000000000001,
+        "top1_delta": -0.13333333333333997
+      },
+      "bytes": 2958802,
+      "qdq_nodes": 228
+    },
+    "per_tensor/leave_one_out/features.15": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.15"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "20c7c1b469c9090c",
+      "seconds": 10.89,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.003740151645615697,
+        "logit_mse": 0.003063094300740974,
+        "flip_rate": 2.933333333333333,
+        "top1": 77.3,
+        "top5": 93.13333333333334,
+        "top1_delta": -0.10000000000000853
+      },
+      "bytes": 3447581,
+      "qdq_nodes": 226
+    },
+    "per_tensor/leave_one_out/features.16": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.16"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "fe76480287c51b22",
+      "seconds": 10.95,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0037928828969597816,
+        "logit_mse": 0.0031086991124646616,
+        "flip_rate": 2.666666666666667,
+        "top1": 77.3,
+        "top5": 93.43333333333334,
+        "top1_delta": -0.10000000000000853
+      },
+      "bytes": 3447582,
+      "qdq_nodes": 226
+    },
+    "per_tensor/leave_one_out/features.17": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.17"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "a7d2089fa522750a",
+      "seconds": 11.14,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0036423178389668465,
+        "logit_mse": 0.003011185292340957,
+        "flip_rate": 2.7,
+        "top1": 77.26666666666667,
+        "top5": 93.43333333333334,
+        "top1_delta": -0.13333333333333997
+      },
+      "bytes": 3909202,
+      "qdq_nodes": 228
+    },
+    "per_tensor/leave_one_out/features.18": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "features.18"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "e4b78c73dba3c883",
+      "seconds": 10.19,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.00398128991946578,
+        "logit_mse": 0.0032745791771677363,
+        "flip_rate": 2.9000000000000004,
+        "top1": 77.23333333333333,
+        "top5": 93.30000000000001,
+        "top1_delta": -0.1666666666666714
+      },
+      "bytes": 3732279,
+      "qdq_nodes": 236
+    },
+    "per_tensor/leave_one_out/classifier.1": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "classifier.1"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "ce82a14f06a65004",
+      "seconds": 10.35,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.003916740883141756,
+        "logit_mse": 0.0029896080823860523,
+        "flip_rate": 3.0,
+        "top1": 77.10000000000001,
+        "top5": 93.33333333333333,
+        "top1_delta": -0.29999999999999716
+      },
+      "bytes": 2886217,
+      "qdq_nodes": 232
+    },
+    "per_tensor/isolate/features.0": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.1",
+          "features.10",
+          "features.11",
+          "features.12",
+          "features.13",
+          "features.14",
+          "features.15",
+          "features.16",
+          "features.17",
+          "features.18",
+          "features.2",
+          "features.3",
+          "features.4",
+          "features.5",
+          "features.6",
+          "features.7",
+          "features.8",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "154edff2cf23185b",
+      "seconds": 16.64,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0005777120823040605,
+        "logit_mse": 0.0003986040417148343,
+        "flip_rate": 1.2333333333333334,
+        "top1": 77.66666666666666,
+        "top5": 93.43333333333334,
+        "top1_delta": 0.2666666666666515
+      },
+      "bytes": 9383565,
+      "qdq_nodes": 6
+    },
+    "per_tensor/isolate/features.1": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.0",
+          "features.10",
+          "features.11",
+          "features.12",
+          "features.13",
+          "features.14",
+          "features.15",
+          "features.16",
+          "features.17",
+          "features.18",
+          "features.2",
+          "features.3",
+          "features.4",
+          "features.5",
+          "features.6",
+          "features.7",
+          "features.8",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "701248980fa3946a",
+      "seconds": 16.75,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0011556685203686357,
+        "logit_mse": 0.0007763440423350564,
+        "flip_rate": 1.5666666666666667,
+        "top1": 77.4,
+        "top5": 93.4,
+        "top1_delta": 0.0
+      },
+      "bytes": 9385662,
+      "qdq_nodes": 10
+    },
+    "per_tensor/isolate/features.2": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.0",
+          "features.1",
+          "features.10",
+          "features.11",
+          "features.12",
+          "features.13",
+          "features.14",
+          "features.15",
+          "features.16",
+          "features.17",
+          "features.18",
+          "features.3",
+          "features.4",
+          "features.5",
+          "features.6",
+          "features.7",
+          "features.8",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "fb6615a4d506244c",
+      "seconds": 16.89,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0003656690241768956,
+        "logit_mse": 0.00025008739757001453,
+        "flip_rate": 0.9333333333333335,
+        "top1": 77.46666666666667,
+        "top5": 93.26666666666667,
+        "top1_delta": 0.06666666666666288
+      },
+      "bytes": 9375114,
+      "qdq_nodes": 14
+    },
+    "per_tensor/isolate/features.3": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.0",
+          "features.1",
+          "features.10",
+          "features.11",
+          "features.12",
+          "features.13",
+          "features.14",
+          "features.15",
+          "features.16",
+          "features.17",
+          "features.18",
+          "features.2",
+          "features.4",
+          "features.5",
+          "features.6",
+          "features.7",
+          "features.8",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "14274594a05d7848",
+      "seconds": 16.29,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.00014391083095688373,
+        "logit_mse": 9.967085256432248e-05,
+        "flip_rate": 0.5666666666666667,
+        "top1": 77.43333333333334,
+        "top5": 93.46666666666667,
+        "top1_delta": 0.03333333333333144
+      },
+      "bytes": 9365254,
+      "qdq_nodes": 16
+    },
+    "per_tensor/isolate/features.4": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.0",
+          "features.1",
+          "features.10",
+          "features.11",
+          "features.12",
+          "features.13",
+          "features.14",
+          "features.15",
+          "features.16",
+          "features.17",
+          "features.18",
+          "features.2",
+          "features.3",
+          "features.5",
+          "features.6",
+          "features.7",
+          "features.8",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "da1e193b64a73063",
+      "seconds": 16.53,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.000245606352109462,
+        "logit_mse": 0.00017427508229204584,
+        "flip_rate": 0.8666666666666666,
+        "top1": 77.53333333333333,
+        "top5": 93.46666666666667,
+        "top1_delta": 0.13333333333332575
+      },
+      "bytes": 9360988,
+      "qdq_nodes": 14
+    },
+    "per_tensor/isolate/features.5": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.0",
+          "features.1",
+          "features.10",
+          "features.11",
+          "features.12",
+          "features.13",
+          "features.14",
+          "features.15",
+          "features.16",
+          "features.17",
+          "features.18",
+          "features.2",
+          "features.3",
+          "features.4",
+          "features.6",
+          "features.7",
+          "features.8",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "7810d7500a92ca14",
+      "seconds": 16.57,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.00014326236851047724,
+        "logit_mse": 0.00010375354559047176,
+        "flip_rate": 0.5333333333333333,
+        "top1": 77.56666666666666,
+        "top5": 93.33333333333333,
+        "top1_delta": 0.1666666666666572
+      },
+      "bytes": 9347851,
+      "qdq_nodes": 16
+    },
+    "per_tensor/isolate/features.6": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.0",
+          "features.1",
+          "features.10",
+          "features.11",
+          "features.12",
+          "features.13",
+          "features.14",
+          "features.15",
+          "features.16",
+          "features.17",
+          "features.18",
+          "features.2",
+          "features.3",
+          "features.4",
+          "features.5",
+          "features.7",
+          "features.8",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "28d721343d816a49",
+      "seconds": 16.54,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0001448614348191768,
+        "logit_mse": 0.00010174083603287459,
+        "flip_rate": 0.8,
+        "top1": 77.56666666666666,
+        "top5": 93.33333333333333,
+        "top1_delta": 0.1666666666666572
+      },
+      "bytes": 9347670,
+      "qdq_nodes": 16
+    },
+    "per_tensor/isolate/features.7": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.0",
+          "features.1",
+          "features.10",
+          "features.11",
+          "features.12",
+          "features.13",
+          "features.14",
+          "features.15",
+          "features.16",
+          "features.17",
+          "features.18",
+          "features.2",
+          "features.3",
+          "features.4",
+          "features.5",
+          "features.6",
+          "features.8",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "4470664343bc1d7a",
+      "seconds": 16.5,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0002327275724383071,
+        "logit_mse": 0.00016739157339253272,
+        "flip_rate": 0.6666666666666667,
+        "top1": 77.53333333333333,
+        "top5": 93.36666666666666,
+        "top1_delta": 0.13333333333332575
+      },
+      "bytes": 9328587,
+      "qdq_nodes": 14
+    },
+    "per_tensor/isolate/features.8": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.0",
+          "features.1",
+          "features.10",
+          "features.11",
+          "features.12",
+          "features.13",
+          "features.14",
+          "features.15",
+          "features.16",
+          "features.17",
+          "features.18",
+          "features.2",
+          "features.3",
+          "features.4",
+          "features.5",
+          "features.6",
+          "features.7",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "196c031c7c0a5045",
+      "seconds": 16.43,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0001239042467204854,
+        "logit_mse": 9.222288279124643e-05,
+        "flip_rate": 0.6333333333333333,
+        "top1": 77.60000000000001,
+        "top5": 93.36666666666666,
+        "top1_delta": 0.20000000000000284
+      },
+      "bytes": 9232078,
+      "qdq_nodes": 16
+    },
+    "per_tensor/isolate/features.9": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.0",
+          "features.1",
+          "features.10",
+          "features.11",
+          "features.12",
+          "features.13",
+          "features.14",
+          "features.15",
+          "features.16",
+          "features.17",
+          "features.18",
+          "features.2",
+          "features.3",
+          "features.4",
+          "features.5",
+          "features.6",
+          "features.7",
+          "features.8"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "7db3d1b265916455",
+      "seconds": 16.52,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.00011392687883926556,
+        "logit_mse": 8.595286314824878e-05,
+        "flip_rate": 0.5,
+        "top1": 77.56666666666666,
+        "top5": 93.4,
+        "top1_delta": 0.1666666666666572
+      },
+      "bytes": 9231921,
+      "qdq_nodes": 16
+    },
+    "per_tensor/isolate/features.10": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.0",
+          "features.1",
+          "features.11",
+          "features.12",
+          "features.13",
+          "features.14",
+          "features.15",
+          "features.16",
+          "features.17",
+          "features.18",
+          "features.2",
+          "features.3",
+          "features.4",
+          "features.5",
+          "features.6",
+          "features.7",
+          "features.8",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "c5ec9f0ae5b9e006",
+      "seconds": 16.45,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.00011394637112971395,
+        "logit_mse": 8.495089390495682e-05,
+        "flip_rate": 0.36666666666666664,
+        "top1": 77.63333333333333,
+        "top5": 93.43333333333334,
+        "top1_delta": 0.23333333333332007
+      },
+      "bytes": 9231941,
+      "qdq_nodes": 16
+    },
+    "per_tensor/isolate/features.11": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.0",
+          "features.1",
+          "features.10",
+          "features.12",
+          "features.13",
+          "features.14",
+          "features.15",
+          "features.16",
+          "features.17",
+          "features.18",
+          "features.2",
+          "features.3",
+          "features.4",
+          "features.5",
+          "features.6",
+          "features.7",
+          "features.8",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "4f2331ac4b4f7c2d",
+      "seconds": 16.47,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.00029894005274400115,
+        "logit_mse": 0.00021296183873267295,
+        "flip_rate": 0.8666666666666666,
+        "top1": 77.46666666666667,
+        "top5": 93.53333333333333,
+        "top1_delta": 0.06666666666666288
+      },
+      "bytes": 9194424,
+      "qdq_nodes": 14
+    },
+    "per_tensor/isolate/features.12": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.0",
+          "features.1",
+          "features.10",
+          "features.11",
+          "features.13",
+          "features.14",
+          "features.15",
+          "features.16",
+          "features.17",
+          "features.18",
+          "features.2",
+          "features.3",
+          "features.4",
+          "features.5",
+          "features.6",
+          "features.7",
+          "features.8",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "1ab260849da8eacc",
+      "seconds": 16.3,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.00012954762496519834,
+        "logit_mse": 9.45296479649779e-05,
+        "flip_rate": 0.6,
+        "top1": 77.5,
+        "top5": 93.36666666666666,
+        "top1_delta": 0.09999999999999432
+      },
+      "bytes": 9042625,
+      "qdq_nodes": 16
+    },
+    "per_tensor/isolate/features.13": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.0",
+          "features.1",
+          "features.10",
+          "features.11",
+          "features.12",
+          "features.14",
+          "features.15",
+          "features.16",
+          "features.17",
+          "features.18",
+          "features.2",
+          "features.3",
+          "features.4",
+          "features.5",
+          "features.6",
+          "features.7",
+          "features.8",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "9cab21336de5f1a8",
+      "seconds": 16.32,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0001681599678704515,
+        "logit_mse": 0.00012023378839068712,
+        "flip_rate": 0.7333333333333333,
+        "top1": 77.46666666666667,
+        "top5": 93.26666666666667,
+        "top1_delta": 0.06666666666666288
+      },
+      "bytes": 9042446,
+      "qdq_nodes": 16
+    },
+    "per_tensor/isolate/features.14": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.0",
+          "features.1",
+          "features.10",
+          "features.11",
+          "features.12",
+          "features.13",
+          "features.15",
+          "features.16",
+          "features.17",
+          "features.18",
+          "features.2",
+          "features.3",
+          "features.4",
+          "features.5",
+          "features.6",
+          "features.7",
+          "features.8",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "f95b8e36555fad71",
+      "seconds": 16.29,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0004006614035461098,
+        "logit_mse": 0.0003156836487982744,
+        "flip_rate": 0.7000000000000001,
+        "top1": 77.5,
+        "top5": 93.33333333333333,
+        "top1_delta": 0.09999999999999432
+      },
+      "bytes": 8931189,
+      "qdq_nodes": 14
+    },
+    "per_tensor/isolate/features.15": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.0",
+          "features.1",
+          "features.10",
+          "features.11",
+          "features.12",
+          "features.13",
+          "features.14",
+          "features.16",
+          "features.17",
+          "features.18",
+          "features.2",
+          "features.3",
+          "features.4",
+          "features.5",
+          "features.6",
+          "features.7",
+          "features.8",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "52a5a4a877252e23",
+      "seconds": 16.28,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.00035392935387790203,
+        "logit_mse": 0.0003011014877848946,
+        "flip_rate": 1.2333333333333334,
+        "top1": 77.56666666666666,
+        "top5": 93.33333333333333,
+        "top1_delta": 0.1666666666666572
+      },
+      "bytes": 8442434,
+      "qdq_nodes": 16
+    },
+    "per_tensor/isolate/features.16": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.0",
+          "features.1",
+          "features.10",
+          "features.11",
+          "features.12",
+          "features.13",
+          "features.14",
+          "features.15",
+          "features.17",
+          "features.18",
+          "features.2",
+          "features.3",
+          "features.4",
+          "features.5",
+          "features.6",
+          "features.7",
+          "features.8",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "9d63ca585338f018",
+      "seconds": 16.24,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0002974487142637372,
+        "logit_mse": 0.0002730125932792101,
+        "flip_rate": 0.7666666666666666,
+        "top1": 77.43333333333334,
+        "top5": 93.43333333333334,
+        "top1_delta": 0.03333333333333144
+      },
+      "bytes": 8442253,
+      "qdq_nodes": 16
+    },
+    "per_tensor/isolate/features.17": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.0",
+          "features.1",
+          "features.10",
+          "features.11",
+          "features.12",
+          "features.13",
+          "features.14",
+          "features.15",
+          "features.16",
+          "features.18",
+          "features.2",
+          "features.3",
+          "features.4",
+          "features.5",
+          "features.6",
+          "features.7",
+          "features.8",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "a433fd75299d30df",
+      "seconds": 15.95,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0003441080334596336,
+        "logit_mse": 0.00034382799038372533,
+        "flip_rate": 0.8333333333333334,
+        "top1": 77.46666666666667,
+        "top5": 93.33333333333333,
+        "top1_delta": 0.06666666666666288
+      },
+      "bytes": 7980766,
+      "qdq_nodes": 14
+    },
+    "per_tensor/isolate/features.18": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier.1",
+          "features.0",
+          "features.1",
+          "features.10",
+          "features.11",
+          "features.12",
+          "features.13",
+          "features.14",
+          "features.15",
+          "features.16",
+          "features.17",
+          "features.2",
+          "features.3",
+          "features.4",
+          "features.5",
+          "features.6",
+          "features.7",
+          "features.8",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "a3ee1154d598d83d",
+      "seconds": 16.3,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 6.3291981859947555e-06,
+        "logit_mse": 1.1468534438070988e-05,
+        "flip_rate": 0.06666666666666667,
+        "top1": 77.4,
+        "top5": 93.33333333333333,
+        "top1_delta": 0.0
+      },
+      "bytes": 8157870,
+      "qdq_nodes": 6
+    },
+    "per_tensor/isolate/classifier.1": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "features.0",
+          "features.1",
+          "features.10",
+          "features.11",
+          "features.12",
+          "features.13",
+          "features.14",
+          "features.15",
+          "features.16",
+          "features.17",
+          "features.18",
+          "features.2",
+          "features.3",
+          "features.4",
+          "features.5",
+          "features.6",
+          "features.7",
+          "features.8",
+          "features.9"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "e51536e905090d82",
+      "seconds": 16.44,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 7.253509102156386e-05,
+        "logit_mse": 0.0002995343848774294,
+        "flip_rate": 0.46666666666666673,
+        "top1": 77.53333333333333,
+        "top5": 93.36666666666666,
+        "top1_delta": 0.13333333333332575
+      },
+      "bytes": 9002120,
+      "qdq_nodes": 6
+    }
+  },
+  "onnxruntime": "1.27.0",
+  "created_at_utc": "2026-08-08T10:23:39.724281+00:00",
+  "ranking": {
+    "per_channel": [
+      {
+        "group": "features.0",
+        "recovery_kl": 0.0003945034695789218,
+        "recovery_share": 0.17533149010907956,
+        "isolate_kl": 0.000447979400632903,
+        "leave_one_out_kl": 0.0018555399728938937,
+        "recovery_top1": -0.2333333333333485,
+        "isolate_flip_rate": 1.2666666666666666
+      },
+      {
+        "group": "features.1",
+        "recovery_kl": 0.0001247110776603222,
+        "recovery_share": 0.05542607547313119,
+        "isolate_kl": 0.0003471077361609787,
+        "leave_one_out_kl": 0.0021253323648124933,
+        "recovery_top1": -0.06666666666667709,
+        "isolate_flip_rate": 1.0
+      },
+      {
+        "group": "features.16",
+        "recovery_kl": 0.00012223818339407444,
+        "recovery_share": 0.05432703257486163,
+        "isolate_kl": 0.00022772880038246512,
+        "leave_one_out_kl": 0.002127805259078741,
+        "recovery_top1": 0.20000000000000284,
+        "isolate_flip_rate": 0.6
+      },
+      {
+        "group": "features.5",
+        "recovery_kl": 0.0001180511899292469,
+        "recovery_share": 0.0524661825193507,
+        "isolate_kl": 0.00011274036660324782,
+        "leave_one_out_kl": 0.0021319922525435686,
+        "recovery_top1": -0.03333333333334565,
+        "isolate_flip_rate": 0.4333333333333333
+      },
+      {
+        "group": "features.8",
+        "recovery_kl": 0.00011655548587441444,
+        "recovery_share": 0.05180143799637888,
+        "isolate_kl": 0.00012010044883936644,
+        "leave_one_out_kl": 0.002133487956598401,
+        "recovery_top1": 0.20000000000000284,
+        "isolate_flip_rate": 0.6333333333333333
+      },
+      {
+        "group": "features.4",
+        "recovery_kl": 0.00010964646935462952,
+        "recovery_share": 0.048730823274295176,
+        "isolate_kl": 0.0001367374206893146,
+        "leave_one_out_kl": 0.002140396973118186,
+        "recovery_top1": -0.03333333333334565,
+        "isolate_flip_rate": 0.5
+      },
+      {
+        "group": "features.3",
+        "recovery_kl": 0.00010375864803791046,
+        "recovery_share": 0.04611406432396652,
+        "isolate_kl": 0.0001238581317011267,
+        "leave_one_out_kl": 0.002146284794434905,
+        "recovery_top1": -0.13333333333333997,
+        "isolate_flip_rate": 0.4333333333333333
+      },
+      {
+        "group": "features.10",
+        "recovery_kl": 9.968969970941544e-05,
+        "recovery_share": 0.044305677760539446,
+        "isolate_kl": 0.00010709311754908413,
+        "leave_one_out_kl": 0.0021503537427634,
+        "recovery_top1": -0.1666666666666714,
+        "isolate_flip_rate": 0.5
+      },
+      {
+        "group": "features.2",
+        "recovery_kl": 9.843776933848858e-05,
+        "recovery_share": 0.04374927500524376,
+        "isolate_kl": 0.0002382189268246293,
+        "leave_one_out_kl": 0.002151605673134327,
+        "recovery_top1": -0.2333333333333485,
+        "isolate_flip_rate": 0.6333333333333333
+      },
+      {
+        "group": "features.11",
+        "recovery_kl": 8.814455941319466e-05,
+        "recovery_share": 0.039174603365134626,
+        "isolate_kl": 0.0001328364305663854,
+        "leave_one_out_kl": 0.002161898883059621,
+        "recovery_top1": 0.13333333333332575,
+        "isolate_flip_rate": 0.5333333333333333
+      },
+      {
+        "group": "features.6",
+        "recovery_kl": 8.210237137973309e-05,
+        "recovery_share": 0.03648923830977322,
+        "isolate_kl": 0.0001368032390018925,
+        "leave_one_out_kl": 0.0021679410710930824,
+        "recovery_top1": -0.10000000000000853,
+        "isolate_flip_rate": 0.7000000000000001
+      },
+      {
+        "group": "classifier.1",
+        "recovery_kl": 8.015939965844154e-05,
+        "recovery_share": 0.035625711995296294,
+        "isolate_kl": 6.809447950217873e-05,
+        "leave_one_out_kl": 0.002169884042814374,
+        "recovery_top1": -0.03333333333334565,
+        "isolate_flip_rate": 0.5
+      },
+      {
+        "group": "features.14",
+        "recovery_kl": 7.715821266174316e-05,
+        "recovery_share": 0.034291876861251035,
+        "isolate_kl": 0.0001763602631399408,
+        "leave_one_out_kl": 0.0021728852298110723,
+        "recovery_top1": -0.10000000000000853,
+        "isolate_flip_rate": 0.7333333333333333
+      },
+      {
+        "group": "features.12",
+        "recovery_kl": 6.49972353130579e-05,
+        "recovery_share": 0.028887102393732197,
+        "isolate_kl": 0.00011207862553419545,
+        "leave_one_out_kl": 0.0021850462071597576,
+        "recovery_top1": 0.23333333333332007,
+        "isolate_flip_rate": 0.4
+      },
+      {
+        "group": "features.17",
+        "recovery_kl": 5.199830047786236e-05,
+        "recovery_share": 0.02310990956721965,
+        "isolate_kl": 0.00013554329052567482,
+        "leave_one_out_kl": 0.002198045141994953,
+        "recovery_top1": 0.06666666666666288,
+        "isolate_flip_rate": 0.5
+      },
+      {
+        "group": "features.15",
+        "recovery_kl": 4.764297045767307e-05,
+        "recovery_share": 0.021174244709387953,
+        "isolate_kl": 0.00019034375145565718,
+        "leave_one_out_kl": 0.0022024004720151424,
+        "recovery_top1": 0.03333333333333144,
+        "isolate_flip_rate": 0.5666666666666667
+      },
+      {
+        "group": "features.7",
+        "recovery_kl": 4.458380863070488e-05,
+        "recovery_share": 0.01981464348159737,
+        "isolate_kl": 0.00014366136747412384,
+        "leave_one_out_kl": 0.0022054596338421106,
+        "recovery_top1": -0.10000000000000853,
+        "isolate_flip_rate": 0.46666666666666673
+      },
+      {
+        "group": "features.13",
+        "recovery_kl": 4.3437350541353226e-05,
+        "recovery_share": 0.01930511639082632,
+        "isolate_kl": 0.00013056985335424542,
+        "leave_one_out_kl": 0.0022066060919314623,
+        "recovery_top1": 0.0,
+        "isolate_flip_rate": 0.8333333333333334
+      },
+      {
+        "group": "features.9",
+        "recovery_kl": 2.3598317056894302e-05,
+        "recovery_share": 0.010487938415517687,
+        "isolate_kl": 0.00011494027421576902,
+        "leave_one_out_kl": 0.002226445125415921,
+        "recovery_top1": 0.03333333333333144,
+        "isolate_flip_rate": 0.6
+      },
+      {
+        "group": "features.18",
+        "recovery_kl": 4.475237801671028e-06,
+        "recovery_share": 0.001988956176220627,
+        "isolate_kl": 4.650163646147121e-06,
+        "leave_one_out_kl": 0.0022455682046711445,
+        "recovery_top1": -0.03333333333334565,
+        "isolate_flip_rate": 0.1
+      }
+    ],
+    "per_tensor": [
+      {
+        "group": "features.1",
+        "recovery_kl": 0.0003285051789134741,
+        "recovery_share": 0.08273706644549014,
+        "isolate_kl": 0.0011556685203686357,
+        "leave_one_out_kl": 0.0036419664975255728,
+        "recovery_top1": 0.13333333333333997,
+        "isolate_flip_rate": 1.5666666666666667
+      },
+      {
+        "group": "features.17",
+        "recovery_kl": 0.0003281538374722004,
+        "recovery_share": 0.08264857785524064,
+        "isolate_kl": 0.0003441080334596336,
+        "leave_one_out_kl": 0.0036423178389668465,
+        "recovery_top1": -0.03333333333333144,
+        "isolate_flip_rate": 0.8333333333333334
+      },
+      {
+        "group": "features.0",
+        "recovery_kl": 0.00027506635524332523,
+        "recovery_share": 0.06927800464503527,
+        "isolate_kl": 0.0005777120823040605,
+        "leave_one_out_kl": 0.0036954053211957216,
+        "recovery_top1": 0.4000000000000057,
+        "isolate_flip_rate": 1.2333333333333334
+      },
+      {
+        "group": "features.15",
+        "recovery_kl": 0.00023032003082334995,
+        "recovery_share": 0.058008229145690454,
+        "isolate_kl": 0.00035392935387790203,
+        "leave_one_out_kl": 0.003740151645615697,
+        "recovery_top1": 0.0,
+        "isolate_flip_rate": 1.2333333333333334
+      },
+      {
+        "group": "features.14",
+        "recovery_kl": 0.00020153424702584743,
+        "recovery_share": 0.0507582633624515,
+        "isolate_kl": 0.0004006614035461098,
+        "leave_one_out_kl": 0.0037689374294131994,
+        "recovery_top1": -0.03333333333333144,
+        "isolate_flip_rate": 0.7000000000000001
+      },
+      {
+        "group": "features.16",
+        "recovery_kl": 0.0001775887794792652,
+        "recovery_share": 0.04472737597728875,
+        "isolate_kl": 0.0002974487142637372,
+        "leave_one_out_kl": 0.0037928828969597816,
+        "recovery_top1": 0.0,
+        "isolate_flip_rate": 0.7666666666666666
+      },
+      {
+        "group": "features.4",
+        "recovery_kl": 0.0001752262469381094,
+        "recovery_share": 0.044132350314424765,
+        "isolate_kl": 0.000245606352109462,
+        "leave_one_out_kl": 0.0037952454295009375,
+        "recovery_top1": -0.06666666666666288,
+        "isolate_flip_rate": 0.8666666666666666
+      },
+      {
+        "group": "features.7",
+        "recovery_kl": 0.00016778381541371346,
+        "recovery_share": 0.04225790512733033,
+        "isolate_kl": 0.0002327275724383071,
+        "leave_one_out_kl": 0.0038026878610253334,
+        "recovery_top1": -0.06666666666666288,
+        "isolate_flip_rate": 0.6666666666666667
+      },
+      {
+        "group": "features.11",
+        "recovery_kl": 6.72750174999237e-05,
+        "recovery_share": 0.0169438351365498,
+        "isolate_kl": 0.00029894005274400115,
+        "leave_one_out_kl": 0.003903196658939123,
+        "recovery_top1": 0.13333333333333997,
+        "isolate_flip_rate": 0.8666666666666666
+      },
+      {
+        "group": "classifier.1",
+        "recovery_kl": 5.37307932972908e-05,
+        "recovery_share": 0.01353259705040378,
+        "isolate_kl": 7.253509102156386e-05,
+        "leave_one_out_kl": 0.003916740883141756,
+        "recovery_top1": -0.19999999999998863,
+        "isolate_flip_rate": 0.46666666666666673
+      },
+      {
+        "group": "features.8",
+        "recovery_kl": 3.677094355225563e-05,
+        "recovery_share": 0.009261102092846052,
+        "isolate_kl": 0.0001239042467204854,
+        "leave_one_out_kl": 0.003933700732886791,
+        "recovery_top1": 0.03333333333333144,
+        "isolate_flip_rate": 0.6333333333333333
+      },
+      {
+        "group": "features.12",
+        "recovery_kl": 2.15945765376091e-05,
+        "recovery_share": 0.0054387937498086856,
+        "isolate_kl": 0.00012954762496519834,
+        "leave_one_out_kl": 0.003948877099901438,
+        "recovery_top1": 0.03333333333333144,
+        "isolate_flip_rate": 0.6
+      },
+      {
+        "group": "features.5",
+        "recovery_kl": 1.9587576389312744e-05,
+        "recovery_share": 0.004933312207097782,
+        "isolate_kl": 0.00014326236851047724,
+        "leave_one_out_kl": 0.003950884100049734,
+        "recovery_top1": -0.3333333333333286,
+        "isolate_flip_rate": 0.5333333333333333
+      },
+      {
+        "group": "features.13",
+        "recovery_kl": 1.6903970390558243e-05,
+        "recovery_share": 0.004257421225510094,
+        "isolate_kl": 0.0001681599678704515,
+        "leave_one_out_kl": 0.003953567706048489,
+        "recovery_top1": -0.1666666666666714,
+        "isolate_flip_rate": 0.7333333333333333
+      },
+      {
+        "group": "features.6",
+        "recovery_kl": -2.2384338080883026e-06,
+        "recovery_share": -0.0005637702496081932,
+        "isolate_kl": 0.0001448614348191768,
+        "leave_one_out_kl": 0.003972710110247135,
+        "recovery_top1": 0.10000000000000853,
+        "isolate_flip_rate": 0.8
+      },
+      {
+        "group": "features.18",
+        "recovery_kl": -1.0818243026733398e-05,
+        "recovery_share": -0.002724674524422206,
+        "isolate_kl": 6.3291981859947555e-06,
+        "leave_one_out_kl": 0.00398128991946578,
+        "recovery_top1": -0.06666666666666288,
+        "isolate_flip_rate": 0.06666666666666667
+      },
+      {
+        "group": "features.3",
+        "recovery_kl": -1.5726778656244278e-05,
+        "recovery_share": -0.003960934603706575,
+        "isolate_kl": 0.00014391083095688373,
+        "leave_one_out_kl": 0.003986198455095291,
+        "recovery_top1": -0.03333333333333144,
+        "isolate_flip_rate": 0.5666666666666667
+      },
+      {
+        "group": "features.9",
+        "recovery_kl": -3.4368596971035004e-05,
+        "recovery_share": -0.00865604889589813,
+        "isolate_kl": 0.00011392687883926556,
+        "leave_one_out_kl": 0.004004840273410082,
+        "recovery_top1": 0.0,
+        "isolate_flip_rate": 0.5
+      },
+      {
+        "group": "features.10",
+        "recovery_kl": -3.591785207390785e-05,
+        "recovery_share": -0.009046243116918819,
+        "isolate_kl": 0.00011394637112971395,
+        "leave_one_out_kl": 0.004006389528512955,
+        "recovery_top1": 0.0,
+        "isolate_flip_rate": 0.36666666666666664
+      },
+      {
+        "group": "features.2",
+        "recovery_kl": -8.540134876966476e-05,
+        "recovery_share": -0.021509119250601914,
+        "isolate_kl": 0.0003656690241768956,
+        "leave_one_out_kl": 0.004055873025208712,
+        "recovery_top1": -0.2666666666666657,
+        "isolate_flip_rate": 0.9333333333333335
+      }
+    ]
+  }
+}

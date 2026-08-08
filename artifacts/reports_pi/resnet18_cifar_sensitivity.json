@@ -1,0 +1,1248 @@
+{
+  "model": "resnet18_cifar",
+  "eval_split": "optval",
+  "eval_limit": null,
+  "samples": 3000,
+  "split_fingerprint": "d692cdcdeddfac3b",
+  "on_target": true,
+  "host": {
+    "platform": "Linux-6.12.96+rpt-rpi-2712-aarch64-with-glibc2.36",
+    "machine": "aarch64"
+  },
+  "run_config": {
+    "intra_op_num_threads": 4,
+    "graph_optimization_level": "all"
+  },
+  "refined_group": null,
+  "group_sizes": {
+    "conv1": 1,
+    "relu": 1,
+    "layer1": 10,
+    "layer2": 11,
+    "layer3": 11,
+    "layer4": 11,
+    "avgpool": 1,
+    "_unscoped": 1,
+    "fc": 1
+  },
+  "reference": {
+    "top1": 78.5,
+    "top5": 93.23333333333333
+  },
+  "anchors": {
+    "static_per_tensor": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [],
+        "reduce_range": false
+      },
+      "quant_hash": "06e1b9094831a2a6",
+      "seconds": 10.26,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.00420597055926919,
+        "logit_mse": 0.00242125450130094,
+        "flip_rate": 2.3666666666666667,
+        "top1": 78.13333333333333,
+        "top5": 93.10000000000001,
+        "top1_delta": -0.36666666666667425
+      },
+      "bytes": 11273804,
+      "qdq_nodes": 106
+    },
+    "static_per_channel": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [],
+        "reduce_range": false
+      },
+      "quant_hash": "6c2712900e73dc56",
+      "seconds": 10.34,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0022234157659113407,
+        "logit_mse": 0.001346297721484617,
+        "flip_rate": 1.5333333333333332,
+        "top1": 78.4,
+        "top5": 93.23333333333333,
+        "top1_delta": -0.09999999999999432
+      },
+      "bytes": 11338184,
+      "qdq_nodes": 106
+    }
+  },
+  "probes": {
+    "per_channel/leave_one_out/conv1": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "conv1"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "846d58cd52bc8226",
+      "seconds": 21.4,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0017713505076244473,
+        "logit_mse": 0.0011822828291809082,
+        "flip_rate": 1.633333333333333,
+        "top1": 78.46666666666667,
+        "top5": 93.16666666666666,
+        "top1_delta": -0.03333333333333144
+      },
+      "bytes": 11341713,
+      "qdq_nodes": 102
+    },
+    "per_channel/leave_one_out/relu": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "relu"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "02fb495089dc89ca",
+      "seconds": 21.35,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0026803207583725452,
+        "logit_mse": 0.0016119073687257525,
+        "flip_rate": 1.9666666666666666,
+        "top1": 78.46666666666667,
+        "top5": 93.30000000000001,
+        "top1_delta": -0.03333333333333144
+      },
+      "bytes": 11338744,
+      "qdq_nodes": 108
+    },
+    "per_channel/leave_one_out/layer1": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "layer1"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "0670e91eb4510407",
+      "seconds": 28.17,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0012603744398802519,
+        "logit_mse": 0.0009090404413698474,
+        "flip_rate": 1.3,
+        "top1": 78.53333333333333,
+        "top5": 93.43333333333334,
+        "top1_delta": 0.03333333333333144
+      },
+      "bytes": 11771954,
+      "qdq_nodes": 88
+    },
+    "per_channel/leave_one_out/layer2": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "layer2"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "a9f97d5dbefa1116",
+      "seconds": 26.64,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0020136572420597076,
+        "logit_mse": 0.0012745090716691349,
+        "flip_rate": 1.7000000000000002,
+        "top1": 78.26666666666667,
+        "top5": 93.2,
+        "top1_delta": -0.23333333333333428
+      },
+      "bytes": 12895968,
+      "qdq_nodes": 84
+    },
+    "per_channel/leave_one_out/layer3": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "layer3"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "d52e8169c6953723",
+      "seconds": 29.49,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.002034656470641494,
+        "logit_mse": 0.0012357785555613626,
+        "flip_rate": 1.7333333333333332,
+        "top1": 78.43333333333334,
+        "top5": 93.2,
+        "top1_delta": -0.06666666666666288
+      },
+      "bytes": 17606244,
+      "qdq_nodes": 84
+    },
+    "per_channel/leave_one_out/layer4": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "layer4"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "f42136c06897a296",
+      "seconds": 39.86,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.002131139859557152,
+        "logit_mse": 0.0012023722664847663,
+        "flip_rate": 1.7000000000000002,
+        "top1": 78.33333333333333,
+        "top5": 93.13333333333334,
+        "top1_delta": -0.1666666666666714
+      },
+      "bytes": 36463967,
+      "qdq_nodes": 84
+    },
+    "per_channel/leave_one_out/avgpool": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "avgpool"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "dbde16e4e03a5f9f",
+      "seconds": 21.15,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0022234157659113407,
+        "logit_mse": 0.001346297721484617,
+        "flip_rate": 1.5333333333333332,
+        "top1": 78.4,
+        "top5": 93.23333333333333,
+        "top1_delta": -0.09999999999999432
+      },
+      "bytes": 11337508,
+      "qdq_nodes": 104
+    },
+    "per_channel/leave_one_out/fc": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "fc"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "e45488c8c4305b59",
+      "seconds": 20.91,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.002160369185730815,
+        "logit_mse": 0.0011400095055503932,
+        "flip_rate": 1.633333333333333,
+        "top1": 78.33333333333333,
+        "top5": 93.26666666666667,
+        "top1_delta": -0.1666666666666714
+      },
+      "bytes": 11489225,
+      "qdq_nodes": 100
+    },
+    "per_channel/isolate/conv1": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "avgpool",
+          "fc",
+          "layer1",
+          "layer2",
+          "layer3",
+          "layer4",
+          "relu"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "1cb5ce6e778ab4b5",
+      "seconds": 58.97,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0006967450608499348,
+        "logit_mse": 0.0003406147843808998,
+        "flip_rate": 0.8666666666666666,
+        "top1": 78.8,
+        "top5": 93.26666666666667,
+        "top1_delta": 0.29999999999999716
+      },
+      "bytes": 44871124,
+      "qdq_nodes": 6
+    },
+    "per_channel/isolate/relu": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "avgpool",
+          "conv1",
+          "fc",
+          "layer1",
+          "layer2",
+          "layer3",
+          "layer4"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "4b6f7dc42a994c7d",
+      "seconds": 58.42,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": -6.270102215211182e-10,
+        "logit_mse": 2.5803259776073216e-14,
+        "flip_rate": 0.0,
+        "top1": 78.5,
+        "top5": 93.23333333333333,
+        "top1_delta": 0.0
+      },
+      "bytes": 44874093,
+      "qdq_nodes": 0
+    },
+    "per_channel/isolate/layer1": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "avgpool",
+          "conv1",
+          "fc",
+          "layer2",
+          "layer3",
+          "layer4",
+          "relu"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "cf5db917cf7ed1b0",
+      "seconds": 53.58,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0011434846092015505,
+        "logit_mse": 0.0005464517978130923,
+        "flip_rate": 1.2333333333333334,
+        "top1": 78.4,
+        "top5": 92.96666666666667,
+        "top1_delta": -0.09999999999999432
+      },
+      "bytes": 44441556,
+      "qdq_nodes": 22
+    },
+    "per_channel/isolate/layer2": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "avgpool",
+          "conv1",
+          "fc",
+          "layer1",
+          "layer3",
+          "layer4",
+          "relu"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "47a9bfd51aa23d1f",
+      "seconds": 54.05,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.00025621935492381454,
+        "logit_mse": 0.00012504497484690415,
+        "flip_rate": 0.5333333333333333,
+        "top1": 78.63333333333333,
+        "top5": 93.26666666666667,
+        "top1_delta": 0.13333333333332575
+      },
+      "bytes": 43317757,
+      "qdq_nodes": 26
+    },
+    "per_channel/isolate/layer3": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "avgpool",
+          "conv1",
+          "fc",
+          "layer1",
+          "layer2",
+          "layer4",
+          "relu"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "50f0fc17b568d137",
+      "seconds": 50.98,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.00030234752921387553,
+        "logit_mse": 0.00016154726860283833,
+        "flip_rate": 0.4,
+        "top1": 78.56666666666666,
+        "top5": 93.26666666666667,
+        "top1_delta": 0.06666666666666288
+      },
+      "bytes": 38607481,
+      "qdq_nodes": 26
+    },
+    "per_channel/isolate/layer4": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "avgpool",
+          "conv1",
+          "fc",
+          "layer1",
+          "layer2",
+          "layer3",
+          "relu"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "6e73e0ee02a9ada2",
+      "seconds": 40.36,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.00020802005019504577,
+        "logit_mse": 0.0001872290514383245,
+        "flip_rate": 0.4333333333333333,
+        "top1": 78.66666666666666,
+        "top5": 93.4,
+        "top1_delta": 0.1666666666666572
+      },
+      "bytes": 19749735,
+      "qdq_nodes": 26
+    },
+    "per_channel/isolate/avgpool": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "conv1",
+          "fc",
+          "layer1",
+          "layer2",
+          "layer3",
+          "layer4",
+          "relu"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "d6604f85a9519132",
+      "seconds": 60.09,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 1.2676479855144862e-05,
+        "logit_mse": 4.4488228649776506e-05,
+        "flip_rate": 0.06666666666666667,
+        "top1": 78.53333333333333,
+        "top5": 93.23333333333333,
+        "top1_delta": 0.03333333333333144
+      },
+      "bytes": 44875470,
+      "qdq_nodes": 4
+    },
+    "per_channel/isolate/fc": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "avgpool",
+          "conv1",
+          "layer1",
+          "layer2",
+          "layer3",
+          "layer4",
+          "relu"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "fd09b3342269dba4",
+      "seconds": 58.69,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 5.945375596638769e-05,
+        "logit_mse": 0.00024812603522539757,
+        "flip_rate": 0.1,
+        "top1": 78.46666666666667,
+        "top5": 93.30000000000001,
+        "top1_delta": -0.03333333333333144
+      },
+      "bytes": 44723052,
+      "qdq_nodes": 6
+    },
+    "per_tensor/leave_one_out/conv1": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "conv1"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "6b91d5e8555c119a",
+      "seconds": 21.21,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.002833983628079295,
+        "logit_mse": 0.001811724431083355,
+        "flip_rate": 2.0666666666666664,
+        "top1": 78.36666666666666,
+        "top5": 93.06666666666666,
+        "top1_delta": -0.13333333333333997
+      },
+      "bytes": 11278193,
+      "qdq_nodes": 102
+    },
+    "per_tensor/leave_one_out/relu": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "relu"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "62e5c5e6d8007ad8",
+      "seconds": 20.89,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.004713463596999645,
+        "logit_mse": 0.0027025337594197654,
+        "flip_rate": 2.6333333333333333,
+        "top1": 78.3,
+        "top5": 92.96666666666667,
+        "top1_delta": -0.20000000000000284
+      },
+      "bytes": 11274364,
+      "qdq_nodes": 108
+    },
+    "per_tensor/leave_one_out/layer1": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "layer1"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "2c070700db48770f",
+      "seconds": 28.04,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.002681630663573742,
+        "logit_mse": 0.0016936787489868078,
+        "flip_rate": 2.1999999999999997,
+        "top1": 78.4,
+        "top5": 93.53333333333333,
+        "top1_delta": -0.09999999999999432
+      },
+      "bytes": 11711014,
+      "qdq_nodes": 88
+    },
+    "per_tensor/leave_one_out/layer2": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "layer2"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "9d6f24a930d69984",
+      "seconds": 26.28,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0035052597522735596,
+        "logit_mse": 0.0020691708675714005,
+        "flip_rate": 2.1333333333333333,
+        "top1": 78.33333333333333,
+        "top5": 93.10000000000001,
+        "top1_delta": -0.1666666666666714
+      },
+      "bytes": 12840078,
+      "qdq_nodes": 84
+    },
+    "per_tensor/leave_one_out/layer3": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "layer3"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "7028a0affd492962",
+      "seconds": 29.06,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.003970989026129246,
+        "logit_mse": 0.002278813632784041,
+        "flip_rate": 2.3666666666666667,
+        "top1": 78.2,
+        "top5": 92.93333333333334,
+        "top1_delta": -0.29999999999999716
+      },
+      "bytes": 17558674,
+      "qdq_nodes": 84
+    },
+    "per_tensor/leave_one_out/layer4": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "layer4"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "a4db7cb1cfc42e77",
+      "seconds": 39.95,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.003939593676477671,
+        "logit_mse": 0.002156515738606193,
+        "flip_rate": 2.3333333333333335,
+        "top1": 78.23333333333333,
+        "top5": 93.03333333333333,
+        "top1_delta": -0.2666666666666657
+      },
+      "bytes": 36433037,
+      "qdq_nodes": 84
+    },
+    "per_tensor/leave_one_out/avgpool": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "avgpool"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "6fbd87418d4e5456",
+      "seconds": 20.51,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.00420597055926919,
+        "logit_mse": 0.00242125450130094,
+        "flip_rate": 2.3666666666666667,
+        "top1": 78.13333333333333,
+        "top5": 93.10000000000001,
+        "top1_delta": -0.36666666666667425
+      },
+      "bytes": 11273128,
+      "qdq_nodes": 104
+    },
+    "per_tensor/leave_one_out/fc": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "fc"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "dacccf4144c84ac4",
+      "seconds": 20.57,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0041455770842731,
+        "logit_mse": 0.0021478866314829435,
+        "flip_rate": 2.3666666666666667,
+        "top1": 78.16666666666666,
+        "top5": 93.23333333333333,
+        "top1_delta": -0.3333333333333428
+      },
+      "bytes": 11426175,
+      "qdq_nodes": 100
+    },
+    "per_tensor/isolate/conv1": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "avgpool",
+          "fc",
+          "layer1",
+          "layer2",
+          "layer3",
+          "layer4",
+          "relu"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "bf6f89448cf3daa0",
+      "seconds": 58.95,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0015243561938405037,
+        "logit_mse": 0.0007144772063963681,
+        "flip_rate": 1.5666666666666667,
+        "top1": 78.53333333333333,
+        "top5": 93.43333333333334,
+        "top1_delta": 0.03333333333333144
+      },
+      "bytes": 44870264,
+      "qdq_nodes": 6
+    },
+    "per_tensor/isolate/relu": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "avgpool",
+          "conv1",
+          "fc",
+          "layer1",
+          "layer2",
+          "layer3",
+          "layer4"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "4276880b33032836",
+      "seconds": 58.51,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": -6.270102215211182e-10,
+        "logit_mse": 2.5803259776073216e-14,
+        "flip_rate": 0.0,
+        "top1": 78.5,
+        "top5": 93.23333333333333,
+        "top1_delta": 0.0
+      },
+      "bytes": 44874093,
+      "qdq_nodes": 0
+    },
+    "per_tensor/isolate/layer1": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "avgpool",
+          "conv1",
+          "fc",
+          "layer2",
+          "layer3",
+          "layer4",
+          "relu"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "260a4305004d90a6",
+      "seconds": 53.3,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0015640989877283573,
+        "logit_mse": 0.0007431773695373007,
+        "flip_rate": 1.4666666666666666,
+        "top1": 78.4,
+        "top5": 93.03333333333333,
+        "top1_delta": -0.09999999999999432
+      },
+      "bytes": 44438116,
+      "qdq_nodes": 22
+    },
+    "per_tensor/isolate/layer2": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "avgpool",
+          "conv1",
+          "fc",
+          "layer1",
+          "layer3",
+          "layer4",
+          "relu"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "3323b53caa087b76",
+      "seconds": 53.92,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0004914765013381839,
+        "logit_mse": 0.00023703314417435544,
+        "flip_rate": 0.8333333333333334,
+        "top1": 78.5,
+        "top5": 93.33333333333333,
+        "top1_delta": 0.0
+      },
+      "bytes": 43309267,
+      "qdq_nodes": 26
+    },
+    "per_tensor/isolate/layer3": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "avgpool",
+          "conv1",
+          "fc",
+          "layer1",
+          "layer2",
+          "layer4",
+          "relu"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "ec101c520d63658f",
+      "seconds": 50.61,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0004686530155595392,
+        "logit_mse": 0.0002460565028770439,
+        "flip_rate": 0.8666666666666666,
+        "top1": 78.60000000000001,
+        "top5": 93.23333333333333,
+        "top1_delta": 0.10000000000000853
+      },
+      "bytes": 38590671,
+      "qdq_nodes": 26
+    },
+    "per_tensor/isolate/layer4": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "avgpool",
+          "conv1",
+          "fc",
+          "layer1",
+          "layer2",
+          "layer3",
+          "relu"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "cf704966cb283d88",
+      "seconds": 40.24,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0002811131707858294,
+        "logit_mse": 0.0002809140544751084,
+        "flip_rate": 0.5,
+        "top1": 78.53333333333333,
+        "top5": 93.23333333333333,
+        "top1_delta": 0.03333333333333144
+      },
+      "bytes": 19716285,
+      "qdq_nodes": 26
+    },
+    "per_tensor/isolate/avgpool": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "conv1",
+          "fc",
+          "layer1",
+          "layer2",
+          "layer3",
+          "layer4",
+          "relu"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "dda3856327022f2d",
+      "seconds": 58.43,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 1.2676479855144862e-05,
+        "logit_mse": 4.4488228649776506e-05,
+        "flip_rate": 0.06666666666666667,
+        "top1": 78.53333333333333,
+        "top5": 93.23333333333333,
+        "top1_delta": 0.03333333333333144
+      },
+      "bytes": 44875470,
+      "qdq_nodes": 4
+    },
+    "per_tensor/isolate/fc": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "avgpool",
+          "conv1",
+          "layer1",
+          "layer2",
+          "layer3",
+          "layer4",
+          "relu"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "601af45552e0d644",
+      "seconds": 58.41,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 7.284357707249e-05,
+        "logit_mse": 0.0003077708130188003,
+        "flip_rate": 0.16666666666666669,
+        "top1": 78.56666666666666,
+        "top5": 93.30000000000001,
+        "top1_delta": 0.06666666666666288
+      },
+      "bytes": 44721722,
+      "qdq_nodes": 6
+    }
+  },
+  "onnxruntime": "1.27.0",
+  "created_at_utc": "2026-08-08T10:01:43.749059+00:00",
+  "ranking": {
+    "per_channel": [
+      {
+        "group": "layer1",
+        "recovery_kl": 0.0009630413260310888,
+        "recovery_share": 0.4331359617018612,
+        "isolate_kl": 0.0011434846092015505,
+        "leave_one_out_kl": 0.0012603744398802519,
+        "recovery_top1": 0.13333333333332575,
+        "isolate_flip_rate": 1.2333333333333334
+      },
+      {
+        "group": "conv1",
+        "recovery_kl": 0.00045206525828689337,
+        "recovery_share": 0.2033201640546969,
+        "isolate_kl": 0.0006967450608499348,
+        "leave_one_out_kl": 0.0017713505076244473,
+        "recovery_top1": 0.06666666666666288,
+        "isolate_flip_rate": 0.8666666666666666
+      },
+      {
+        "group": "layer2",
+        "recovery_kl": 0.00020975852385163307,
+        "recovery_share": 0.094340665865368,
+        "isolate_kl": 0.00025621935492381454,
+        "leave_one_out_kl": 0.0020136572420597076,
+        "recovery_top1": -0.13333333333333997,
+        "isolate_flip_rate": 0.5333333333333333
+      },
+      {
+        "group": "layer3",
+        "recovery_kl": 0.00018875929526984692,
+        "recovery_share": 0.08489608563717171,
+        "isolate_kl": 0.00030234752921387553,
+        "leave_one_out_kl": 0.002034656470641494,
+        "recovery_top1": 0.03333333333333144,
+        "isolate_flip_rate": 0.4
+      },
+      {
+        "group": "layer4",
+        "recovery_kl": 9.227590635418892e-05,
+        "recovery_share": 0.041501867428005115,
+        "isolate_kl": 0.00020802005019504577,
+        "leave_one_out_kl": 0.002131139859557152,
+        "recovery_top1": -0.06666666666667709,
+        "isolate_flip_rate": 0.4333333333333333
+      },
+      {
+        "group": "fc",
+        "recovery_kl": 6.304658018052578e-05,
+        "recovery_share": 0.028355731369334808,
+        "isolate_kl": 5.945375596638769e-05,
+        "leave_one_out_kl": 0.002160369185730815,
+        "recovery_top1": -0.06666666666667709,
+        "isolate_flip_rate": 0.1
+      },
+      {
+        "group": "avgpool",
+        "recovery_kl": 0.0,
+        "recovery_share": 0.0,
+        "isolate_kl": 1.2676479855144862e-05,
+        "leave_one_out_kl": 0.0022234157659113407,
+        "recovery_top1": 0.0,
+        "isolate_flip_rate": 0.06666666666666667
+      },
+      {
+        "group": "relu",
+        "recovery_kl": -0.00045690499246120453,
+        "recovery_share": -0.20549687533313268,
+        "isolate_kl": -6.270102215211182e-10,
+        "leave_one_out_kl": 0.0026803207583725452,
+        "recovery_top1": 0.06666666666666288,
+        "isolate_flip_rate": 0.0
+      }
+    ],
+    "per_tensor": [
+      {
+        "group": "layer1",
+        "recovery_kl": 0.001524339895695448,
+        "recovery_share": 0.362422863929963,
+        "isolate_kl": 0.0015640989877283573,
+        "leave_one_out_kl": 0.002681630663573742,
+        "recovery_top1": 0.26666666666667993,
+        "isolate_flip_rate": 1.4666666666666666
+      },
+      {
+        "group": "conv1",
+        "recovery_kl": 0.0013719869311898947,
+        "recovery_share": 0.3261998418334827,
+        "isolate_kl": 0.0015243561938405037,
+        "leave_one_out_kl": 0.002833983628079295,
+        "recovery_top1": 0.23333333333333428,
+        "isolate_flip_rate": 1.5666666666666667
+      },
+      {
+        "group": "layer2",
+        "recovery_kl": 0.0007007108069956303,
+        "recovery_share": 0.1665990755573388,
+        "isolate_kl": 0.0004914765013381839,
+        "leave_one_out_kl": 0.0035052597522735596,
+        "recovery_top1": 0.20000000000000284,
+        "isolate_flip_rate": 0.8333333333333334
+      },
+      {
+        "group": "layer4",
+        "recovery_kl": 0.00026637688279151917,
+        "recovery_share": 0.06333303551173777,
+        "isolate_kl": 0.0002811131707858294,
+        "leave_one_out_kl": 0.003939593676477671,
+        "recovery_top1": 0.10000000000000853,
+        "isolate_flip_rate": 0.5
+      },
+      {
+        "group": "layer3",
+        "recovery_kl": 0.00023498153313994408,
+        "recovery_share": 0.055868563469158805,
+        "isolate_kl": 0.0004686530155595392,
+        "leave_one_out_kl": 0.003970989026129246,
+        "recovery_top1": 0.06666666666667709,
+        "isolate_flip_rate": 0.8666666666666666
+      },
+      {
+        "group": "fc",
+        "recovery_kl": 6.0393474996089935e-05,
+        "recovery_share": 0.0143589866227175,
+        "isolate_kl": 7.284357707249e-05,
+        "leave_one_out_kl": 0.0041455770842731,
+        "recovery_top1": 0.03333333333333144,
+        "isolate_flip_rate": 0.16666666666666669
+      },
+      {
+        "group": "avgpool",
+        "recovery_kl": 0.0,
+        "recovery_share": 0.0,
+        "isolate_kl": 1.2676479855144862e-05,
+        "leave_one_out_kl": 0.00420597055926919,
+        "recovery_top1": 0.0,
+        "isolate_flip_rate": 0.06666666666666667
+      },
+      {
+        "group": "relu",
+        "recovery_kl": -0.0005074930377304554,
+        "recovery_share": -0.12066014979872686,
+        "isolate_kl": -6.270102215211182e-10,
+        "leave_one_out_kl": 0.004713463596999645,
+        "recovery_top1": 0.1666666666666714,
+        "isolate_flip_rate": 0.0
+      }
+    ]
+  }
+}

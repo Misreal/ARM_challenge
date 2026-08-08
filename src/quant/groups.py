@@ -106,6 +106,36 @@ def build_group_map(
     return OrderedDict((name, tuple(nodes)) for name, nodes in groups.items())
 
 
+def refine_group(
+    group_map: "OrderedDict[str, tuple[str, ...]]", parent: str, depth: int
+) -> "OrderedDict[str, tuple[str, ...]]":
+    """Split one group into dotted, fully-qualified subgroups; leave the rest alone.
+
+    Names join the whole module path (`stage3.bottleneck.project`) rather than
+    taking one component like `group_of_node`, because a bare component is not
+    unique across a graph: custom_cnn has three modules named `pool` under
+    different stages, and merging them would attribute one stage's damage to
+    another. A node owned directly by the parent, such as the residual `Add`,
+    has a path shorter than `depth` and so keeps the parent's own name.
+    """
+    if parent not in group_map:
+        raise KeyError(f"Cannot refine unknown group {parent!r}; graph has {sorted(group_map)}")
+    if depth < 1:
+        raise ValueError("depth must be at least 1")
+
+    refined: OrderedDict[str, list[str]] = OrderedDict()
+    for name, nodes in group_map.items():
+        if name != parent:
+            refined[name] = list(nodes)
+            continue
+        for node_name in nodes:
+            components = [part for part in node_name.split("/") if part]
+            module_path = components[:-1]
+            refined.setdefault(".".join(module_path[:depth]), []).append(node_name)
+
+    return OrderedDict((name, tuple(nodes)) for name, nodes in refined.items())
+
+
 def quantizable_groups(group_map: "OrderedDict[str, tuple[str, ...]]") -> tuple[str, ...]:
     """Groups the search may assign precision to.
 

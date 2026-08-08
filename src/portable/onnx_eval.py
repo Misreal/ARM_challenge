@@ -68,3 +68,29 @@ def evaluate_accuracy(
         top1=100.0 * top1_hits / total,
         top5=100.0 * top5_hits / total,
     )
+
+
+def collect_logits(
+    session: ort.InferenceSession,
+    images_uint8: np.ndarray,
+    limit: int | None = None,
+) -> np.ndarray:
+    """Raw logits for every image, shape (N, classes) float32.
+
+    Kept separate from `evaluate_accuracy` rather than shared with it: that
+    function runs inside the bench agent's measured process, and the buffer this
+    one allocates would land in `ru_maxrss` and misattribute per-candidate RAM.
+    """
+    total = int(images_uint8.shape[0]) if limit is None else min(limit, int(images_uint8.shape[0]))
+    if total <= 0:
+        raise ValueError("No images to evaluate")
+
+    input_name = session.get_inputs()[0].name
+    output_name = session.get_outputs()[0].name
+
+    rows: list[np.ndarray] = []
+    for index in range(total):
+        batch = normalize_uint8_nchw(images_uint8[index : index + 1])
+        rows.append(session.run([output_name], {input_name: batch})[0][0])
+
+    return np.asarray(rows, dtype=np.float32)

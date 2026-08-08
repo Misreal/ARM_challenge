@@ -1,0 +1,934 @@
+{
+  "model": "custom_cnn",
+  "eval_split": "optval",
+  "eval_limit": null,
+  "samples": 3000,
+  "split_fingerprint": "d692cdcdeddfac3b",
+  "on_target": true,
+  "host": {
+    "platform": "Linux-6.12.96+rpt-rpi-2712-aarch64-with-glibc2.36",
+    "machine": "aarch64"
+  },
+  "run_config": {
+    "intra_op_num_threads": 4,
+    "graph_optimization_level": "all"
+  },
+  "refined_group": null,
+  "group_sizes": {
+    "stem": 2,
+    "stage1": 5,
+    "stage2": 9,
+    "stage3": 7,
+    "pool": 1,
+    "_unscoped": 1,
+    "classifier": 1
+  },
+  "reference": {
+    "top1": 70.53333333333333,
+    "top5": 89.46666666666667
+  },
+  "anchors": {
+    "static_per_tensor": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [],
+        "reduce_range": false
+      },
+      "quant_hash": "06e1b9094831a2a6",
+      "seconds": 5.68,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.01382153294980526,
+        "logit_mse": 0.02389555820780118,
+        "flip_rate": 5.633333333333333,
+        "top1": 70.43333333333334,
+        "top5": 89.33333333333333,
+        "top1_delta": -0.09999999999999432
+      },
+      "bytes": 1811932,
+      "qdq_nodes": 58
+    },
+    "static_per_channel": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [],
+        "reduce_range": false
+      },
+      "quant_hash": "6c2712900e73dc56",
+      "seconds": 5.72,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0025391404051333666,
+        "logit_mse": 0.005509690824379853,
+        "flip_rate": 2.3,
+        "top1": 70.5,
+        "top5": 89.16666666666667,
+        "top1_delta": -0.03333333333333144
+      },
+      "bytes": 1839387,
+      "qdq_nodes": 58
+    }
+  },
+  "probes": {
+    "per_channel/leave_one_out/stem": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "stem"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "8326e6e880bba208",
+      "seconds": 10.82,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.00206656102091074,
+        "logit_mse": 0.004507649635222736,
+        "flip_rate": 2.533333333333333,
+        "top1": 70.63333333333334,
+        "top5": 89.3,
+        "top1_delta": 0.10000000000000853
+      },
+      "bytes": 1842929,
+      "qdq_nodes": 54
+    },
+    "per_channel/leave_one_out/stage1": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "stage1"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "78697550e517ce3f",
+      "seconds": 21.52,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0024101436138153076,
+        "logit_mse": 0.0051439331888870005,
+        "flip_rate": 2.433333333333333,
+        "top1": 70.43333333333334,
+        "top5": 89.36666666666667,
+        "top1_delta": -0.09999999999999432
+      },
+      "bytes": 2497486,
+      "qdq_nodes": 50
+    },
+    "per_channel/leave_one_out/stage2": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "stage2"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "6276efddb94c9d17",
+      "seconds": 11.88,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0017481629038229585,
+        "logit_mse": 0.004074602981661374,
+        "flip_rate": 2.1333333333333333,
+        "top1": 70.66666666666667,
+        "top5": 89.43333333333334,
+        "top1_delta": 0.13333333333333997
+      },
+      "bytes": 2018819,
+      "qdq_nodes": 42
+    },
+    "per_channel/leave_one_out/stage3": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "stage3"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "af3e4a6914d9abde",
+      "seconds": 15.79,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.002208451274782419,
+        "logit_mse": 0.004590122874475471,
+        "flip_rate": 2.3333333333333335,
+        "top1": 70.66666666666667,
+        "top5": 89.23333333333333,
+        "top1_delta": 0.13333333333333997
+      },
+      "bytes": 6246282,
+      "qdq_nodes": 44
+    },
+    "per_channel/leave_one_out/pool": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "pool"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "2733ab3c23a646e5",
+      "seconds": 10.44,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0025391404051333666,
+        "logit_mse": 0.005509690824379853,
+        "flip_rate": 2.3,
+        "top1": 70.5,
+        "top5": 89.16666666666667,
+        "top1_delta": -0.03333333333333144
+      },
+      "bytes": 1838747,
+      "qdq_nodes": 56
+    },
+    "per_channel/leave_one_out/classifier": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "classifier"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "511ee19b0540f6e7",
+      "seconds": 10.42,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.002406897023320198,
+        "logit_mse": 0.00491388362490584,
+        "flip_rate": 2.433333333333333,
+        "top1": 70.56666666666666,
+        "top5": 89.23333333333333,
+        "top1_delta": 0.03333333333333144
+      },
+      "bytes": 1894317,
+      "qdq_nodes": 52
+    },
+    "per_channel/isolate/stem": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier",
+          "pool",
+          "stage1",
+          "stage2",
+          "stage3"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "2d7299ee97af3477",
+      "seconds": 25.62,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0007798011065460742,
+        "logit_mse": 0.001438152261425329,
+        "flip_rate": 1.2,
+        "top1": 70.6,
+        "top5": 89.4,
+        "top1_delta": 0.06666666666666288
+      },
+      "bytes": 7136265,
+      "qdq_nodes": 6
+    },
+    "per_channel/isolate/stage1": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier",
+          "pool",
+          "stage2",
+          "stage3",
+          "stem"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "c72be475fb715ea6",
+      "seconds": 16.58,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0005701431655324996,
+        "logit_mse": 0.0010637984360196415,
+        "flip_rate": 1.633333333333333,
+        "top1": 70.43333333333334,
+        "top5": 89.46666666666667,
+        "top1_delta": -0.09999999999999432
+      },
+      "bytes": 6482313,
+      "qdq_nodes": 12
+    },
+    "per_channel/isolate/stage2": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier",
+          "pool",
+          "stage1",
+          "stage3",
+          "stem"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "ff72b4c368eacb64",
+      "seconds": 26.39,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.00106850266456604,
+        "logit_mse": 0.0019647676865640227,
+        "flip_rate": 1.5333333333333332,
+        "top1": 70.56666666666666,
+        "top5": 89.36666666666667,
+        "top1_delta": 0.03333333333333144
+      },
+      "bytes": 6961063,
+      "qdq_nodes": 20
+    },
+    "per_channel/isolate/stage3": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier",
+          "pool",
+          "stage1",
+          "stage2",
+          "stem"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "5c665152462ba134",
+      "seconds": 21.36,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0004891731659881771,
+        "logit_mse": 0.001276109585591958,
+        "flip_rate": 1.0333333333333332,
+        "top1": 70.43333333333334,
+        "top5": 89.53333333333333,
+        "top1_delta": -0.09999999999999432
+      },
+      "bytes": 2733602,
+      "qdq_nodes": 18
+    },
+    "per_channel/isolate/pool": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier",
+          "stage1",
+          "stage2",
+          "stage3",
+          "stem"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "63c376e497c1e048",
+      "seconds": 25.65,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 8.662661275593564e-05,
+        "logit_mse": 0.00033217243653789957,
+        "flip_rate": 0.5333333333333333,
+        "top1": 70.36666666666666,
+        "top5": 89.5,
+        "top1_delta": -0.1666666666666714
+      },
+      "bytes": 7140508,
+      "qdq_nodes": 4
+    },
+    "per_channel/isolate/classifier": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "pool",
+          "stage1",
+          "stage2",
+          "stage3",
+          "stem"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "c6d4bf3e2add10c2",
+      "seconds": 25.55,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0001665986783336848,
+        "logit_mse": 0.0007017191181350684,
+        "flip_rate": 0.8666666666666666,
+        "top1": 70.46666666666667,
+        "top5": 89.56666666666668,
+        "top1_delta": -0.06666666666666288
+      },
+      "bytes": 7084333,
+      "qdq_nodes": 6
+    },
+    "per_tensor/leave_one_out/stem": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "stem"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "8fc7685fd72cc1ec",
+      "seconds": 10.55,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.00630866689607501,
+        "logit_mse": 0.011587137964284993,
+        "flip_rate": 3.4333333333333336,
+        "top1": 70.89999999999999,
+        "top5": 89.3,
+        "top1_delta": 0.36666666666666003
+      },
+      "bytes": 1816334,
+      "qdq_nodes": 54
+    },
+    "per_tensor/leave_one_out/stage1": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "stage1"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "a97b4cf7ad34f4ce",
+      "seconds": 21.33,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.013432019390165806,
+        "logit_mse": 0.0231329829382843,
+        "flip_rate": 5.833333333333333,
+        "top1": 70.36666666666666,
+        "top5": 89.06666666666668,
+        "top1_delta": -0.1666666666666714
+      },
+      "bytes": 2473427,
+      "qdq_nodes": 50
+    },
+    "per_tensor/leave_one_out/stage2": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "stage2"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "1cdbf6095a148117",
+      "seconds": 11.85,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.009392290376126766,
+        "logit_mse": 0.017216287493470227,
+        "flip_rate": 4.566666666666666,
+        "top1": 70.7,
+        "top5": 89.33333333333333,
+        "top1_delta": 0.1666666666666714
+      },
+      "bytes": 2000652,
+      "qdq_nodes": 42
+    },
+    "per_tensor/leave_one_out/stage3": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "stage3"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "8edb90a0397a1e1a",
+      "seconds": 15.77,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.013107292354106903,
+        "logit_mse": 0.022283618916656058,
+        "flip_rate": 5.7,
+        "top1": 70.39999999999999,
+        "top5": 89.13333333333333,
+        "top1_delta": -0.13333333333333997
+      },
+      "bytes": 6231409,
+      "qdq_nodes": 44
+    },
+    "per_tensor/leave_one_out/pool": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "pool"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "73b6073fc975dd94",
+      "seconds": 10.29,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.01382153294980526,
+        "logit_mse": 0.02389555820780118,
+        "flip_rate": 5.633333333333333,
+        "top1": 70.43333333333334,
+        "top5": 89.33333333333333,
+        "top1_delta": -0.09999999999999432
+      },
+      "bytes": 1811292,
+      "qdq_nodes": 56
+    },
+    "per_tensor/leave_one_out/classifier": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "classifier"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "6cc3faa0ba826652",
+      "seconds": 10.28,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.01369643397629261,
+        "logit_mse": 0.023301972368274988,
+        "flip_rate": 5.933333333333334,
+        "top1": 70.63333333333334,
+        "top5": 89.26666666666667,
+        "top1_delta": 0.10000000000000853
+      },
+      "bytes": 1868191,
+      "qdq_nodes": 52
+    },
+    "per_tensor/isolate/stem": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier",
+          "pool",
+          "stage1",
+          "stage2",
+          "stage3"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "0a62a5d00bd6fbbf",
+      "seconds": 25.63,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.007500232197344303,
+        "logit_mse": 0.012932514373584187,
+        "flip_rate": 4.266666666666667,
+        "top1": 70.36666666666666,
+        "top5": 89.2,
+        "top1_delta": -0.1666666666666714
+      },
+      "bytes": 7135405,
+      "qdq_nodes": 6
+    },
+    "per_tensor/isolate/stage1": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier",
+          "pool",
+          "stage2",
+          "stage3",
+          "stem"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "364aa15e6cc8fa0f",
+      "seconds": 16.48,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.0011924105929210782,
+        "logit_mse": 0.002143382708564311,
+        "flip_rate": 1.9333333333333333,
+        "top1": 70.63333333333334,
+        "top5": 89.60000000000001,
+        "top1_delta": 0.10000000000000853
+      },
+      "bytes": 6478917,
+      "qdq_nodes": 12
+    },
+    "per_tensor/isolate/stage2": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier",
+          "pool",
+          "stage1",
+          "stage3",
+          "stem"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "a12f449a526dc181",
+      "seconds": 26.37,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.004595501348376274,
+        "logit_mse": 0.007639874872709076,
+        "flip_rate": 3.3666666666666663,
+        "top1": 70.73333333333333,
+        "top5": 89.4,
+        "top1_delta": 0.20000000000000284
+      },
+      "bytes": 6951775,
+      "qdq_nodes": 20
+    },
+    "per_tensor/isolate/stage3": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier",
+          "pool",
+          "stage1",
+          "stage2",
+          "stem"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "41bd93da1486b7ff",
+      "seconds": 21.29,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.00089673773618415,
+        "logit_mse": 0.0021068141714273856,
+        "flip_rate": 1.2666666666666666,
+        "top1": 70.43333333333334,
+        "top5": 89.36666666666667,
+        "top1_delta": -0.09999999999999432
+      },
+      "bytes": 2721020,
+      "qdq_nodes": 18
+    },
+    "per_tensor/isolate/pool": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "classifier",
+          "stage1",
+          "stage2",
+          "stage3",
+          "stem"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "9362299b338392eb",
+      "seconds": 25.68,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 8.662661275593564e-05,
+        "logit_mse": 0.00033217243653789957,
+        "flip_rate": 0.5333333333333333,
+        "top1": 70.36666666666666,
+        "top5": 89.5,
+        "top1_delta": -0.1666666666666714
+      },
+      "bytes": 7140508,
+      "qdq_nodes": 4
+    },
+    "per_tensor/isolate/classifier": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [
+          "_unscoped",
+          "pool",
+          "stage1",
+          "stage2",
+          "stage3",
+          "stem"
+        ],
+        "reduce_range": false
+      },
+      "quant_hash": "601eca35c4623dd2",
+      "seconds": 25.44,
+      "metrics": {
+        "samples": 3000,
+        "kl_mean": 0.00016792930546216667,
+        "logit_mse": 0.0007137413385768838,
+        "flip_rate": 0.8666666666666666,
+        "top1": 70.5,
+        "top5": 89.53333333333333,
+        "top1_delta": -0.03333333333333144
+      },
+      "bytes": 7083004,
+      "qdq_nodes": 6
+    }
+  },
+  "onnxruntime": "1.27.0",
+  "created_at_utc": "2026-08-08T09:46:32.935582+00:00",
+  "ranking": {
+    "per_channel": [
+      {
+        "group": "stage2",
+        "recovery_kl": 0.0007909775013104081,
+        "recovery_share": 0.31151388860233686,
+        "isolate_kl": 0.00106850266456604,
+        "leave_one_out_kl": 0.0017481629038229585,
+        "recovery_top1": 0.1666666666666714,
+        "isolate_flip_rate": 1.5333333333333332
+      },
+      {
+        "group": "stem",
+        "recovery_kl": 0.0004725793842226267,
+        "recovery_share": 0.18611786227623153,
+        "isolate_kl": 0.0007798011065460742,
+        "leave_one_out_kl": 0.00206656102091074,
+        "recovery_top1": 0.13333333333333997,
+        "isolate_flip_rate": 1.2
+      },
+      {
+        "group": "stage3",
+        "recovery_kl": 0.0003306891303509474,
+        "recovery_share": 0.13023664610369515,
+        "isolate_kl": 0.0004891731659881771,
+        "leave_one_out_kl": 0.002208451274782419,
+        "recovery_top1": 0.1666666666666714,
+        "isolate_flip_rate": 1.0333333333333332
+      },
+      {
+        "group": "classifier",
+        "recovery_kl": 0.00013224338181316853,
+        "recovery_share": 0.052081949287173246,
+        "isolate_kl": 0.0001665986783336848,
+        "leave_one_out_kl": 0.002406897023320198,
+        "recovery_top1": 0.06666666666666288,
+        "isolate_flip_rate": 0.8666666666666666
+      },
+      {
+        "group": "stage1",
+        "recovery_kl": 0.00012899679131805897,
+        "recovery_share": 0.05080333133893141,
+        "isolate_kl": 0.0005701431655324996,
+        "leave_one_out_kl": 0.0024101436138153076,
+        "recovery_top1": -0.06666666666666288,
+        "isolate_flip_rate": 1.633333333333333
+      },
+      {
+        "group": "pool",
+        "recovery_kl": 0.0,
+        "recovery_share": 0.0,
+        "isolate_kl": 8.662661275593564e-05,
+        "leave_one_out_kl": 0.0025391404051333666,
+        "recovery_top1": 0.0,
+        "isolate_flip_rate": 0.5333333333333333
+      }
+    ],
+    "per_tensor": [
+      {
+        "group": "stem",
+        "recovery_kl": 0.007512866053730249,
+        "recovery_share": 0.5435624312450887,
+        "isolate_kl": 0.007500232197344303,
+        "leave_one_out_kl": 0.00630866689607501,
+        "recovery_top1": 0.46666666666665435,
+        "isolate_flip_rate": 4.266666666666667
+      },
+      {
+        "group": "stage2",
+        "recovery_kl": 0.0044292425736784935,
+        "recovery_share": 0.32045957490850535,
+        "isolate_kl": 0.004595501348376274,
+        "leave_one_out_kl": 0.009392290376126766,
+        "recovery_top1": 0.2666666666666657,
+        "isolate_flip_rate": 3.3666666666666663
+      },
+      {
+        "group": "stage3",
+        "recovery_kl": 0.0007142405956983566,
+        "recovery_share": 0.05167593191668512,
+        "isolate_kl": 0.00089673773618415,
+        "leave_one_out_kl": 0.013107292354106903,
+        "recovery_top1": -0.03333333333334565,
+        "isolate_flip_rate": 1.2666666666666666
+      },
+      {
+        "group": "stage1",
+        "recovery_kl": 0.0003895135596394539,
+        "recovery_share": 0.02818164678650511,
+        "isolate_kl": 0.0011924105929210782,
+        "leave_one_out_kl": 0.013432019390165806,
+        "recovery_top1": -0.06666666666667709,
+        "isolate_flip_rate": 1.9333333333333333
+      },
+      {
+        "group": "classifier",
+        "recovery_kl": 0.00012509897351264954,
+        "recovery_share": 0.009051020170263541,
+        "isolate_kl": 0.00016792930546216667,
+        "leave_one_out_kl": 0.01369643397629261,
+        "recovery_top1": 0.20000000000000284,
+        "isolate_flip_rate": 0.8666666666666666
+      },
+      {
+        "group": "pool",
+        "recovery_kl": 0.0,
+        "recovery_share": 0.0,
+        "isolate_kl": 8.662661275593564e-05,
+        "leave_one_out_kl": 0.01382153294980526,
+        "recovery_top1": 0.0,
+        "isolate_flip_rate": 0.5333333333333333
+      }
+    ]
+  }
+}

@@ -24,7 +24,7 @@ import hashlib
 import json
 import shutil
 import time
-from collections import Counter
+from collections import Counter, OrderedDict
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -155,8 +155,12 @@ def build_artifact(
     cache_dir: Path = DEFAULT_CACHE_DIR,
     bundle_dir: Path | None = None,
     use_cache: bool = True,
+    group_map: "OrderedDict[str, tuple[str, ...]] | None" = None,
 ) -> Artifact:
     """Materialize `config` for `model`, returning a validated artifact.
+
+    `group_map` overrides the default node-to-block mapping, which is how a
+    sub-block probe addresses names the standard grouping does not expose.
 
     Raises `QuantizationFailure` if the graph cannot be produced, fails
     `onnx.checker`, or will not load in ONNX Runtime.
@@ -184,8 +188,10 @@ def build_artifact(
         else:
             excluded_nodes = []
             if config.excluded_groups:
-                group_map = build_group_map(paths.quant_ready, model)
-                excluded_nodes = nodes_for_groups(group_map, config.excluded_groups)
+                resolved_map = (
+                    build_group_map(paths.quant_ready, model) if group_map is None else group_map
+                )
+                excluded_nodes = nodes_for_groups(resolved_map, config.excluded_groups)
 
             if config.quant_type == "dynamic":
                 quantize_dynamic(

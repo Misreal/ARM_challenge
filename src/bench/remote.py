@@ -26,7 +26,8 @@ from src.bench.agent import BenchSpec
 from src.bench.protocol import RESULT_SCHEMA
 from src.portable.benchmark import DEFAULT_ITERATIONS, DEFAULT_WARMUP
 from src.quant.baselines import BASELINE_CONFIGS
-from src.quant.config import DeploymentConfig, EXPORTED_MODELS, RunConfig
+from src.quant.candidates import CANDIDATE_EXCLUSIONS, candidate_configs
+from src.quant.config import DeploymentConfig, EXPORTED_MODELS, QuantConfig, RunConfig
 
 DEFAULT_TARGET_FILE = Path("pi_target.json")
 DEFAULT_CACHE_DIR = Path("artifacts/bench_cache")
@@ -445,14 +446,26 @@ def run_sentinel(
     return summarize_sentinel(spec, trials)
 
 
+def configs_for(model: str) -> dict[str, QuantConfig]:
+    """Every config name `--configs` accepts for this model."""
+    return {**BASELINE_CONFIGS, **candidate_configs(model)}
+
+
 def _specs_for(
     model: str, configs: Iterable[str], threads: Iterable[int], warmup: int, iterations: int
 ) -> list[BenchSpec]:
+    available = configs_for(model)
+    unknown = sorted(set(configs) - set(available))
+    if unknown:
+        raise SystemExit(
+            f"Unknown config(s) for {model}: {', '.join(unknown)}.\n"
+            f"Available: {', '.join(sorted(available))}"
+        )
     return [
         BenchSpec(
             model=model,
             config=DeploymentConfig(
-                quant=BASELINE_CONFIGS[name],
+                quant=available[name],
                 run=RunConfig(intra_op_num_threads=thread_count),
             ),
             warmup=warmup,
@@ -468,8 +481,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--check", action="store_true", help="Probe the device and exit")
     parser.add_argument("--push-code", action="store_true", help="Copy src/ to the device first")
     parser.add_argument("--model", choices=EXPORTED_MODELS)
+    # Not `choices`: the selective-FP32 candidates are model-specific, so the
+    # valid set is only known once --model is parsed.
     parser.add_argument(
-        "--configs", nargs="+", choices=sorted(BASELINE_CONFIGS), default=["fp32"]
+        "--configs",
+        nargs="+",
+        default=["fp32"],
+        help=f"{', '.join(sorted(BASELINE_CONFIGS))}, or {', '.join(sorted(CANDIDATE_EXCLUSIONS))}",
     )
     parser.add_argument("--threads", nargs="+", type=int, default=[4])
     parser.add_argument("--warmup", type=int, default=DEFAULT_WARMUP)
