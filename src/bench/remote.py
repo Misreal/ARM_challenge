@@ -26,7 +26,7 @@ from src.bench.agent import BenchSpec
 from src.bench.protocol import RESULT_SCHEMA
 from src.portable.benchmark import DEFAULT_ITERATIONS, DEFAULT_WARMUP
 from src.quant.baselines import BASELINE_CONFIGS
-from src.quant.candidates import CANDIDATE_EXCLUSIONS, candidate_configs
+from src.quant.candidates import CANDIDATE_EXCLUSIONS, candidate_configs, per_group_configs
 from src.quant.config import DeploymentConfig, EXPORTED_MODELS, QuantConfig, RunConfig
 
 DEFAULT_TARGET_FILE = Path("pi_target.json")
@@ -277,6 +277,12 @@ class RemoteBenchmarker:
             f"{self.connection.python} -m src.bench.agent {arguments}"
         )
 
+    def _score_command(self, arguments: str) -> str:
+        return (
+            f"cd {self.connection.remote_root} && "
+            f"{self.connection.python} -m src.bench.score {arguments}"
+        )
+
     def _with_retries(self, operation, description: str) -> CommandResult:
         """Run a transport operation, retrying only genuine link failures."""
         last: Exception | None = None
@@ -364,6 +370,39 @@ class RemoteBenchmarker:
                 return fetched
             return self._transport_failure(spec, "measure", run)
 
+    def score(self, spec: BenchSpec, limit: int | None = None) -> dict[str, Any]:
+        """Measure one candidate's optval accuracy on the device.
+
+        Uncached: the search calls this at two sample sizes for the same config,
+        and a cache keyed on the config alone would return the screen's number
+        when the full evaluation was asked for.
+        """
+        key = f"{spec_cache_key(spec)}_{limit or 'all'}"
+        remote_spec = self.connection.work_path(f"{key}_spec.json")
+        remote_result = self.connection.work_path(f"{key}_score.json")
+        limit_flag = "" if limit is None else f" --limit {limit}"
+
+        with tempfile.TemporaryDirectory() as staging_name:
+            staging = Path(staging_name)
+            local_spec = staging / "spec.json"
+            local_spec.write_text(json.dumps(spec.as_dict(), indent=2), encoding="utf-8")
+
+            self._with_retries(
+                lambda: self.transport.run(f"mkdir -p {self.connection.remote_work}", timeout=60),
+                "remote workdir",
+            )
+            self._with_retries(lambda: self.transport.push(local_spec, remote_spec), "spec upload")
+            run = self._with_retries(
+                lambda: self.transport.run(
+                    self._score_command(f"--spec {remote_spec} --out {remote_result}{limit_flag}")
+                ),
+                "accuracy scoring",
+            )
+            fetched = self._fetch_result(remote_result, staging)
+            if fetched is not None:
+                return fetched
+            return self._transport_failure(spec, "score", run)
+
     def _fetch_result(self, remote_result: str, staging: Path) -> dict[str, Any] | None:
         """Bring the result document back, or None if the agent never wrote one."""
         local_result = staging / "result.json"
@@ -448,7 +487,7 @@ def run_sentinel(
 
 def configs_for(model: str) -> dict[str, QuantConfig]:
     """Every config name `--configs` accepts for this model."""
-    return {**BASELINE_CONFIGS, **candidate_configs(model)}
+    return {**BASELINE_CONFIGS, **candidate_configs(model), **per_group_configs(model)}
 
 
 def _specs_for(
@@ -489,6 +528,11 @@ def parse_args() -> argparse.Namespace:
         default=["fp32"],
         help=f"{', '.join(sorted(BASELINE_CONFIGS))}, or {', '.join(sorted(CANDIDATE_EXCLUSIONS))}",
     )
+    parser.add_argument(
+        "--exclude-each",
+        action="store_true",
+        help="sweep every single-group exclusion, giving each group a latency cost",
+    )
     parser.add_argument("--threads", nargs="+", type=int, default=[4])
     parser.add_argument("--warmup", type=int, default=DEFAULT_WARMUP)
     parser.add_argument("--iterations", type=int, default=DEFAULT_ITERATIONS)
@@ -523,7 +567,8 @@ def main() -> None:
             )
         return
 
-    specs = _specs_for(args.model, args.configs, args.threads, args.warmup, args.iterations)
+    configs = sorted(per_group_configs(args.model)) if args.exclude_each else args.configs
+    specs = _specs_for(args.model, configs, args.threads, args.warmup, args.iterations)
 
     if args.repeat > 1:
         if len(specs) != 1:

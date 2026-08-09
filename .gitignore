@@ -65,3 +65,6 @@ personal_notes.md
 CODEX_WORK.md
 .agents/
 competition_rules.md
+# Optuna study state: binary and rewritten on every resume. The .json
+# summaries next to it carry the results that matter.
+artifacts/search/*.db
