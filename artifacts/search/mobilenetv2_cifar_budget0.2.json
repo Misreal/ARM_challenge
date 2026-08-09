@@ -1,0 +1,56 @@
+{
+  "study": "mobilenetv2_cifar_budget0.2",
+  "model": "mobilenetv2_cifar",
+  "mock": false,
+  "baseline_top1": 77.4,
+  "accuracy_budget_pt": 0.2,
+  "threshold_top1": 77.2,
+  "groups": [
+    "features.0",
+    "features.1",
+    "features.2",
+    "features.3",
+    "features.4",
+    "features.5",
+    "features.6",
+    "features.7",
+    "features.8",
+    "features.9",
+    "features.10",
+    "features.11",
+    "features.12",
+    "features.13",
+    "features.14",
+    "features.15",
+    "features.16",
+    "features.17",
+    "features.18",
+    "classifier.1"
+  ],
+  "trials": 41,
+  "pareto": [
+    {
+      "values": [
+        1.4758,
+        2503586.0,
+        86.5
+      ],
+      "constraints": [
+        -0.09999999999999432
+      ],
+      "describe": "static per-tensor act:uint8 minmax/512",
+      "quant_hash": "06e1b9094831a2a6",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.4758,
+        "size_bytes": 2503586,
+        "peak_rss_mb": 86.5,
+        "top1": 77.3,
+        "screen_top1": 78.0,
+        "admissible": true,
+        "error": null
+      }
+    }
+  ],
+  "created_at_utc": "2026-08-09T09:11:37.142142+00:00"
+}

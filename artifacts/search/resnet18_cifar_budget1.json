@@ -1,0 +1,110 @@
+{
+  "study": "resnet18_cifar_budget1",
+  "model": "resnet18_cifar",
+  "mock": false,
+  "baseline_top1": 78.5,
+  "accuracy_budget_pt": 1.0,
+  "threshold_top1": 77.5,
+  "groups": [
+    "conv1",
+    "relu",
+    "layer1",
+    "layer2",
+    "layer3",
+    "layer4",
+    "avgpool",
+    "fc"
+  ],
+  "trials": 31,
+  "pareto": [
+    {
+      "values": [
+        25.3817,
+        11272580.0,
+        102.359375
+      ],
+      "constraints": [
+        -0.8333333333333286
+      ],
+      "describe": "dynamic",
+      "quant_hash": "9965282d98520e1e",
+      "result": {
+        "status": "ok",
+        "latency_ms": 25.3817,
+        "size_bytes": 11272580,
+        "peak_rss_mb": 102.359375,
+        "top1": 78.33333333333333,
+        "screen_top1": 80.0,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "values": [
+        3.4143,
+        11338184.0,
+        105.421875
+      ],
+      "constraints": [
+        -0.9000000000000057
+      ],
+      "describe": "static per-channel act:uint8 minmax/512",
+      "quant_hash": "6c2712900e73dc56",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.4143,
+        "size_bytes": 11338184,
+        "peak_rss_mb": 105.421875,
+        "top1": 78.4,
+        "screen_top1": 80.2,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "values": [
+        20.8191,
+        11713362.0,
+        102.953125
+      ],
+      "constraints": [
+        -1.0
+      ],
+      "describe": "dynamic fp32:conv1+fc+layer1+relu",
+      "quant_hash": "77fe95c61206fa54",
+      "result": {
+        "status": "ok",
+        "latency_ms": 20.8191,
+        "size_bytes": 11713362,
+        "peak_rss_mb": 102.953125,
+        "top1": 78.5,
+        "screen_top1": 80.4,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "values": [
+        25.2064,
+        11277262.0,
+        102.109375
+      ],
+      "constraints": [
+        -1.0666666666666629
+      ],
+      "describe": "dynamic per-channel fp32:avgpool+conv1",
+      "quant_hash": "9665c66796c6f5d5",
+      "result": {
+        "status": "ok",
+        "latency_ms": 25.2064,
+        "size_bytes": 11277262,
+        "peak_rss_mb": 102.109375,
+        "top1": 78.56666666666666,
+        "screen_top1": 80.6,
+        "admissible": true,
+        "error": null
+      }
+    }
+  ],
+  "created_at_utc": "2026-08-08T20:09:23.067928+00:00"
+}
