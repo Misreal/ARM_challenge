@@ -1,0 +1,51 @@
+{
+  "split_fingerprint": "d692cdcdeddfac3b",
+  "sealed_split": true,
+  "splits": {
+    "test": {
+      "images": {
+        "file": "test_images_uint8.npy",
+        "sha256": "4af8a71e3de0e4c2b6467cb7c7580104c94f14b48da088accac244eab1893b32",
+        "shape": [
+          10000,
+          3,
+          32,
+          32
+        ],
+        "dtype": "uint8"
+      },
+      "labels": {
+        "file": "test_labels.npy",
+        "sha256": "7827272d0fbeee517a81b235f35fae2128af64393371c2fdde1c8f9a638e4a1a",
+        "shape": [
+          10000
+        ],
+        "dtype": "int64"
+      },
+      "max_abs_delta_vs_torchvision": 0.0
+    }
+  },
+  "preprocessing": {
+    "layout": "NCHW",
+    "stored_dtype": "uint8",
+    "stored_range": "[0, 255]",
+    "mean": [
+      0.5071,
+      0.4865,
+      0.4409
+    ],
+    "std": [
+      0.2673,
+      0.2564,
+      0.2762
+    ],
+    "recipe": "x = images.astype(float32) / 255.0; x = (x - mean) / std",
+    "reference_implementation": "src.portable.preprocess.normalize_uint8_nchw"
+  },
+  "purpose": "Phase 7 final evaluation of the measured Pareto front. Never a search or calibration input; the front was selected without any test-set signal.",
+  "package_versions": {
+    "numpy": "2.4.4",
+    "torch": "2.13.0+cu126"
+  },
+  "created_at_utc": "2026-08-10T13:43:44.293611+00:00"
+}

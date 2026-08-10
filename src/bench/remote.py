@@ -314,6 +314,20 @@ class RemoteBenchmarker:
             "code push",
         )
 
+    def push_bundle(self, local_dir: Path) -> str:
+        """Copy an evaluation bundle to the device; returns its remote path."""
+        remote_dir = self.connection.remote_path(local_dir.name)
+        # Cleared first so a partial earlier copy cannot survive and fail the
+        # manifest checksum as if the transfer had just corrupted.
+        self._with_retries(
+            lambda: self.transport.run(f"rm -rf {remote_dir}", timeout=60), "bundle cleanup"
+        )
+        self._with_retries(
+            lambda: self.transport.push(local_dir, self.connection.remote_path(""), recursive=True),
+            "bundle push",
+        )
+        return remote_dir
+
     # -- the measurement itself -------------------------------------------
 
     def measure(self, spec: BenchSpec, use_cache: bool = True) -> dict[str, Any]:
@@ -370,17 +384,27 @@ class RemoteBenchmarker:
                 return fetched
             return self._transport_failure(spec, "measure", run)
 
-    def score(self, spec: BenchSpec, limit: int | None = None) -> dict[str, Any]:
-        """Measure one candidate's optval accuracy on the device.
+    def score(
+        self,
+        spec: BenchSpec,
+        limit: int | None = None,
+        split: str | None = None,
+        bundle_dir: str | None = None,
+    ) -> dict[str, Any]:
+        """Measure one candidate's accuracy on the device.
 
         Uncached: the search calls this at two sample sizes for the same config,
         and a cache keyed on the config alone would return the screen's number
         when the full evaluation was asked for.
         """
-        key = f"{spec_cache_key(spec)}_{limit or 'all'}"
+        key = f"{spec_cache_key(spec)}_{split or 'optval'}_{limit or 'all'}"
         remote_spec = self.connection.work_path(f"{key}_spec.json")
         remote_result = self.connection.work_path(f"{key}_score.json")
-        limit_flag = "" if limit is None else f" --limit {limit}"
+        flags = "" if limit is None else f" --limit {limit}"
+        if split:
+            flags += f" --split {split}"
+        if bundle_dir:
+            flags += f" --bundle-dir {bundle_dir}"
 
         with tempfile.TemporaryDirectory() as staging_name:
             staging = Path(staging_name)
@@ -394,7 +418,7 @@ class RemoteBenchmarker:
             self._with_retries(lambda: self.transport.push(local_spec, remote_spec), "spec upload")
             run = self._with_retries(
                 lambda: self.transport.run(
-                    self._score_command(f"--spec {remote_spec} --out {remote_result}{limit_flag}")
+                    self._score_command(f"--spec {remote_spec} --out {remote_result}{flags}")
                 ),
                 "accuracy scoring",
             )
