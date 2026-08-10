@@ -1,0 +1,2016 @@
+<title>Deployment trade space — ResNet-18 on a Raspberry Pi 5</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+<style>
+:root {
+  color-scheme: light;
+  --plane: #f4f4f1;
+  --surface: #fcfcfb;
+  --ink: #0b0b0b;
+  --ink-2: #52514e;
+  --muted: #898781;
+  --grid: #e1e0d9;
+  --axis: #c3c2b7;
+  --rule: rgba(11, 11, 11, 0.10);
+  --ghost: rgba(11, 11, 11, 0.04);
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --wash: rgba(42, 120, 214, 0.12);
+  --good: #0ca30c;
+  --warning: #fab219;
+  --critical: #d03b3b;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --plane: #0d0d0d;
+    --surface: #1a1a19;
+    --ink: #ffffff;
+    --ink-2: #c3c2b7;
+    --muted: #898781;
+    --grid: #2c2c2a;
+    --axis: #383835;
+    --rule: rgba(255, 255, 255, 0.10);
+    --ghost: rgba(255, 255, 255, 0.05);
+    --series-1: #3987e5;
+    --series-2: #d95926;
+    --wash: rgba(57, 135, 229, 0.16);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --plane: #0d0d0d;
+  --surface: #1a1a19;
+  --ink: #ffffff;
+  --ink-2: #c3c2b7;
+  --muted: #898781;
+  --grid: #2c2c2a;
+  --axis: #383835;
+  --rule: rgba(255, 255, 255, 0.10);
+  --ghost: rgba(255, 255, 255, 0.05);
+  --series-1: #3987e5;
+  --series-2: #d95926;
+  --wash: rgba(57, 135, 229, 0.16);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--plane);
+  color: var(--ink);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 14px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+.mono {
+  font-family: ui-monospace, "Cascadia Mono", "SF Mono", Menlo, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.page {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 12px;
+  padding: 16px;
+  max-width: 1680px;
+  margin: 0 auto;
+}
+
+.panel {
+  grid-column: span 12;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 14px 16px 16px;
+  min-width: 0;
+}
+
+.eyebrow {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 2px;
+}
+h2 {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 2px;
+  text-wrap: balance;
+}
+.note { font-size: 12px; color: var(--ink-2); margin: 0 0 10px; max-width: 68ch; }
+.note b { font-weight: 600; color: var(--ink); }
+
+/* ---------------------------------------------------------------- header */
+.band { display: grid; gap: 12px; }
+.claim {
+  font-size: clamp(19px, 2.1vw, 26px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  margin: 0;
+  text-wrap: balance;
+  max-width: 46ch;
+}
+.claim em { font-style: normal; color: var(--series-1); }
+.band-cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+.contract {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 3px 12px;
+  font-size: 12px;
+  border-left: 2px solid var(--series-1);
+  padding-left: 12px;
+}
+.contract dt {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--muted); padding-top: 2px;
+}
+.contract dd { margin: 0; color: var(--ink-2); }
+
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; padding: 2px 8px; border-radius: 99px;
+  border: 1px solid var(--rule); background: var(--ghost); color: var(--ink-2);
+}
+.chip b { color: var(--ink); font-weight: 600; }
+.chip::before {
+  content: ""; width: 5px; height: 5px; border-radius: 99px; background: var(--muted);
+}
+.chip--split::before { background: var(--series-1); }
+.chip--warn::before { background: var(--warning); }
+
+@media (max-width: 760px) {
+  .band-cols { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .slider { grid-template-columns: 84px 1fr 32px; }
+  .deltas { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ------------------------------------------------------------ panel grid */
+@media (min-width: 1080px) {
+  .p-scatter, .p-rank, .p-cost { grid-column: span 7; }
+  .p-weights, .p-detail, .p-trials { grid-column: span 5; }
+}
+
+/* --------------------------------------------------------------- controls */
+.ctl-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 8px; }
+label.ctl { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; color: var(--ink-2); }
+select, button {
+  font: inherit; font-size: 12px; color: var(--ink);
+  background: var(--surface); border: 1px solid var(--axis);
+  border-radius: 3px; padding: 2px 6px;
+}
+button { cursor: pointer; }
+button:hover { background: var(--ghost); }
+input[type="checkbox"] { accent-color: var(--series-1); }
+:focus-visible { outline: 2px solid var(--series-1); outline-offset: 2px; }
+
+/* --------------------------------------------------------------- sliders */
+.sliders { display: grid; gap: 9px; }
+.slider { display: grid; grid-template-columns: 92px 1fr 44px; gap: 10px; align-items: center; }
+.slider > span:first-child { font-size: 12px; color: var(--ink-2); }
+.slider output { font-size: 12px; color: var(--ink); text-align: right; }
+input[type="range"] { width: 100%; accent-color: var(--series-1); }
+.presets { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.presets button { font-size: 11px; padding: 2px 8px; }
+
+/* --------------------------------------------------------------- ranking */
+table { border-collapse: collapse; width: 100%; font-size: 12px; }
+th, td { text-align: right; padding: 4px 6px; border-bottom: 1px solid var(--rule); }
+th { font-size: 10px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+th:first-child, td:first-child, .lft { text-align: left; }
+tbody tr { cursor: pointer; }
+tbody tr:hover { background: var(--ghost); }
+tbody tr[aria-selected="true"] { background: var(--wash); }
+tbody tr[aria-selected="true"] td { border-bottom-color: var(--series-1); }
+.scorebar { display: block; height: 4px; border-radius: 0 2px 2px 0; background: var(--series-1); }
+.tag {
+  font-size: 10px; padding: 0 5px; border-radius: 2px; white-space: nowrap;
+  border: 1px solid currentColor;
+}
+.tag--dyn { color: var(--series-2); }
+.tag--hull { color: var(--muted); }
+.scroll { overflow-x: auto; }
+
+/* ---------------------------------------------------------------- detail */
+.kv { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; font-size: 12px; margin: 0; }
+.kv dt { color: var(--muted); font-size: 11px; }
+.kv dd { margin: 0; color: var(--ink); }
+.deltas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
+.delta-card { border: 1px solid var(--rule); border-radius: 3px; padding: 8px 10px; }
+.delta-card h3 { font-size: 10px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); margin: 0 0 5px; font-weight: 600; }
+.delta-row { display: flex; justify-content: space-between; gap: 10px; font-size: 12px; }
+.up { color: var(--good); }
+.down { color: var(--critical); }
+.flat { color: var(--muted); }
+
+/* ----------------------------------------------------------------- chart */
+svg { display: block; width: 100%; height: auto; overflow: visible; }
+/* A surface-coloured halo, so a label that lands over a mark stays readable. */
+.tick, .pt-label {
+  paint-order: stroke;
+  stroke: var(--surface);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+.tick { font-size: 10px; fill: var(--muted); }
+.axis-title { font-size: 10px; fill: var(--muted); letter-spacing: 0.07em; text-transform: uppercase; }
+.pt-label { font-size: 10px; fill: var(--ink-2); font-weight: 600; }
+.hit { fill: transparent; cursor: pointer; }
+.legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 11px; color: var(--ink-2); margin-top: 8px; }
+.legend span { display: inline-flex; align-items: center; gap: 5px; }
+.key { width: 10px; height: 10px; border-radius: 99px; }
+
+.tip {
+  position: fixed; z-index: 20; pointer-events: none; opacity: 0;
+  transition: opacity .1s; background: var(--surface); color: var(--ink);
+  border: 1px solid var(--axis); border-radius: 3px; padding: 6px 9px;
+  font-size: 11px; box-shadow: 0 4px 14px rgba(0,0,0,.14); max-width: 280px;
+}
+.tip b { font-size: 13px; }
+.tip .sub { color: var(--ink-2); }
+
+details { margin-top: 10px; }
+summary { font-size: 11px; color: var(--muted); cursor: pointer; }
+summary:hover { color: var(--ink-2); }
+
+footer {
+  grid-column: span 12; font-size: 11px; color: var(--muted);
+  display: flex; flex-wrap: wrap; gap: 6px 18px; padding: 2px 2px 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+</style>
+
+<div class="page">
+
+  <header class="panel band">
+    <p class="eyebrow">Hardware-in-the-loop deployment search · Phase 7 output</p>
+    <p class="claim">
+      There is no single best way to deploy a model. This is the set of ways that
+      are <em>not beaten on every count</em> — each one measured on the device.
+    </p>
+    <div class="band-cols">
+      <p class="note" id="header-note"></p>
+      <dl class="contract">
+        <dt>In</dt>
+        <dd>ONNX model (PyTorch-exported, named nodes) · calibration set · labeled eval set · accuracy budget</dd>
+        <dt>Out</dt>
+        <dd>Measured Pareto set of deployment configurations</dd>
+      </dl>
+    </div>
+    <div class="chips" id="header-chips"></div>
+  </header>
+
+  <section class="panel p-scatter">
+    <p class="eyebrow">The trade space</p>
+    <h2>Pick any two objectives</h2>
+    <p class="note" id="scatter-note"></p>
+    <div class="ctl-row">
+      <label class="ctl">X <select id="x-axis"></select></label>
+      <label class="ctl">Y <select id="y-axis"></select></label>
+      <label class="ctl"><input type="checkbox" id="show-dynamic" checked> Show dynamic-quantization configs</label>
+    </div>
+    <div id="scatter"></div>
+    <div class="legend" id="scatter-legend"></div>
+    <details>
+      <summary>Table view — every plotted value</summary>
+      <div class="scroll"><table id="scatter-table"></table></div>
+    </details>
+  </section>
+
+  <section class="panel p-weights">
+    <p class="eyebrow">Your priorities</p>
+    <h2>Say what you care about</h2>
+    <p class="note">
+      Objectives are min-max normalized across the front and direction-corrected,
+      so 1.0 is always the best value present. The score is their weighted sum.
+      Nothing here is a recommendation — you supply the preference.
+    </p>
+    <div class="sliders" id="sliders"></div>
+    <div class="presets" id="presets"></div>
+    <p class="note" id="hull-note" style="margin-top:12px"></p>
+  </section>
+
+  <section class="panel p-rank">
+    <p class="eyebrow">Result</p>
+    <h2>Every config, ranked under your weights</h2>
+    <p class="note" id="rank-note"></p>
+    <div class="scroll"><table id="rank-table"></table></div>
+    <p class="note" id="test-note" style="margin-top:10px"></p>
+  </section>
+
+  <section class="panel p-detail">
+    <p class="eyebrow">Selected configuration</p>
+    <h2 id="detail-title">—</h2>
+    <p class="note" id="detail-note"></p>
+    <dl class="kv" id="detail-kv"></dl>
+    <div class="deltas" id="detail-deltas"></div>
+  </section>
+
+  <section class="panel p-cost">
+    <p class="eyebrow">Why the search exists</p>
+    <h2>What sparing a block buys, against what it costs</h2>
+    <p class="note" id="cost-note"></p>
+    <div id="cost-chart"></div>
+    <div class="legend">
+      <span><i class="key" style="background:var(--series-1)"></i>Distortion removed (share of total KL)</span>
+      <span><i class="key" style="background:var(--series-2)"></i>Latency cost of sparing it (ms)</span>
+    </div>
+    <details>
+      <summary>Table view — per-block benefit, cost and efficiency</summary>
+      <div class="scroll"><table id="cost-table"></table></div>
+    </details>
+  </section>
+
+  <section class="panel p-trials">
+    <p class="eyebrow">Search history</p>
+    <h2>Every trial the device actually ran</h2>
+    <p class="note" id="trials-note"></p>
+    <div id="trials-chart"></div>
+    <div class="legend" id="trials-legend"></div>
+  </section>
+
+  <footer id="provenance"></footer>
+</div>
+
+<div class="tip" id="tip" role="status" aria-live="polite"></div>
+
+<script type="application/json" id="dashboard-data">
+{
+ "model": "resnet18_cifar",
+ "study": "resnet18_cifar_budget0.2_v2",
+ "built_at_utc": "2026-08-10T15:08:53+00:00",
+ "split": {
+  "name": "optval",
+  "samples": 3000,
+  "fingerprint": "d692cdcdeddfac3b"
+ },
+ "device": {
+  "platform": "Linux-6.12.93+rpt-rpi-2712-aarch64-with-glibc2.36",
+  "onnxruntime": "1.27.0",
+  "threads": 4
+ },
+ "budget": {
+  "baseline_top1": 78.5,
+  "budget_pt": 0.2,
+  "threshold_top1": 78.3
+ },
+ "objectives": [
+  {
+   "key": "latency_ms",
+   "label": "Latency",
+   "unit": "ms",
+   "sense": "min"
+  },
+  {
+   "key": "size_mb",
+   "label": "Model size",
+   "unit": "MB",
+   "sense": "min"
+  },
+  {
+   "key": "peak_rss_mb",
+   "label": "Peak RAM",
+   "unit": "MB",
+   "sense": "min"
+  },
+  {
+   "key": "top1",
+   "label": "Top-1",
+   "unit": "%",
+   "sense": "max"
+  }
+ ],
+ "slider": {
+  "step": 5,
+  "max": 100
+ },
+ "front": [
+  {
+   "describe": "static per-channel act:uint8 minmax/512",
+   "describe_run": "4t opt:all",
+   "quant_hash": "6c2712900e73dc56",
+   "quant_type": "static",
+   "per_channel": true,
+   "activation_type": "uint8",
+   "calibration": "minmax/512",
+   "excluded_groups": [],
+   "run": {
+    "intra_op_num_threads": 4,
+    "graph_optimization_level": "all",
+    "enable_cpu_mem_arena": true,
+    "allow_intra_op_spinning": true
+   },
+   "latency_ms": 3.3584,
+   "size_mb": 11.338184,
+   "size_bytes": 11338184,
+   "peak_rss_mb": 105.375,
+   "top1": 78.4,
+   "screen_top1": 80.2,
+   "images_vs_baseline": -3,
+   "id": "C1",
+   "norm": {
+    "latency_ms": 1.0,
+    "size_mb": 0.8990687506057808,
+    "peak_rss_mb": 0.37745740498034075,
+    "top1": 0.20000000000001705
+   },
+   "test_top1": 77.96
+  },
+  {
+   "describe": "static per-channel act:uint8 minmax/512 fp32:conv1+fc",
+   "describe_run": "4t opt:all",
+   "quant_hash": "b3dce3dabb14a76d",
+   "quant_type": "static",
+   "per_channel": true,
+   "activation_type": "uint8",
+   "calibration": "minmax/512",
+   "excluded_groups": [
+    "conv1",
+    "fc"
+   ],
+   "run": {
+    "intra_op_num_threads": 4,
+    "graph_optimization_level": "all",
+    "enable_cpu_mem_arena": true,
+    "allow_intra_op_spinning": true
+   },
+   "latency_ms": 3.5238,
+   "size_mb": 11.492754,
+   "size_bytes": 11492754,
+   "peak_rss_mb": 105.9375,
+   "top1": 78.46666666666667,
+   "screen_top1": 80.4,
+   "images_vs_baseline": -1,
+   "id": "C2",
+   "norm": {
+    "latency_ms": 0.992488271439536,
+    "size_mb": 0.66126399451066,
+    "peak_rss_mb": 0.3302752293577982,
+    "top1": 0.3333333333333428
+   },
+   "test_top1": 78.03
+  },
+  {
+   "describe": "static per-tensor act:int8 entropy/128 fp32:avgpool+relu",
+   "describe_run": "4t opt:extended",
+   "quant_hash": "a2bf75a55f4fe038",
+   "quant_type": "static",
+   "per_channel": false,
+   "activation_type": "int8",
+   "calibration": "entropy/128",
+   "excluded_groups": [
+    "avgpool",
+    "relu"
+   ],
+   "run": {
+    "intra_op_num_threads": 4,
+    "graph_optimization_level": "extended",
+    "enable_cpu_mem_arena": true,
+    "allow_intra_op_spinning": true
+   },
+   "latency_ms": 3.5486,
+   "size_mb": 11.273919,
+   "size_bytes": 11273919,
+   "peak_rss_mb": 109.875,
+   "top1": 78.3,
+   "screen_top1": 80.0,
+   "images_vs_baseline": -6,
+   "id": "C3",
+   "norm": {
+    "latency_ms": 0.9913619663107603,
+    "size_mb": 0.9979399587991764,
+    "peak_rss_mb": 0.0,
+    "top1": 0.0
+   },
+   "test_top1": 77.92
+  },
+  {
+   "describe": "static per-channel act:int8 percentile/128 fp32:avgpool+fc+relu",
+   "describe_run": "4t opt:extended no-arena",
+   "quant_hash": "3b403041673819e9",
+   "quant_type": "static",
+   "per_channel": true,
+   "activation_type": "int8",
+   "calibration": "percentile/128",
+   "excluded_groups": [
+    "avgpool",
+    "fc",
+    "relu"
+   ],
+   "run": {
+    "intra_op_num_threads": 4,
+    "graph_optimization_level": "extended",
+    "enable_cpu_mem_arena": false,
+    "allow_intra_op_spinning": true
+   },
+   "latency_ms": 3.5753,
+   "size_mb": 11.489286,
+   "size_bytes": 11489286,
+   "peak_rss_mb": 97.953125,
+   "top1": 78.76666666666667,
+   "screen_top1": 80.8,
+   "images_vs_baseline": 8,
+   "id": "C4",
+   "norm": {
+    "latency_ms": 0.9901493716761509,
+    "size_mb": 0.6665994858358708,
+    "peak_rss_mb": 1.0,
+    "top1": 0.9333333333333371
+   },
+   "test_top1": 77.89
+  },
+  {
+   "describe": "static per-channel act:int8 minmax/1000 fp32:avgpool+fc+layer1+relu",
+   "describe_run": "4t opt:all",
+   "quant_hash": "7b3f052b12a5c899",
+   "quant_type": "static",
+   "per_channel": true,
+   "activation_type": "int8",
+   "calibration": "minmax/1000",
+   "excluded_groups": [
+    "avgpool",
+    "fc",
+    "layer1",
+    "relu"
+   ],
+   "run": {
+    "intra_op_num_threads": 4,
+    "graph_optimization_level": "all",
+    "enable_cpu_mem_arena": true,
+    "allow_intra_op_spinning": true
+   },
+   "latency_ms": 5.5138,
+   "size_mb": 11.922567,
+   "size_bytes": 11922567,
+   "peak_rss_mb": 105.453125,
+   "top1": 78.8,
+   "screen_top1": 80.8,
+   "images_vs_baseline": 9,
+   "id": "C5",
+   "norm": {
+    "latency_ms": 0.9021113679611606,
+    "size_mb": 0.0,
+    "peak_rss_mb": 0.3709043250327654,
+    "top1": 1.0
+   },
+   "test_top1": 77.9
+  },
+  {
+   "describe": "dynamic per-channel fp32:avgpool+conv1+relu",
+   "describe_run": "4t opt:extended",
+   "quant_hash": "0780fe2e6231425b",
+   "quant_type": "dynamic",
+   "per_channel": true,
+   "activation_type": null,
+   "calibration": null,
+   "excluded_groups": [
+    "avgpool",
+    "conv1",
+    "relu"
+   ],
+   "run": {
+    "intra_op_num_threads": 4,
+    "graph_optimization_level": "extended",
+    "enable_cpu_mem_arena": true,
+    "allow_intra_op_spinning": true
+   },
+   "latency_ms": 25.171,
+   "size_mb": 11.277262,
+   "size_bytes": 11277262,
+   "peak_rss_mb": 101.6875,
+   "top1": 78.56666666666666,
+   "screen_top1": 80.6,
+   "images_vs_baseline": 2,
+   "id": "C6",
+   "norm": {
+    "latency_ms": 0.009369223712356267,
+    "size_mb": 0.9927967790125022,
+    "peak_rss_mb": 0.6867627785058978,
+    "top1": 0.5333333333333314
+   },
+   "test_top1": 78.0
+  },
+  {
+   "describe": "dynamic per-channel fp32:avgpool",
+   "describe_run": "4t opt:extended",
+   "quant_hash": "914df5a6c297caee",
+   "quant_type": "dynamic",
+   "per_channel": true,
+   "activation_type": null,
+   "calibration": null,
+   "excluded_groups": [
+    "avgpool"
+   ],
+   "run": {
+    "intra_op_num_threads": 4,
+    "graph_optimization_level": "extended",
+    "enable_cpu_mem_arena": true,
+    "allow_intra_op_spinning": true
+   },
+   "latency_ms": 25.3041,
+   "size_mb": 11.273082,
+   "size_bytes": 11273082,
+   "peak_rss_mb": 102.203125,
+   "top1": 78.4,
+   "screen_top1": 80.0,
+   "images_vs_baseline": -3,
+   "id": "C7",
+   "norm": {
+    "latency_ms": 0.0033244167510639855,
+    "size_mb": 0.9992276768612282,
+    "peak_rss_mb": 0.6435124508519003,
+    "top1": 0.20000000000001705
+   },
+   "test_top1": 78.0
+  },
+  {
+   "describe": "dynamic fp32:avgpool",
+   "describe_run": "4t opt:all",
+   "quant_hash": "836001ca14aa53f7",
+   "quant_type": "dynamic",
+   "per_channel": false,
+   "activation_type": null,
+   "calibration": null,
+   "excluded_groups": [
+    "avgpool"
+   ],
+   "run": {
+    "intra_op_num_threads": 4,
+    "graph_optimization_level": "all",
+    "enable_cpu_mem_arena": true,
+    "allow_intra_op_spinning": true
+   },
+   "latency_ms": 25.3773,
+   "size_mb": 11.27258,
+   "size_bytes": 11272580,
+   "peak_rss_mb": 101.65625,
+   "top1": 78.33333333333333,
+   "screen_top1": 80.0,
+   "images_vs_baseline": -5,
+   "id": "C8",
+   "norm": {
+    "latency_ms": 0.0,
+    "size_mb": 1.0,
+    "peak_rss_mb": 0.6893840104849279,
+    "top1": 0.06666666666666288
+   },
+   "test_top1": 77.99
+  }
+ ],
+ "test": {
+  "split": "test",
+  "samples": 10000,
+  "fp32_top1": 77.99,
+  "scored": 8
+ },
+ "unreachable": [
+  "C2",
+  "C7"
+ ],
+ "references": [
+  {
+   "name": "fp32",
+   "describe": "fp32",
+   "latency_ms": 16.7898,
+   "size_mb": 44.870838,
+   "peak_rss_mb": 164.71875,
+   "top1": 78.5,
+   "same_as": null
+  },
+  {
+   "name": "dynamic",
+   "describe": "dynamic",
+   "latency_ms": 25.3817,
+   "size_mb": 11.27258,
+   "peak_rss_mb": 102.359375,
+   "top1": 78.33333333333333,
+   "same_as": null
+  },
+  {
+   "name": "static_per_tensor",
+   "describe": "static per-tensor act:uint8 minmax/512",
+   "latency_ms": 3.3171,
+   "size_mb": 11.273804,
+   "peak_rss_mb": 109.828125,
+   "top1": 78.13333333333334,
+   "same_as": null
+  },
+  {
+   "name": "static_per_channel",
+   "describe": "static per-channel act:uint8 minmax/512",
+   "latency_ms": 3.3376,
+   "size_mb": 11.338184,
+   "peak_rss_mb": 105.359375,
+   "top1": 78.4,
+   "same_as": "C1"
+  }
+ ],
+ "noise": {
+  "trials": 8,
+  "latency_percent": 2.55,
+  "rss_percent": 0.0095,
+  "size_percent": 0.0
+ },
+ "cost_benefit": [
+  {
+   "group": "layer1",
+   "recovery_share": 0.4331359617018612,
+   "cost_ms": 2.3777,
+   "share_per_ms": 0.18216594259236288,
+   "kl_rank": 1,
+   "efficiency_rank": 2
+  },
+  {
+   "group": "conv1",
+   "recovery_share": 0.2033201640546969,
+   "cost_ms": 0.14000000000000012,
+   "share_per_ms": 1.4522868861049767,
+   "kl_rank": 2,
+   "efficiency_rank": 1
+  },
+  {
+   "group": "layer2",
+   "recovery_share": 0.094340665865368,
+   "cost_ms": 1.8360000000000003,
+   "share_per_ms": 0.05138380493756426,
+   "kl_rank": 3,
+   "efficiency_rank": 3
+  },
+  {
+   "group": "layer3",
+   "recovery_share": 0.08489608563717171,
+   "cost_ms": 2.9359,
+   "share_per_ms": 0.028916545399084337,
+   "kl_rank": 4,
+   "efficiency_rank": 4
+  },
+  {
+   "group": "layer4",
+   "recovery_share": 0.041501867428005115,
+   "cost_ms": 6.5157,
+   "share_per_ms": 0.006369517845819347,
+   "kl_rank": 5,
+   "efficiency_rank": 5
+  },
+  {
+   "group": "fc",
+   "recovery_share": 0.028355731369334808,
+   "cost_ms": -0.039699999999999847,
+   "share_per_ms": null,
+   "kl_rank": 6,
+   "efficiency_rank": 8
+  },
+  {
+   "group": "avgpool",
+   "recovery_share": 0.0,
+   "cost_ms": -0.05339999999999989,
+   "share_per_ms": null,
+   "kl_rank": 7,
+   "efficiency_rank": 7
+  },
+  {
+   "group": "relu",
+   "recovery_share": -0.20549687533313268,
+   "cost_ms": 0.09010000000000007,
+   "share_per_ms": -2.2807644321102387,
+   "kl_rank": 8,
+   "efficiency_rank": 6
+  }
+ ],
+ "groups": [
+  "conv1",
+  "relu",
+  "layer1",
+  "layer2",
+  "layer3",
+  "layer4",
+  "avgpool",
+  "fc"
+ ],
+ "trials": [
+  {
+   "number": 0,
+   "status": "ok",
+   "top1": 78.33333333333333,
+   "screen_top1": 80.0,
+   "latency_ms": 25.3817,
+   "describe": "dynamic",
+   "on_front": false
+  },
+  {
+   "number": 1,
+   "status": "below_threshold",
+   "top1": 78.13333333333334,
+   "screen_top1": 79.8,
+   "latency_ms": 3.3171,
+   "describe": "static per-tensor act:uint8 minmax/512",
+   "on_front": false
+  },
+  {
+   "number": 2,
+   "status": "ok",
+   "top1": 78.4,
+   "screen_top1": 80.2,
+   "latency_ms": 3.3584,
+   "describe": "static per-channel act:uint8 minmax/512",
+   "on_front": true
+  },
+  {
+   "number": 3,
+   "status": "ok",
+   "top1": 78.46666666666667,
+   "screen_top1": 80.4,
+   "latency_ms": 3.5238,
+   "describe": "static per-channel act:uint8 minmax/512 fp32:conv1+fc",
+   "on_front": true
+  },
+  {
+   "number": 4,
+   "status": "ok",
+   "top1": 78.6,
+   "screen_top1": 80.4,
+   "latency_ms": 5.5724,
+   "describe": "static per-channel act:uint8 minmax/512 fp32:conv1+layer1",
+   "on_front": false
+  },
+  {
+   "number": 5,
+   "status": "ok",
+   "top1": 78.46666666666667,
+   "screen_top1": 80.4,
+   "latency_ms": 24.2697,
+   "describe": "dynamic per-channel fp32:avgpool+conv1+fc+layer3+layer4+relu",
+   "on_front": false
+  },
+  {
+   "number": 6,
+   "status": "ok",
+   "top1": 78.43333333333334,
+   "screen_top1": 80.0,
+   "latency_ms": 15.5194,
+   "describe": "dynamic fp32:avgpool+layer1+layer2+layer3+relu",
+   "on_front": false
+  },
+  {
+   "number": 7,
+   "status": "ok",
+   "top1": 78.4,
+   "screen_top1": 80.0,
+   "latency_ms": 25.3041,
+   "describe": "dynamic per-channel fp32:avgpool",
+   "on_front": true
+  },
+  {
+   "number": 8,
+   "status": "ok",
+   "top1": 78.63333333333334,
+   "screen_top1": 80.2,
+   "latency_ms": 7.4621,
+   "describe": "static per-channel act:int8 entropy/256 fp32:avgpool+fc+layer1+layer2",
+   "on_front": false
+  },
+  {
+   "number": 9,
+   "status": "ok",
+   "top1": 78.56666666666666,
+   "screen_top1": 80.6,
+   "latency_ms": 25.2264,
+   "describe": "dynamic per-channel fp32:conv1+relu",
+   "on_front": false
+  },
+  {
+   "number": 10,
+   "status": "ok",
+   "top1": 78.66666666666667,
+   "screen_top1": 80.2,
+   "latency_ms": 12.1692,
+   "describe": "static per-channel act:uint8 entropy/512 fp32:conv1+fc+layer1+layer4+relu",
+   "on_front": false
+  },
+  {
+   "number": 11,
+   "status": "ok",
+   "top1": 78.3,
+   "screen_top1": 80.0,
+   "latency_ms": 3.5486,
+   "describe": "static per-tensor act:int8 entropy/128 fp32:avgpool+relu",
+   "on_front": true
+  },
+  {
+   "number": 12,
+   "status": "ok",
+   "top1": 78.53333333333333,
+   "screen_top1": 80.6,
+   "latency_ms": 19.0256,
+   "describe": "dynamic per-channel fp32:avgpool+conv1+layer1+layer3+relu",
+   "on_front": false
+  },
+  {
+   "number": 13,
+   "status": "ok",
+   "top1": 78.5,
+   "screen_top1": 80.4,
+   "latency_ms": 20.8812,
+   "describe": "dynamic fp32:conv1+fc+layer1+relu",
+   "on_front": false
+  },
+  {
+   "number": 14,
+   "status": "ok",
+   "top1": 78.5,
+   "screen_top1": 80.2,
+   "latency_ms": 7.2356,
+   "describe": "static per-channel act:uint8 minmax/128 fp32:avgpool+layer1+layer2",
+   "on_front": false
+  },
+  {
+   "number": 15,
+   "status": "ok",
+   "top1": 78.6,
+   "screen_top1": 79.8,
+   "latency_ms": 14.5349,
+   "describe": "static per-channel act:int8 entropy/128 fp32:fc+layer2+layer3+layer4",
+   "on_front": false
+  },
+  {
+   "number": 16,
+   "status": "ok",
+   "top1": 78.5,
+   "screen_top1": 80.4,
+   "latency_ms": 9.8917,
+   "describe": "static per-tensor act:int8 percentile/256 fp32:conv1+layer1+layer2+layer3",
+   "on_front": false
+  },
+  {
+   "number": 17,
+   "status": "ok",
+   "top1": 78.4,
+   "screen_top1": 80.2,
+   "latency_ms": 18.6409,
+   "describe": "dynamic fp32:avgpool+conv1+layer1+layer2+layer4+relu",
+   "on_front": false
+  },
+  {
+   "number": 18,
+   "status": "ok",
+   "top1": 78.6,
+   "screen_top1": 80.4,
+   "latency_ms": 13.6405,
+   "describe": "static per-tensor act:int8 entropy/128 fp32:conv1+fc+layer1+layer2+layer4+relu",
+   "on_front": false
+  },
+  {
+   "number": 19,
+   "status": "ok",
+   "top1": 78.53333333333333,
+   "screen_top1": 80.2,
+   "latency_ms": 10.4753,
+   "describe": "static per-channel act:uint8 percentile/512 fp32:layer4+relu",
+   "on_front": false
+  },
+  {
+   "number": 20,
+   "status": "ok",
+   "top1": 78.43333333333334,
+   "screen_top1": 80.0,
+   "latency_ms": 19.837,
+   "describe": "dynamic fp32:avgpool+fc+layer2+layer3",
+   "on_front": false
+  },
+  {
+   "number": 21,
+   "status": "ok",
+   "top1": 78.66666666666667,
+   "screen_top1": 80.4,
+   "latency_ms": 5.5141,
+   "describe": "static per-channel act:int8 percentile/128 fp32:avgpool+conv1+fc+layer1+relu",
+   "on_front": false
+  },
+  {
+   "number": 22,
+   "status": "ok",
+   "top1": 78.63333333333334,
+   "screen_top1": 80.6,
+   "latency_ms": 14.3847,
+   "describe": "static per-channel act:int8 percentile/128 fp32:layer2+layer3+layer4+relu",
+   "on_front": false
+  },
+  {
+   "number": 23,
+   "status": "ok",
+   "top1": 78.4,
+   "screen_top1": 80.6,
+   "latency_ms": 6.4659,
+   "describe": "static per-channel act:int8 minmax/256 fp32:conv1+fc+layer3",
+   "on_front": false
+  },
+  {
+   "number": 24,
+   "status": "ok",
+   "top1": 78.5,
+   "screen_top1": 80.2,
+   "latency_ms": 20.0127,
+   "describe": "dynamic per-channel fp32:fc+layer2+layer3+relu",
+   "on_front": false
+  },
+  {
+   "number": 25,
+   "status": "ok",
+   "top1": 78.4,
+   "screen_top1": 79.6,
+   "latency_ms": 7.2694,
+   "describe": "static per-tensor act:uint8 entropy/128 fp32:avgpool+fc+layer1+layer2+relu",
+   "on_front": false
+  },
+  {
+   "number": 26,
+   "status": "ok",
+   "top1": 78.76666666666667,
+   "screen_top1": 80.8,
+   "latency_ms": 12.5771,
+   "describe": "static per-channel act:uint8 percentile/128 fp32:avgpool+fc+layer3+layer4",
+   "on_front": false
+  },
+  {
+   "number": 27,
+   "status": "ok",
+   "top1": 78.56666666666666,
+   "screen_top1": 80.6,
+   "latency_ms": 25.171,
+   "describe": "dynamic per-channel fp32:avgpool+conv1+relu",
+   "on_front": true
+  },
+  {
+   "number": 28,
+   "status": "ok",
+   "top1": 78.46666666666667,
+   "screen_top1": 80.4,
+   "latency_ms": 23.1443,
+   "describe": "dynamic fp32:conv1+layer3",
+   "on_front": false
+  },
+  {
+   "number": 29,
+   "status": "ok",
+   "top1": 78.33333333333333,
+   "screen_top1": 80.0,
+   "latency_ms": 25.3773,
+   "describe": "dynamic fp32:avgpool",
+   "on_front": true
+  },
+  {
+   "number": 30,
+   "status": "ok",
+   "top1": 78.5,
+   "screen_top1": 80.4,
+   "latency_ms": 16.9165,
+   "describe": "static per-tensor act:int8 entropy/128 fp32:avgpool+conv1+fc+layer1+layer2+layer3+layer4",
+   "on_front": false
+  },
+  {
+   "number": 31,
+   "status": "ok",
+   "top1": 78.46666666666667,
+   "screen_top1": 80.4,
+   "latency_ms": 22.8586,
+   "describe": "dynamic fp32:avgpool+conv1+layer3",
+   "on_front": false
+  },
+  {
+   "number": 32,
+   "status": "below_threshold",
+   "top1": 78.13333333333334,
+   "screen_top1": 79.8,
+   "latency_ms": 10.1051,
+   "describe": "static per-tensor act:int8 minmax/1000 fp32:avgpool+fc+layer4",
+   "on_front": false
+  },
+  {
+   "number": 33,
+   "status": "ok",
+   "top1": 78.43333333333334,
+   "screen_top1": 80.0,
+   "latency_ms": 9.8555,
+   "describe": "static per-tensor act:uint8 percentile/128 fp32:layer1+layer2+layer3",
+   "on_front": false
+  },
+  {
+   "number": 34,
+   "status": "ok",
+   "top1": 78.53333333333333,
+   "screen_top1": 80.2,
+   "latency_ms": 7.3856,
+   "describe": "static per-tensor act:uint8 percentile/512 fp32:conv1+layer1+layer2+relu",
+   "on_front": false
+  },
+  {
+   "number": 35,
+   "status": "ok",
+   "top1": 78.53333333333333,
+   "screen_top1": 80.4,
+   "latency_ms": 15.6102,
+   "describe": "dynamic per-channel fp32:conv1+fc+layer1+layer2+layer3",
+   "on_front": false
+  },
+  {
+   "number": 36,
+   "status": "ok",
+   "top1": 78.43333333333334,
+   "screen_top1": 80.0,
+   "latency_ms": 19.899,
+   "describe": "dynamic fp32:avgpool+layer2+layer3",
+   "on_front": false
+  },
+  {
+   "number": 37,
+   "status": "ok",
+   "top1": 78.63333333333334,
+   "screen_top1": 80.4,
+   "latency_ms": 8.2301,
+   "describe": "static per-tensor act:uint8 entropy/512 fp32:conv1+layer2+layer3+relu",
+   "on_front": false
+  },
+  {
+   "number": 38,
+   "status": "ok",
+   "top1": 78.8,
+   "screen_top1": 80.8,
+   "latency_ms": 5.5138,
+   "describe": "static per-channel act:int8 minmax/1000 fp32:avgpool+fc+layer1+relu",
+   "on_front": true
+  },
+  {
+   "number": 39,
+   "status": "ok",
+   "top1": 78.76666666666667,
+   "screen_top1": 80.8,
+   "latency_ms": 3.5753,
+   "describe": "static per-channel act:int8 percentile/128 fp32:avgpool+fc+relu",
+   "on_front": true
+  }
+ ],
+ "trials_declared": 40,
+ "provenance": {
+  "checkpoint_sha256": "a03295430aba8a0c",
+  "onnx_sha256": "10d3572a84d38da1",
+  "torch": "2.13.0+cu126"
+ }
+}
+</script>
+
+<script>
+"use strict";
+
+const D = JSON.parse(document.getElementById("dashboard-data").textContent);
+const SVGNS = "http://www.w3.org/2000/svg";
+const OBJ = D.objectives;
+const byKey = Object.fromEntries(OBJ.map(o => [o.key, o]));
+
+// Short enough to sit beside a mark without running into the next one.
+const REF_LABELS = {
+  fp32: "FP32",
+  dynamic: "global dynamic",
+  static_per_tensor: "global per-tensor",
+  static_per_channel: "global per-channel"
+};
+
+const state = {
+  x: "latency_ms",
+  y: "top1",
+  weights: Object.fromEntries(OBJ.map(o => [o.key, 25])),
+  selected: D.front[0].id,
+  showDynamic: true
+};
+
+/* ------------------------------------------------------------- utilities */
+
+const el = (tag, attrs = {}, text) => {
+  const node = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") node.className = v; else node.setAttribute(k, v);
+  }
+  if (text !== undefined) node.textContent = text;
+  return node;
+};
+
+const svgEl = (tag, attrs = {}, text) => {
+  const node = document.createElementNS(SVGNS, tag);
+  for (const [k, v] of Object.entries(attrs)) node.setAttribute(k, v);
+  if (text !== undefined) node.textContent = text;
+  return node;
+};
+
+const clear = node => { while (node.firstChild) node.removeChild(node.firstChild); };
+
+// The reader chooses both scatter axes, so any fixed label offset collides on
+// some pairing. Claim a box per label and take the first free nudge instead.
+const NUDGES = [
+  [0, 0], [0, -12], [0, 12], [14, -6], [-14, -6], [14, 6], [-14, 6],
+  [0, -24], [0, 24], [26, 0], [-26, 0], [0, -36], [0, 36]
+];
+
+function placeLabel(parent, x, y, text, cls, anchor, taken) {
+  const width = text.length * 5.2 + 4;
+  const box = (dx, dy) => {
+    const left = anchor === "middle" ? x + dx - width / 2 : anchor === "end" ? x + dx - width : x + dx;
+    return { x0: left, x1: left + width, y0: y + dy - 9, y1: y + dy + 2 };
+  };
+  const free = ([dx, dy]) => {
+    const b = box(dx, dy);
+    return !taken.some(o => b.x0 < o.x1 && b.x1 > o.x0 && b.y0 < o.y1 && b.y1 > o.y0);
+  };
+  // Fall back to the preferred spot rather than dropping the label: on tightly
+  // clustered axes every nudge is occupied, and a label the halo keeps readable
+  // beats a point the reader cannot name at all.
+  const [dx, dy] = NUDGES.find(free) || NUDGES[0];
+  taken.push(box(dx, dy));
+  parent.appendChild(svgEl("text", { x: x + dx, y: y + dy, "text-anchor": anchor, class: cls }, text));
+}
+
+// Latency and RAM read to 4 significant-ish figures; accuracy to 2 decimals.
+const fmt = (value, key) => {
+  if (key === "top1") return value.toFixed(2);
+  if (key === "size_mb") return value.toFixed(2);
+  if (key === "peak_rss_mb") return value.toFixed(1);
+  return value.toFixed(3);
+};
+const withUnit = (value, key) => `${fmt(value, key)} ${byKey[key].unit}`;
+const signed = (value, digits = 2) => (value >= 0 ? "+" : "−") + Math.abs(value).toFixed(digits);
+
+const visibleRows = () => D.front.filter(r => state.showDynamic || r.quant_type !== "dynamic");
+
+const scoreOf = row =>
+  OBJ.reduce((sum, o) => sum + (state.weights[o.key] || 0) * row.norm[o.key], 0);
+
+const ranked = () => visibleRows().slice().sort((a, b) => scoreOf(b) - scoreOf(a));
+
+const rowById = id => D.front.find(r => r.id === id);
+
+/* ----------------------------------------------------------------- tooltip */
+
+const tip = document.getElementById("tip");
+function showTip(event, lines) {
+  clear(tip);
+  lines.forEach(([strong, sub]) => {
+    const line = el("div");
+    line.appendChild(el("b", {}, strong));
+    if (sub) line.appendChild(el("span", { class: "sub" }, " " + sub));
+    tip.appendChild(line);
+  });
+  const box = tip.getBoundingClientRect();
+  const x = Math.min(event.clientX + 14, window.innerWidth - box.width - 8);
+  const y = Math.max(event.clientY - box.height - 12, 8);
+  tip.style.left = `${x}px`;
+  tip.style.top = `${y}px`;
+  tip.style.opacity = "1";
+}
+const hideTip = () => { tip.style.opacity = "0"; };
+
+/* ------------------------------------------------------------------ header */
+
+function renderHeader() {
+  const b = D.budget;
+  document.getElementById("header-note").textContent =
+    `ResNet-18 on CIFAR-100, ONNX Runtime ${D.device.onnxruntime} on a Raspberry Pi 5 CPU at ` +
+    `${D.device.threads} threads. A configuration is admitted only if it stays within ` +
+    `${b.budget_pt} points of the FP32 baseline's ${b.baseline_top1.toFixed(2)}% top-1, ` +
+    `i.e. at or above ${b.threshold_top1.toFixed(2)}% — a hard filter, not a soft objective. ` +
+    `Latency, size and RAM are measured on the device; nothing here is estimated from FLOPs.`;
+
+  const chips = document.getElementById("header-chips");
+  const add = (label, value, cls) => {
+    const chip = el("span", { class: "chip" + (cls ? " " + cls : "") });
+    chip.appendChild(document.createTextNode(label + " "));
+    chip.appendChild(el("b", { class: "mono" }, value));
+    chips.appendChild(chip);
+  };
+  add("Search graded on", `${D.split.name} · ${D.split.samples.toLocaleString()} held-out images`, "chip--split");
+  if (D.test) {
+    add("Confirmed on", `sealed ${D.test.split} · ${D.test.samples.toLocaleString()} images, scored once`, "chip--split");
+  }
+  add("Pareto members", String(D.front.length));
+  add("Measured trials", String(D.trials_declared));
+  add("Repeat noise", `latency ${D.noise.latency_percent}% · RAM ${D.noise.rss_percent}%`, "chip--warn");
+  add("Split fingerprint", D.split.fingerprint);
+}
+
+/* ----------------------------------------------------------------- scatter */
+
+function renderScatter() {
+  const host = document.getElementById("scatter");
+  clear(host);
+
+  const W = 720, H = 340, M = { t: 14, r: 20, b: 42, l: 62 };
+  const rows = visibleRows();
+  const refs = D.references;
+  // The domain is set by the front alone. FP32 is four times the size and
+  // 1.6x the RAM of every quantized candidate, so including it would squash
+  // the whole front into a corner; off-scale baselines are pinned to the edge
+  // instead, which keeps them visible without letting them set the scale.
+  const pad = (values) => {
+    const lo = Math.min(...values), hi = Math.max(...values);
+    const s = (hi - lo) || Math.abs(hi) || 1;
+    return [lo - s * 0.12, hi + s * 0.12];
+  };
+  const [x0, x1] = pad(rows.map(r => r[state.x]));
+  const [y0, y1] = pad(rows.map(r => r[state.y]));
+  const clamp = (v, lo, hi) => Math.min(Math.max(v, lo), hi);
+  const sx = v => M.l + (v - x0) / (x1 - x0) * (W - M.l - M.r);
+  const sy = v => H - M.b - (v - y0) / (y1 - y0) * (H - M.t - M.b);
+
+  const svg = svgEl("svg", { viewBox: `0 0 ${W} ${H}`, role: "img",
+    "aria-label": `${byKey[state.y].label} against ${byKey[state.x].label} for ${rows.length} configurations` });
+
+  const ticks = (lo, hi) => {
+    const out = [];
+    for (let i = 0; i <= 4; i++) out.push(lo + (hi - lo) * i / 4);
+    return out;
+  };
+
+  ticks(y0, y1).forEach(v => {
+    svg.appendChild(svgEl("line", { x1: M.l, x2: W - M.r, y1: sy(v), y2: sy(v),
+      stroke: "var(--grid)", "stroke-width": 1 }));
+    svg.appendChild(svgEl("text", { x: M.l - 8, y: sy(v) + 3, "text-anchor": "end", class: "tick" },
+      fmt(v, state.y)));
+  });
+  ticks(x0, x1).forEach(v => {
+    svg.appendChild(svgEl("text", { x: sx(v), y: H - M.b + 15, "text-anchor": "middle", class: "tick" },
+      fmt(v, state.x)));
+  });
+  svg.appendChild(svgEl("line", { x1: M.l, x2: W - M.r, y1: H - M.b, y2: H - M.b,
+    stroke: "var(--axis)", "stroke-width": 1 }));
+  svg.appendChild(svgEl("text", { x: (M.l + W - M.r) / 2, y: H - 6, "text-anchor": "middle", class: "axis-title" },
+    `${byKey[state.x].label} (${byKey[state.x].unit})${byKey[state.x].sense === "min" ? " — lower is better" : " — higher is better"}`));
+  svg.appendChild(svgEl("text", { x: 12, y: (M.t + H - M.b) / 2, class: "axis-title",
+    transform: `rotate(-90 12 ${(M.t + H - M.b) / 2})`, "text-anchor": "middle" },
+    `${byKey[state.y].label} (${byKey[state.y].unit})`));
+
+  // Every label is placed in one pass at the end, marks first, so a label can
+  // never land on a mark or on another label whatever axes are chosen.
+  const taken = [];
+  const labels = { points: [], refs: [], notes: [] };
+  const reserve = (x, y, r) => taken.push({ x0: x - r, x1: x + r, y0: y - r, y1: y + r });
+
+  // The accuracy budget is a hard filter, so draw the line candidates had to clear.
+  if (state.y === "top1" || state.x === "top1") {
+    const t = D.budget.threshold_top1;
+    const vertical = state.x === "top1";
+    const p = vertical ? sx(t) : sy(t);
+    svg.appendChild(svgEl("line", vertical
+      ? { x1: p, x2: p, y1: M.t, y2: H - M.b, stroke: "var(--critical)", "stroke-width": 1, opacity: .5 }
+      : { x1: M.l, x2: W - M.r, y1: p, y2: p, stroke: "var(--critical)", "stroke-width": 1, opacity: .5 }));
+    labels.notes.push(vertical
+      ? { x: p + 5, y: M.t + 10, text: `accuracy budget ${t.toFixed(2)}%`, anchor: "start" }
+      : { x: W - M.r, y: p - 5, text: `accuracy budget ${t.toFixed(2)}%`, anchor: "end" });
+  }
+
+  // Baselines carry no hue: they are context, and a second series colour here
+  // would compete with the front for attention.
+  refs.filter(ref => !ref.same_as).forEach(ref => {
+    const rawX = sx(ref[state.x]), rawY = sy(ref[state.y]);
+    const cx = clamp(rawX, M.l + 7, W - M.r - 7), cy = clamp(rawY, M.t + 7, H - M.b - 7);
+    const offX = cx !== rawX, offY = cy !== rawY;
+    const g = svgEl("g");
+
+    if (offX || offY) {
+      // A caret pointing off the plot, so an off-scale baseline reads as
+      // "further that way", never as a value sitting on the edge.
+      const dir = offX ? (rawX > cx ? [1, 0] : [-1, 0]) : (rawY > cy ? [0, 1] : [0, -1]);
+      g.appendChild(svgEl("path", {
+        d: `M ${cx + dir[0] * 7} ${cy + dir[1] * 7} L ${cx - dir[1] * 6 - dir[0] * 3} ${cy - dir[0] * 6 - dir[1] * 3} ` +
+           `L ${cx + dir[1] * 6 - dir[0] * 3} ${cy + dir[0] * 6 - dir[1] * 3} Z`,
+        fill: "var(--surface)", stroke: "var(--muted)", "stroke-width": 1.5, "stroke-linejoin": "round"
+      }));
+    } else {
+      g.appendChild(svgEl("path", {
+        d: `M ${cx} ${cy - 6} L ${cx + 6} ${cy} L ${cx} ${cy + 6} L ${cx - 6} ${cy} Z`,
+        fill: "var(--surface)", stroke: "var(--muted)", "stroke-width": 1.5
+      }));
+    }
+
+    reserve(cx, cy, 8);
+    const name = REF_LABELS[ref.name] || ref.name;
+    const off = offX ? state.x : offY ? state.y : null;
+    labels.refs.push({
+      x: cx + (cx > W - M.r - 40 ? -10 : 10), y: cy + 13,
+      text: off ? `${name} → ${withUnit(ref[off], off)}` : name,
+      anchor: cx > W - M.r - 40 ? "end" : "start"
+    });
+
+    const hit = svgEl("circle", { cx, cy, r: 14, class: "hit", tabindex: "0", role: "button",
+      "aria-label": `${name}, global baseline: ${withUnit(ref[state.x], state.x)} ${byKey[state.x].label}, ` +
+                    `${withUnit(ref[state.y], state.y)} ${byKey[state.y].label}` });
+    const lines = () => [
+      [name, off ? "global baseline — off this scale" : "global baseline — the standard cookbook answer"],
+      [withUnit(ref[state.x], state.x), byKey[state.x].label],
+      [withUnit(ref[state.y], state.y), byKey[state.y].label]
+    ];
+    hit.addEventListener("pointermove", e => showTip(e, lines()));
+    hit.addEventListener("pointerleave", hideTip);
+    hit.addEventListener("focus", () => {
+      const b = hit.getBoundingClientRect();
+      showTip({ clientX: b.left + b.width / 2, clientY: b.top }, lines());
+    });
+    hit.addEventListener("blur", hideTip);
+    g.appendChild(hit);
+    svg.appendChild(g);
+  });
+
+  rows.forEach(row => {
+    const cx = sx(row[state.x]), cy = sy(row[state.y]);
+    const isSelected = row.id === state.selected;
+    const g = svgEl("g");
+
+    // Repeat spread on the selected point only: one whisker reads as a
+    // measurement, eight read as hatching.
+    if (isSelected) {
+      [[state.x, true], [state.y, false]].forEach(([key, horizontal]) => {
+        const pct = key === "latency_ms" ? D.noise.latency_percent
+                  : key === "peak_rss_mb" ? D.noise.rss_percent : 0;
+        if (!pct) return;
+        const half = row[key] * pct / 200;
+        const a = horizontal ? sx(row[key] - half) : sy(row[key] - half);
+        const b = horizontal ? sx(row[key] + half) : sy(row[key] + half);
+        const ends = horizontal ? { x1: a, x2: b, y1: cy, y2: cy } : { x1: cx, x2: cx, y1: a, y2: b };
+        g.appendChild(svgEl("line", { ...ends, stroke: "var(--series-1)", "stroke-width": 6,
+          opacity: 0.18, "stroke-linecap": "round" }));
+      });
+    }
+
+    g.appendChild(svgEl("circle", {
+      cx, cy, r: isSelected ? 8 : 6,
+      fill: row.quant_type === "dynamic" ? "var(--surface)" : "var(--series-1)",
+      stroke: "var(--series-1)", "stroke-width": row.quant_type === "dynamic" ? 2 : 2,
+      "paint-order": "stroke"
+    }));
+    if (isSelected) {
+      g.appendChild(svgEl("circle", { cx, cy, r: 12, fill: "none",
+        stroke: "var(--series-1)", "stroke-width": 1.5, opacity: .55 }));
+    }
+    reserve(cx, cy, isSelected ? 13 : 8);
+    const twin = refs.find(ref => ref.same_as === row.id);
+    labels.points.push({
+      x: cx, y: cy - 13, anchor: "middle",
+      text: twin ? `${row.id} = ${REF_LABELS[twin.name] || twin.name}` : row.id
+    });
+
+    const hit = svgEl("circle", { cx, cy, r: 15, class: "hit", tabindex: "0", role: "button",
+      "aria-label": `${row.id}: ${withUnit(row[state.x], state.x)} ${byKey[state.x].label}, ` +
+                    `${withUnit(row[state.y], state.y)} ${byKey[state.y].label}. ${row.describe}` });
+    const lines = () => [
+      [row.id, row.describe],
+      [withUnit(row[state.x], state.x), byKey[state.x].label],
+      [withUnit(row[state.y], state.y), byKey[state.y].label]
+    ];
+    hit.addEventListener("pointermove", e => showTip(e, lines()));
+    hit.addEventListener("pointerleave", hideTip);
+    hit.addEventListener("focus", () => {
+      const b = hit.getBoundingClientRect();
+      showTip({ clientX: b.left + b.width / 2, clientY: b.top + b.height / 2 }, lines());
+    });
+    hit.addEventListener("blur", hideTip);
+    const pick = () => { state.selected = row.id; render(); };
+    hit.addEventListener("click", pick);
+    hit.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(); } });
+    g.appendChild(hit);
+    svg.appendChild(g);
+  });
+
+  labels.points.forEach(l => placeLabel(svg, l.x, l.y, l.text, "pt-label", l.anchor, taken));
+  labels.refs.forEach(l => placeLabel(svg, l.x, l.y, l.text, "tick", l.anchor, taken));
+  labels.notes.forEach(l => placeLabel(svg, l.x, l.y, l.text, "tick", l.anchor, taken));
+
+  host.appendChild(svg);
+
+  const legend = document.getElementById("scatter-legend");
+  clear(legend);
+  const keys = [
+    ["Pareto member (static quantization)", "var(--series-1)", true],
+    ["Pareto member (dynamic quantization)", "var(--series-1)", false],
+    ["Global baseline — a caret means it is off this scale, in that direction", "var(--muted)", false]
+  ];
+  keys.forEach(([label, colour, filled]) => {
+    const s = el("span");
+    const key = el("i", { class: "key" });
+    key.style.background = filled ? colour : "var(--surface)";
+    key.style.border = `2px solid ${colour}`;
+    s.appendChild(key);
+    s.appendChild(document.createTextNode(label));
+    legend.appendChild(s);
+  });
+  const s = el("span");
+  const w = el("i", { class: "key" });
+  w.style.background = "var(--series-1)";
+  w.style.opacity = ".18";
+  w.style.borderRadius = "2px";
+  s.appendChild(w);
+  s.appendChild(document.createTextNode(
+    `Repeat spread on the selected point (latency ${D.noise.latency_percent}%, RAM ${D.noise.rss_percent}%, over ${D.noise.trials} repeats)`));
+  legend.appendChild(s);
+}
+
+/* ------------------------------------------------------------ table views */
+
+function buildTable(node, headers, rows, opts = {}) {
+  clear(node);
+  const thead = el("thead");
+  const hr = el("tr");
+  headers.forEach((h, i) => hr.appendChild(el("th", i === 0 ? { class: "lft" } : {}, h)));
+  thead.appendChild(hr);
+  node.appendChild(thead);
+  const tbody = el("tbody");
+  rows.forEach(cells => {
+    const tr = el("tr");
+    if (opts.onPick) {
+      tr.addEventListener("click", () => opts.onPick(cells));
+      tr.setAttribute("aria-selected", String(Boolean(cells.selected)));
+    }
+    cells.values.forEach((cell, i) => {
+      const td = el("td", i === 0 ? { class: "lft" } : {});
+      if (cell instanceof Node) td.appendChild(cell); else td.textContent = String(cell);
+      if (opts.mono && i > 0) td.classList.add("mono");
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+  node.appendChild(tbody);
+}
+
+function renderScatterNote() {
+  const note = document.getElementById("scatter-note");
+  clear(note);
+  note.appendChild(document.createTextNode(
+    "Each point is one deployment configuration, measured on the device. Grey diamonds are the " +
+    "global baselines a standard quantization cookbook would hand you — the bar the search has to beat. "));
+  const twins = D.references.filter(r => r.same_as);
+  twins.forEach(ref => {
+    note.appendChild(el("b", {}, `${ref.same_as} is ${REF_LABELS[ref.name] || ref.name}`));
+    note.appendChild(document.createTextNode(
+      " — the cookbook answer is on the front, and wins latency outright. What the search adds is the rest of the set. "));
+  });
+}
+
+function renderScatterTable() {
+  const headers = ["Config"].concat(OBJ.map(o => `${o.label} (${o.unit})`)).concat(["Recipe"]);
+  const rows = D.front.map(r => ({
+    values: [r.id].concat(OBJ.map(o => fmt(r[o.key], o.key))).concat([r.describe])
+  })).concat(D.references.map(r => ({
+    values: [REF_LABELS[r.name] || r.name]
+      .concat(OBJ.map(o => fmt(r[o.key], o.key)))
+      .concat([r.same_as ? `global baseline — same artifact as ${r.same_as}` : "global baseline"])
+  })));
+  buildTable(document.getElementById("scatter-table"), headers, rows, { mono: true });
+}
+
+/* ----------------------------------------------------------------- sliders */
+
+function renderSliders() {
+  const host = document.getElementById("sliders");
+  clear(host);
+  OBJ.forEach(o => {
+    const wrap = el("div", { class: "slider" });
+    wrap.appendChild(el("span", {}, `${o.label} ${o.sense === "min" ? "↓" : "↑"}`));
+    const input = el("input", {
+      type: "range", min: "0", max: String(D.slider.max), step: String(D.slider.step),
+      value: String(state.weights[o.key]), "aria-label": `Weight for ${o.label}`
+    });
+    input.addEventListener("input", () => {
+      state.weights[o.key] = Number(input.value);
+      render();
+    });
+    wrap.appendChild(input);
+    wrap.appendChild(el("output", { class: "mono" }, String(state.weights[o.key])));
+    host.appendChild(wrap);
+  });
+
+  const presets = document.getElementById("presets");
+  clear(presets);
+  const only = key => Object.fromEntries(OBJ.map(o => [o.key, o.key === key ? D.slider.max : 0]));
+  const options = [["Equal weight", Object.fromEntries(OBJ.map(o => [o.key, 25]))]]
+    .concat(OBJ.map(o => [`${o.label} only`, only(o.key)]));
+  options.forEach(([label, weights]) => {
+    const button = el("button", { type: "button" }, label);
+    button.addEventListener("click", () => { state.weights = { ...weights }; render(); });
+    presets.appendChild(button);
+  });
+
+  const hull = document.getElementById("hull-note");
+  clear(hull);
+  if (D.unreachable.length) {
+    hull.appendChild(document.createTextNode("No slider setting can lift "));
+    hull.appendChild(el("b", {}, D.unreachable.join(", ")));
+    hull.appendChild(document.createTextNode(
+      " to rank 1. That is a property of weighted sums, not a flaw in those configs: a weighted " +
+      "sum over fixed points can only ever select members of their convex hull, so a config can be " +
+      "genuinely un-dominated and still sit inside the hull. They are marked in the ranking rather " +
+      "than left looking merely unlucky."));
+  }
+}
+
+/* ----------------------------------------------------------------- ranking */
+
+function renderRanking() {
+  const rows = ranked();
+  const best = rows.length ? scoreOf(rows[0]) : 1;
+  const totalWeight = OBJ.reduce((s, o) => s + (state.weights[o.key] || 0), 0);
+
+  const note = document.getElementById("rank-note");
+  clear(note);
+  if (totalWeight === 0) {
+    note.textContent = "Every weight is zero, so every config scores the same. Raise at least one slider.";
+  } else {
+    note.appendChild(document.createTextNode("The full ordering under your current weights, not just the winner. "));
+    note.appendChild(el("b", {}, "There is no named “balanced” pick"));
+    note.appendChild(document.createTextNode(
+      " — asserting one would replace your preference with ours, which is the thing a Pareto set exists to avoid."));
+  }
+
+  const headers = ["#", "Config"]
+    .concat(OBJ.map(o => o.key === "top1" ? `Top-1 (${D.split.name})` : `${o.label} (${o.unit})`))
+    .concat(D.test ? [`Top-1 (${D.test.split})`] : [])
+    .concat(["Recipe", "Score"]);
+  const tableRows = rows.map((r, i) => {
+    const recipe = el("span");
+    recipe.appendChild(document.createTextNode(r.describe));
+    if (r.quant_type === "dynamic") {
+      recipe.appendChild(document.createTextNode(" "));
+      recipe.appendChild(el("span", { class: "tag tag--dyn",
+        title: "Pareto-valid but impractical: it wins only on size and RAM, at several times the latency." },
+        "not practical"));
+    }
+    if (D.unreachable.includes(r.id)) {
+      recipe.appendChild(document.createTextNode(" "));
+      recipe.appendChild(el("span", { class: "tag tag--hull",
+        title: "Inside the convex hull: no slider setting ranks it first." }, "never #1"));
+    }
+    const bar = el("span", { class: "scorebar" });
+    bar.style.width = `${Math.max(2, (best ? scoreOf(r) / best : 0) * 100)}%`;
+    const cell = el("span");
+    cell.appendChild(el("span", { class: "mono" }, (scoreOf(r) / (totalWeight || 1)).toFixed(3)));
+    cell.appendChild(bar);
+    return {
+      id: r.id,
+      selected: r.id === state.selected,
+      values: [String(i + 1), r.id]
+        .concat(OBJ.map(o => fmt(r[o.key], o.key)))
+        .concat(D.test ? [r.test_top1 === null ? "—" : r.test_top1.toFixed(2)] : [])
+        .concat([recipe, cell])
+    };
+  });
+  buildTable(document.getElementById("rank-table"), headers, tableRows, {
+    onPick: cells => { state.selected = cells.id; render(); }
+  });
+  renderTestNote();
+}
+
+// The sealed split is scored once, after the search has already chosen. It is
+// shown and never weighted: an objective the search could see would leak it.
+function renderTestNote() {
+  const host = document.getElementById("test-note");
+  clear(host);
+  if (!D.test) {
+    host.textContent = "The sealed test set has not been evaluated yet, so every accuracy here is the "
+      + `${D.split.name} split the search graded on.`;
+    return;
+  }
+  const scored = D.front.filter(r => r.test_top1 !== null);
+  const bestOptval = scored.slice().sort((a, b) => b.top1 - a.top1)[0];
+  const bestTest = scored.slice().sort((a, b) => b.test_top1 - a.test_top1)[0];
+
+  host.appendChild(el("b", {}, `Top-1 (${D.test.split})`));
+  host.appendChild(document.createTextNode(
+    ` is the sealed ${D.test.samples.toLocaleString()}-image split, scored once after the search finished — ` +
+    "shown for confirmation and deliberately not weighted, because an objective the search can see is a leak. "));
+  if (bestOptval.id !== bestTest.id) {
+    host.appendChild(el("b", {}, "It reorders the accuracy column"));
+    host.appendChild(document.createTextNode(
+      `: ${bestOptval.id} leads on ${D.split.name} at ${bestOptval.top1.toFixed(2)}% but scores ` +
+      `${bestOptval.test_top1.toFixed(2)}% here, behind ${bestTest.id}'s ${bestTest.test_top1.toFixed(2)}%. ` +
+      "That is what a sub-point accuracy gap is worth — which is why the page never called one a win. " +
+      `FP32 itself scores ${D.test.fp32_top1.toFixed(2)}% on this split.`));
+  }
+}
+
+/* ------------------------------------------------------------------ detail */
+
+function renderDetail() {
+  const row = rowById(state.selected) || D.front[0];
+  document.getElementById("detail-title").textContent = `${row.id} — ${row.describe}`;
+
+  const note = document.getElementById("detail-note");
+  clear(note);
+  const images = row.images_vs_baseline;
+  const verb = images > 0 ? "above" : images < 0 ? "below" : "level with";
+  note.appendChild(document.createTextNode(
+    `Top-1 is ${verb} the FP32 baseline by ${Math.abs(images)} ` +
+    `${Math.abs(images) === 1 ? "image" : "images"} out of ${D.split.samples.toLocaleString()} ` +
+    `on the ${D.split.name} split — a gap this size matches FP32, it does not beat it. ` +
+    `Screened first on 500 images at ${row.screen_top1.toFixed(1)}%, then measured on the full split.`));
+
+  const kv = document.getElementById("detail-kv");
+  clear(kv);
+  const add = (label, value, mono = true) => {
+    kv.appendChild(el("dt", {}, label));
+    kv.appendChild(el("dd", mono ? { class: "mono" } : {}, value));
+  };
+  add("Quantization", row.quant_type + (row.per_channel ? " · per-channel weights" : " · per-tensor weights"));
+  add("Activations", row.activation_type ? row.activation_type : "computed at inference time (dynamic)");
+  add("Calibration", row.calibration ? row.calibration.replace("/", " over ") + " images" : "none needed");
+  add("Kept in FP32", row.excluded_groups.length ? row.excluded_groups.join(", ") : "nothing — every block is INT8");
+  add("Blocks quantized", `${D.groups.length - row.excluded_groups.length} of ${D.groups.length}`);
+  add("Runtime", `${row.run.intra_op_num_threads} threads · graph opt ${row.run.graph_optimization_level}` +
+    `${row.run.enable_cpu_mem_arena ? "" : " · arena off"}${row.run.allow_intra_op_spinning ? "" : " · spinning off"}`);
+  add("Artifact hash", row.quant_hash);
+
+  const deltas = document.getElementById("detail-deltas");
+  clear(deltas);
+  const refs = D.references.filter(r => r.name === "fp32" || r.name === "static_per_channel");
+  refs.forEach(ref => {
+    const card = el("div", { class: "delta-card" });
+    card.appendChild(el("h3", {}, ref.name === "fp32" ? "vs FP32 export" : "vs global INT8 (cookbook)"));
+    OBJ.forEach(o => {
+      const line = el("div", { class: "delta-row" });
+      line.appendChild(el("span", {}, o.label));
+      const change = o.key === "top1"
+        ? row[o.key] - ref[o.key]
+        : (row[o.key] / ref[o.key] - 1) * 100;
+      const better = o.sense === "max" ? change > 0 : change < 0;
+      const noise = o.key === "latency_ms" ? D.noise.latency_percent
+                  : o.key === "peak_rss_mb" ? D.noise.rss_percent : 0;
+      const insideNoise = o.key !== "top1" && Math.abs(change) < noise;
+      const text = o.key === "top1" ? `${signed(change)} pt` : `${signed(change, 1)}%`;
+      line.appendChild(el("span", {
+        class: "mono " + (insideNoise || change === 0 ? "flat" : better ? "up" : "down"),
+        title: insideNoise ? "inside the measured repeat noise" : ""
+      }, insideNoise ? `${text} (noise)` : text));
+      card.appendChild(line);
+    });
+    deltas.appendChild(card);
+  });
+}
+
+/* -------------------------------------------------------- sensitivity/cost */
+
+function renderCostBenefit() {
+  const rows = D.cost_benefit;
+  const note = document.getElementById("cost-note");
+  clear(note);
+  const top = rows[0];
+  note.appendChild(document.createTextNode(
+    "Blocks are ordered by how much quantization distortion sparing them removes — the sensitivity " +
+    "ranking. Read down the orange column and the ranking falls apart: "));
+  note.appendChild(el("b", {}, top.group));
+  note.appendChild(document.createTextNode(
+    ` tops the distortion ranking but costs ${top.cost_ms.toFixed(2)} ms to spare, ` +
+    `so per millisecond paid it is only rank ${top.efficiency_rank}. Sensitivity alone picks worse ` +
+    "exclusions than the cookbook; that gap is the reason the search runs on the device instead of on a heuristic."));
+
+  const host = document.getElementById("cost-chart");
+  clear(host);
+  const rowH = 26, W = 760, labelW = 118, gap = 30, valueW = 46;
+  const H = rows.length * rowH + 32;
+  const colW = (W - labelW - gap) / 2 - valueW;
+
+  // A signed scale, not an absolute one: `relu` removes negative distortion
+  // (sparing it breaks Conv+Relu fusion) and several costs sit just under zero.
+  // Mapping on magnitude alone drew those bars off the left of the canvas.
+  const axis = values => {
+    const below = Math.max(0, -Math.min(...values));
+    const above = Math.max(0, Math.max(...values));
+    const total = below + above || 1;
+    return { zero: below / total * colW, unit: colW / total };
+  };
+  const shareAxis = axis(rows.map(r => r.recovery_share));
+  const costAxis = axis(rows.map(r => r.cost_ms));
+  const costX = labelW + colW + valueW + gap;
+
+  const svg = svgEl("svg", { viewBox: `0 0 ${W} ${H}`, role: "img",
+    "aria-label": "Distortion removed and latency cost for each block" });
+  svg.appendChild(svgEl("text", { x: labelW, y: 11, class: "axis-title" }, "Distortion removed"));
+  svg.appendChild(svgEl("text", { x: costX, y: 11, class: "axis-title" }, "Latency cost (ms)"));
+  [[labelW + shareAxis.zero], [costX + costAxis.zero]].forEach(([x]) => {
+    svg.appendChild(svgEl("line", { x1: x, x2: x, y1: 18, y2: H - 6,
+      stroke: "var(--axis)", "stroke-width": 1 }));
+  });
+
+  rows.forEach((r, i) => {
+    const y = 24 + i * rowH;
+    const emphasis = r.kl_rank !== r.efficiency_rank;
+    svg.appendChild(svgEl("text", { x: 0, y: y + 16, class: "tick" }, r.group));
+    svg.appendChild(svgEl("text", { x: labelW - 10, y: y + 16, "text-anchor": "end", class: "tick" },
+      `#${r.kl_rank}→#${r.efficiency_rank}`));
+
+    const draw = (x0, value, scale, colour) => {
+      const zeroX = x0 + scale.zero;
+      const width = Math.max(Math.abs(value) * scale.unit, 1);
+      const x = value >= 0 ? zeroX : zeroX - width;
+      svg.appendChild(svgEl("rect", {
+        x, y: y + 5, width, height: 14, rx: 3,
+        fill: colour, opacity: emphasis ? 1 : .55
+      }));
+      return { left: x, right: x + width, positive: value >= 0 };
+    };
+    // Values sit in their own column rather than at the bar end: a bar that
+    // grows left would otherwise push its label into the block-name gutter.
+    const label = (x0, text) =>
+      svg.appendChild(svgEl("text", { x: x0 + colW + 6, y: y + 16, class: "tick" }, text));
+    draw(labelW, r.recovery_share, shareAxis, "var(--series-1)");
+    label(labelW, (r.recovery_share * 100).toFixed(1) + "%");
+    draw(costX, r.cost_ms, costAxis, "var(--series-2)");
+    label(costX, signed(r.cost_ms, 2));
+
+    const hit = svgEl("rect", { x: 0, y, width: W, height: rowH, class: "hit", tabindex: "0",
+      "aria-label": `${r.group}: removes ${(r.recovery_share * 100).toFixed(1)}% of the distortion, ` +
+                    `costs ${r.cost_ms.toFixed(2)} ms` });
+    const lines = () => [
+      [r.group, `distortion rank ${r.kl_rank} · efficiency rank ${r.efficiency_rank}`],
+      [(r.recovery_share * 100).toFixed(1) + "%", "of total distortion removed"],
+      [signed(r.cost_ms, 2) + " ms", "latency to spare it"],
+      [r.share_per_ms === null ? "free" : r.share_per_ms.toFixed(2), "share per ms"]
+    ];
+    hit.addEventListener("pointermove", e => showTip(e, lines()));
+    hit.addEventListener("pointerleave", hideTip);
+    hit.addEventListener("focus", e => {
+      const b = hit.getBoundingClientRect();
+      showTip({ clientX: b.left + 120, clientY: b.top + b.height / 2 }, lines());
+    });
+    hit.addEventListener("blur", hideTip);
+    svg.appendChild(hit);
+  });
+  host.appendChild(svg);
+
+  buildTable(document.getElementById("cost-table"),
+    ["Block", "Distortion removed", "Latency cost (ms)", "Share per ms", "Distortion rank", "Efficiency rank"],
+    rows.map(r => ({ values: [
+      r.group, (r.recovery_share * 100).toFixed(1) + "%", signed(r.cost_ms, 3),
+      r.share_per_ms === null ? "free" : r.share_per_ms.toFixed(2),
+      String(r.kl_rank), String(r.efficiency_rank)
+    ] })), { mono: true });
+}
+
+/* ----------------------------------------------------------------- trials */
+
+function renderTrials() {
+  const note = document.getElementById("trials-note");
+  const host = document.getElementById("trials-chart");
+  const legend = document.getElementById("trials-legend");
+  clear(note); clear(host); clear(legend);
+
+  if (!D.trials.length) {
+    note.textContent =
+      `The study's ${D.trials_declared} trials live in a sqlite file that is not committed — it is ` +
+      "rewritten on every resume, and the summary JSON beside it carries the results. Rebuild with " +
+      "the study present to draw this panel.";
+    return;
+  }
+
+  const rejected = D.trials.filter(t => t.status !== "ok");
+  note.appendChild(document.createTextNode(
+    `Each dot is one candidate built, screened and measured on the device. ` +
+    `${rejected.length} of ${D.trials.length} cleared every earlier gate and still failed the accuracy ` +
+    `budget on the full split — the filter doing its job. Cheap gates run first: a 500-image screen ` +
+    "rejects before any latency measurement is spent."));
+
+  const W = 560, H = 190, M = { t: 12, r: 12, b: 30, l: 46 };
+  const scored = D.trials.filter(t => t.top1 !== null);
+  const values = scored.map(t => t.top1).concat([D.budget.threshold_top1, D.budget.baseline_top1]);
+  const lo = Math.min(...values) - 0.15, hi = Math.max(...values) + 0.15;
+  const sx = i => M.l + i / Math.max(1, D.trials.length - 1) * (W - M.l - M.r);
+  const sy = v => H - M.b - (v - lo) / (hi - lo) * (H - M.t - M.b);
+
+  const svg = svgEl("svg", { viewBox: `0 0 ${W} ${H}`, role: "img",
+    "aria-label": `Top-1 accuracy of ${D.trials.length} measured trials against the accuracy budget` });
+  [D.budget.baseline_top1, D.budget.threshold_top1].forEach((v, i) => {
+    svg.appendChild(svgEl("line", { x1: M.l, x2: W - M.r, y1: sy(v), y2: sy(v),
+      stroke: i ? "var(--critical)" : "var(--axis)", "stroke-width": 1, opacity: i ? .55 : 1 }));
+    svg.appendChild(svgEl("text", { x: W - M.r, y: sy(v) - 4, "text-anchor": "end", class: "tick" },
+      (i ? "budget " : "FP32 baseline ") + v.toFixed(2) + "%"));
+  });
+  [lo, (lo + hi) / 2, hi].forEach(v => {
+    svg.appendChild(svgEl("text", { x: M.l - 8, y: sy(v) + 3, "text-anchor": "end", class: "tick" }, v.toFixed(2)));
+  });
+  svg.appendChild(svgEl("text", { x: (M.l + W - M.r) / 2, y: H - 4, "text-anchor": "middle", class: "axis-title" },
+    "Trial order"));
+
+  D.trials.forEach((t, i) => {
+    if (t.top1 === null) return;
+    const ok = t.status === "ok";
+    const g = svgEl("g");
+    g.appendChild(svgEl("circle", {
+      cx: sx(i), cy: sy(t.top1), r: t.on_front ? 5.5 : 4,
+      fill: ok ? "var(--series-1)" : "var(--critical)",
+      stroke: "var(--surface)", "stroke-width": 2, "paint-order": "stroke",
+      opacity: ok ? (t.on_front ? 1 : .6) : 1
+    }));
+    if (t.on_front) {
+      g.appendChild(svgEl("circle", { cx: sx(i), cy: sy(t.top1), r: 9, fill: "none",
+        stroke: "var(--series-1)", "stroke-width": 1.2, opacity: .6 }));
+    }
+    const hit = svgEl("circle", { cx: sx(i), cy: sy(t.top1), r: 12, class: "hit", tabindex: "0",
+      "aria-label": `Trial ${t.number}: ${t.top1.toFixed(2)}% top-1, ${ok ? "admitted" : "rejected on accuracy"}` });
+    const lines = () => [
+      [`Trial ${t.number}`, ok ? (t.on_front ? "on the Pareto front" : "admitted") : "rejected on accuracy"],
+      [t.top1.toFixed(2) + "%", "top-1 on the full split"],
+      [t.latency_ms === null ? "—" : t.latency_ms.toFixed(3) + " ms", t.describe]
+    ];
+    hit.addEventListener("pointermove", e => showTip(e, lines()));
+    hit.addEventListener("pointerleave", hideTip);
+    hit.addEventListener("focus", () => {
+      const b = hit.getBoundingClientRect();
+      showTip({ clientX: b.left + b.width / 2, clientY: b.top }, lines());
+    });
+    hit.addEventListener("blur", hideTip);
+    g.appendChild(hit);
+    svg.appendChild(g);
+  });
+  host.appendChild(svg);
+
+  [["On the Pareto front", "var(--series-1)", true],
+   ["Admitted, dominated", "var(--series-1)", false],
+   ["Rejected on accuracy", "var(--critical)", true]].forEach(([label, colour, solid]) => {
+    const s = el("span");
+    const key = el("i", { class: "key" });
+    key.style.background = colour;
+    key.style.opacity = solid ? "1" : ".6";
+    s.appendChild(key);
+    s.appendChild(document.createTextNode(label));
+    legend.appendChild(s);
+  });
+}
+
+/* -------------------------------------------------------------- provenance */
+
+function renderProvenance() {
+  const host = document.getElementById("provenance");
+  clear(host);
+  [
+    `Study ${D.study}`,
+    `${D.device.platform}`,
+    `onnxruntime ${D.device.onnxruntime} · torch ${D.provenance.torch}`,
+    `checkpoint ${D.provenance.checkpoint_sha256} · onnx ${D.provenance.onnx_sha256}`,
+    `split ${D.split.fingerprint}`,
+    `built ${D.built_at_utc}`,
+    "Every figure generated from the measured result JSONs; none entered by hand."
+  ].forEach(text => host.appendChild(el("span", {}, text)));
+}
+
+/* ------------------------------------------------------------------ render */
+
+function render() {
+  document.querySelectorAll("#sliders output").forEach((out, i) => {
+    out.textContent = String(state.weights[OBJ[i].key]);
+  });
+  renderScatter();
+  renderRanking();
+  renderDetail();
+}
+
+function init() {
+  ["x-axis", "y-axis"].forEach(id => {
+    const select = document.getElementById(id);
+    OBJ.forEach(o => {
+      const option = el("option", { value: o.key }, `${o.label} (${o.unit})`);
+      select.appendChild(option);
+    });
+    select.value = id === "x-axis" ? state.x : state.y;
+    select.addEventListener("change", () => {
+      if (id === "x-axis") state.x = select.value; else state.y = select.value;
+      renderScatter();
+    });
+  });
+  document.getElementById("show-dynamic").addEventListener("change", event => {
+    state.showDynamic = event.target.checked;
+    if (!state.showDynamic && rowById(state.selected).quant_type === "dynamic") {
+      state.selected = visibleRows()[0].id;
+    }
+    render();
+  });
+
+  renderHeader();
+  renderSliders();
+  renderScatterNote();
+  renderScatterTable();
+  renderCostBenefit();
+  renderTrials();
+  renderProvenance();
+  render();
+}
+
+init();
+</script>
