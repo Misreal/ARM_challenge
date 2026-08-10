@@ -32,7 +32,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass, field, fields
 from typing import Any
 
 import onnxruntime.quantization as ortq
@@ -53,6 +53,10 @@ QUANT_TYPES = ("none", "dynamic", "static")
 TENSOR_TYPES = ("int8", "uint8")
 CALIBRATION_METHODS = ("minmax", "entropy", "percentile")
 GRAPH_OPT_LEVELS = ("disabled", "basic", "extended", "all")
+
+# The fields `RunConfig.hash` covered before the runtime knobs were searchable.
+# Frozen so digests minted in Phases 3-6 keep resolving. See `canonical_payload`.
+_LEGACY_FIELDS = ("intra_op_num_threads", "graph_optimization_level")
 
 _ORT_TENSOR_TYPE = {
     "int8": ortq.QuantType.QInt8,
@@ -186,6 +190,14 @@ class RunConfig:
 
     intra_op_num_threads: int = 4
     graph_optimization_level: str = "all"
+    # ORT's reusable memory pool. On trades RAM for allocator latency, off trades
+    # it back, which is the only knob here that moves RAM and speed in opposite
+    # directions -- every quantization knob moves them together.
+    enable_cpu_mem_arena: bool = True
+    # Intra-op threads busy-wait between inferences instead of sleeping. Always
+    # flattering in a tight benchmark loop, so a win here is not automatically a
+    # win in a duty-cycled deployment.
+    allow_intra_op_spinning: bool = True
 
     def __post_init__(self) -> None:
         if self.intra_op_num_threads <= 0:
@@ -193,16 +205,49 @@ class RunConfig:
         if self.graph_optimization_level not in GRAPH_OPT_LEVELS:
             raise ValueError(f"graph_optimization_level must be one of {GRAPH_OPT_LEVELS}")
 
+    def canonical_payload(self) -> dict[str, Any]:
+        """The two original fields, plus any newer knob set away from its default.
+
+        Hashing every field unconditionally would change the digest of a plain
+        4-thread config each time a knob is added, orphaning every measurement
+        already cached on the Pi and every result already joined to a hash. The
+        asymmetry is the price of that continuity, so `_LEGACY_FIELDS` is frozen:
+        it records what the hash meant before the runtime knobs existed.
+        """
+        defaults = RunConfig()
+        payload = {name: getattr(self, name) for name in _LEGACY_FIELDS}
+        payload.update(
+            {
+                name: value
+                for name, value in asdict(self).items()
+                if name not in _LEGACY_FIELDS and value != getattr(defaults, name)
+            }
+        )
+        return payload
+
     @property
     def hash(self) -> str:
-        return _content_hash(asdict(self))
+        return _content_hash(self.canonical_payload())
+
+    def describe(self) -> str:
+        """Short label for logs and result tables, mirroring `QuantConfig.describe`."""
+        parts = [f"{self.intra_op_num_threads}t", f"opt:{self.graph_optimization_level}"]
+        if not self.enable_cpu_mem_arena:
+            parts.append("no-arena")
+        if not self.allow_intra_op_spinning:
+            parts.append("no-spin")
+        return " ".join(parts)
 
     def as_dict(self) -> dict[str, Any]:
         return asdict(self)
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> RunConfig:
-        return cls(**data)
+        # Tolerate fields this version does not know: the Pi is code-synced
+        # before every campaign, but a cached result written by a newer PC must
+        # not crash an older reader.
+        known = {field.name for field in fields(cls)}
+        return cls(**{key: value for key, value in data.items() if key in known})
 
 
 @dataclass(frozen=True)

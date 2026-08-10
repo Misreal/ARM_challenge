@@ -123,6 +123,11 @@ def build_session(path: Path, run: RunConfig) -> ort.InferenceSession:
     options = ort.SessionOptions()
     options.intra_op_num_threads = run.intra_op_num_threads
     options.graph_optimization_level = levels[run.graph_optimization_level]
+    options.enable_cpu_mem_arena = run.enable_cpu_mem_arena
+    # No typed property for spinning; the string entry is the only public route.
+    options.add_session_config_entry(
+        "session.intra_op.allow_spinning", "1" if run.allow_intra_op_spinning else "0"
+    )
     return ort.InferenceSession(str(path), options, providers=["CPUExecutionProvider"])
 
 

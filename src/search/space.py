@@ -1,7 +1,6 @@
-"""Map an Optuna trial onto a DeploymentConfig.
+"""Map an Optuna trial onto a DeploymentConfig: artifact knobs plus runtime knobs.
 
-Only the artifact is searched: `intra_op_num_threads` is frozen at 4 by the
-Phase 3 thread sweep and graph optimization at "all", so neither is a dimension.
+Both reductions here are measured, from `*_runtime_sweep.json` on the Pi.
 """
 
 from __future__ import annotations
@@ -15,8 +14,41 @@ from src.quant.config import CALIBRATION_METHODS, DeploymentConfig, QuantConfig,
 CALIBRATION_SIZES = (128, 256, 512, 1000)
 QUANT_TYPES = ("static", "dynamic")
 
-# Frozen, not searched. See ROADMAP §4 #6 for the thread evidence.
-FROZEN_RUN = RunConfig(intra_op_num_threads=4, graph_optimization_level="all")
+# Entropy and percentile accumulate a histogram per tensor across the whole
+# calibration set and OOM the 4 GB Pi at 1000 images. MinMax keeps a running
+# min/max, so its cost does not grow with the set.
+HISTOGRAM_METHODS = ("entropy", "percentile")
+HISTOGRAM_MAX_CALIBRATION_SIZE = 512
+
+# The runtime sweep measured 4 threads fastest at every optimization level with
+# peak RSS flat, and spinning on faster with no memory saving. Neither is a
+# trade-off, so searching them would only dilute the trial budget.
+FIXED_THREADS = 4
+FIXED_SPINNING = True
+
+# "basic" measured 7x slower than "all" on a quantized graph, and "disabled" is
+# worse by construction: both leave QDQ pairs unfused.
+SEARCHED_OPT_LEVELS = ("extended", "all")
+
+
+def calibration_sizes_for(method: str) -> tuple[int, ...]:
+    if method in HISTOGRAM_METHODS:
+        return tuple(size for size in CALIBRATION_SIZES if size <= HISTOGRAM_MAX_CALIBRATION_SIZE)
+    return CALIBRATION_SIZES
+
+
+def suggest_run_config(trial: Any) -> RunConfig:
+    """The execution half of the space: no effect on the artifact bytes."""
+    return RunConfig(
+        intra_op_num_threads=FIXED_THREADS,
+        graph_optimization_level=trial.suggest_categorical(
+            "graph_optimization_level", list(SEARCHED_OPT_LEVELS)
+        ),
+        # The one runtime knob that trades: off saved 8.1 MB of peak RSS for a
+        # latency change inside the noise floor.
+        enable_cpu_mem_arena=trial.suggest_categorical("enable_cpu_mem_arena", [True, False]),
+        allow_intra_op_spinning=FIXED_SPINNING,
+    )
 
 
 def suggest_config(trial: Any, groups: tuple[str, ...]) -> DeploymentConfig:
@@ -40,17 +72,18 @@ def suggest_config(trial: Any, groups: tuple[str, ...]) -> DeploymentConfig:
             quant_type="dynamic", per_channel=per_channel, excluded_groups=excluded
         )
     else:
+        method = trial.suggest_categorical("calibration_method", list(CALIBRATION_METHODS))
         quant = QuantConfig(
             quant_type="static",
             per_channel=per_channel,
             activation_type=trial.suggest_categorical("activation_type", ["uint8", "int8"]),
-            calibration_method=trial.suggest_categorical(
-                "calibration_method", list(CALIBRATION_METHODS)
-            ),
+            calibration_method=method,
+            # Conditional on the method so the sampler cannot draw a combination
+            # the device has already been measured unable to build.
             calibration_size=trial.suggest_categorical(
-                "calibration_size", list(CALIBRATION_SIZES)
+                f"calibration_size__{method}", list(calibration_sizes_for(method))
             ),
             excluded_groups=excluded,
         )
 
-    return DeploymentConfig(quant=quant, run=FROZEN_RUN)
+    return DeploymentConfig(quant=quant, run=suggest_run_config(trial))

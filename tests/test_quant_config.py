@@ -96,3 +96,24 @@ def test_invalid_run_configs_are_rejected() -> None:
         RunConfig(intra_op_num_threads=0)
     with pytest.raises(ValueError):
         RunConfig(graph_optimization_level="maximum")
+
+
+def test_new_runtime_knobs_change_the_measurement_identity() -> None:
+    base = RunConfig()
+    assert base.hash != RunConfig(enable_cpu_mem_arena=False).hash
+    assert base.hash != RunConfig(allow_intra_op_spinning=False).hash
+
+
+def test_default_run_hash_survived_adding_knobs() -> None:
+    # Pinned literal, not recomputed: every Pi measurement cached and every
+    # sensitivity result joined during Phases 3-6 keys on this digest. If adding
+    # a knob changes it, those results silently stop resolving.
+    assert RunConfig(intra_op_num_threads=4, graph_optimization_level="all").hash == (
+        "facf1876de07230d"
+    )
+
+
+def test_run_config_ignores_fields_it_does_not_know() -> None:
+    # A cached result written by a newer PC must stay readable by an older Pi.
+    restored = RunConfig.from_dict({"intra_op_num_threads": 2, "future_knob": "on"})
+    assert restored.intra_op_num_threads == 2

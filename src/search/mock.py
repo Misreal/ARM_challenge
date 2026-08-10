@@ -15,6 +15,15 @@ MOCK_INT8_MS = 3.4
 MOCK_FP32_BYTES = 44_000_000
 MOCK_BASELINE_TOP1 = 78.5
 
+# Runtime knobs have to move the mock numbers or `--mock` cannot tell a working
+# RunConfig plumbing from one that silently drops it. Ratios are shaped after the
+# Phase 3 thread sweep; the rest are invented like everything else here.
+MOCK_THREAD_SCALING = {1: 2.93, 2: 1.60, 4: 1.0}
+MOCK_OPT_LEVEL_PENALTY = {"all": 1.0, "extended": 1.06, "basic": 1.35, "disabled": 4.0}
+MOCK_NO_ARENA_PENALTY = 1.08
+MOCK_NO_ARENA_RSS_SAVING_MB = 12.0
+MOCK_NO_SPIN_PENALTY = 1.03
+
 
 def _int8_fraction(spec: BenchSpec, groups: tuple[str, ...]) -> float:
     """How much of the graph stayed quantized, by group count."""
@@ -50,11 +59,22 @@ class MockRunner:
         latency = MOCK_FP32_MS - (MOCK_FP32_MS - MOCK_INT8_MS) * fraction
         if spec.quant.quant_type == "dynamic":
             latency *= 4.0  # dynamic is slower than fp32 on ARM CNNs, as measured
+
+        run = spec.run
+        latency *= MOCK_THREAD_SCALING.get(run.intra_op_num_threads, 1.0)
+        latency *= MOCK_OPT_LEVEL_PENALTY.get(run.graph_optimization_level, 1.0)
+        rss = 100.0 + 60.0 * (1.0 - fraction)
+        if not run.enable_cpu_mem_arena:
+            latency *= MOCK_NO_ARENA_PENALTY
+            rss -= MOCK_NO_ARENA_RSS_SAVING_MB
+        if not run.allow_intra_op_spinning:
+            latency *= MOCK_NO_SPIN_PENALTY
+
         return {
             "status": "ok",
             "admissible": True,
             "latency": {"median_ms": round(latency, 4)},
-            "peak_rss_mb": round(100.0 + 60.0 * (1.0 - fraction), 1),
+            "peak_rss_mb": round(rss, 1),
             "bytes": self._bytes(spec),
         }
 
