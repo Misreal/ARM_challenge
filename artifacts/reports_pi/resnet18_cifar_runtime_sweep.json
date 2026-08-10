@@ -1,0 +1,1230 @@
+{
+  "model": "resnet18_cifar",
+  "device_state": {
+    "platform": "Linux-6.12.96+rpt-rpi-2712-aarch64-with-glibc2.36",
+    "machine": "aarch64",
+    "is_target": true,
+    "governors": [
+      "performance",
+      "performance",
+      "performance",
+      "performance"
+    ],
+    "governor": "performance",
+    "governor_is_pinned": true,
+    "clock_mhz": 2400.0,
+    "temperature_c": 50.7,
+    "throttle": {
+      "raw": 0,
+      "hex": "0x0",
+      "live": [],
+      "sticky": [],
+      "available": true
+    }
+  },
+  "grid": {
+    "threads": [
+      1,
+      2,
+      4
+    ],
+    "graph_optimization_level": [
+      "basic",
+      "extended",
+      "all"
+    ],
+    "enable_cpu_mem_arena": [
+      true,
+      false
+    ],
+    "allow_intra_op_spinning": [
+      true,
+      false
+    ]
+  },
+  "configs": {
+    "fp32": {
+      "rows": [
+        {
+          "run": {
+            "intra_op_num_threads": 1,
+            "graph_optimization_level": "basic",
+            "enable_cpu_mem_arena": true,
+            "allow_intra_op_spinning": true
+          },
+          "describe": "1t opt:basic",
+          "status": "ok",
+          "median_ms": 38.8531,
+          "peak_rss_mb": 164.234375,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 2.3141,
+          "rss_delta_mb": -0.48
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 1,
+            "graph_optimization_level": "basic",
+            "enable_cpu_mem_arena": true,
+            "allow_intra_op_spinning": false
+          },
+          "describe": "1t opt:basic no-spin",
+          "status": "ok",
+          "median_ms": 38.9116,
+          "peak_rss_mb": 164.21875,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 2.3176,
+          "rss_delta_mb": -0.5
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 1,
+            "graph_optimization_level": "basic",
+            "enable_cpu_mem_arena": false,
+            "allow_intra_op_spinning": true
+          },
+          "describe": "1t opt:basic no-arena",
+          "status": "ok",
+          "median_ms": 38.9303,
+          "peak_rss_mb": 164.25,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 2.3187,
+          "rss_delta_mb": -0.47
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 1,
+            "graph_optimization_level": "basic",
+            "enable_cpu_mem_arena": false,
+            "allow_intra_op_spinning": false
+          },
+          "describe": "1t opt:basic no-arena no-spin",
+          "status": "ok",
+          "median_ms": 38.9002,
+          "peak_rss_mb": 164.25,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 2.3169,
+          "rss_delta_mb": -0.47
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 1,
+            "graph_optimization_level": "extended",
+            "enable_cpu_mem_arena": true,
+            "allow_intra_op_spinning": true
+          },
+          "describe": "1t opt:extended",
+          "status": "ok",
+          "median_ms": 38.9622,
+          "peak_rss_mb": 164.21875,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 2.3206,
+          "rss_delta_mb": -0.5
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 1,
+            "graph_optimization_level": "extended",
+            "enable_cpu_mem_arena": true,
+            "allow_intra_op_spinning": false
+          },
+          "describe": "1t opt:extended no-spin",
+          "status": "ok",
+          "median_ms": 39.0201,
+          "peak_rss_mb": 164.25,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 2.324,
+          "rss_delta_mb": -0.47
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 1,
+            "graph_optimization_level": "extended",
+            "enable_cpu_mem_arena": false,
+            "allow_intra_op_spinning": true
+          },
+          "describe": "1t opt:extended no-arena",
+          "status": "ok",
+          "median_ms": 39.1989,
+          "peak_rss_mb": 164.234375,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 2.3347,
+          "rss_delta_mb": -0.48
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 1,
+            "graph_optimization_level": "extended",
+            "enable_cpu_mem_arena": false,
+            "allow_intra_op_spinning": false
+          },
+          "describe": "1t opt:extended no-arena no-spin",
+          "status": "ok",
+          "median_ms": 39.2398,
+          "peak_rss_mb": 164.234375,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 2.3371,
+          "rss_delta_mb": -0.48
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 1,
+            "graph_optimization_level": "all",
+            "enable_cpu_mem_arena": true,
+            "allow_intra_op_spinning": true
+          },
+          "describe": "1t opt:all",
+          "status": "ok",
+          "median_ms": 38.4247,
+          "peak_rss_mb": 164.21875,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 2.2886,
+          "rss_delta_mb": -0.5
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 1,
+            "graph_optimization_level": "all",
+            "enable_cpu_mem_arena": true,
+            "allow_intra_op_spinning": false
+          },
+          "describe": "1t opt:all no-spin",
+          "status": "ok",
+          "median_ms": 38.5648,
+          "peak_rss_mb": 164.21875,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 2.2969,
+          "rss_delta_mb": -0.5
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 1,
+            "graph_optimization_level": "all",
+            "enable_cpu_mem_arena": false,
+            "allow_intra_op_spinning": true
+          },
+          "describe": "1t opt:all no-arena",
+          "status": "ok",
+          "median_ms": 38.6756,
+          "peak_rss_mb": 164.21875,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 2.3035,
+          "rss_delta_mb": -0.5
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 1,
+            "graph_optimization_level": "all",
+            "enable_cpu_mem_arena": false,
+            "allow_intra_op_spinning": false
+          },
+          "describe": "1t opt:all no-arena no-spin",
+          "status": "ok",
+          "median_ms": 38.7208,
+          "peak_rss_mb": 164.21875,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 2.3062,
+          "rss_delta_mb": -0.5
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 2,
+            "graph_optimization_level": "basic",
+            "enable_cpu_mem_arena": true,
+            "allow_intra_op_spinning": true
+          },
+          "describe": "2t opt:basic",
+          "status": "ok",
+          "median_ms": 21.4272,
+          "peak_rss_mb": 165.234375,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.2762,
+          "rss_delta_mb": 0.52
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 2,
+            "graph_optimization_level": "basic",
+            "enable_cpu_mem_arena": true,
+            "allow_intra_op_spinning": false
+          },
+          "describe": "2t opt:basic no-spin",
+          "status": "ok",
+          "median_ms": 21.4929,
+          "peak_rss_mb": 165.234375,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.2801,
+          "rss_delta_mb": 0.52
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 2,
+            "graph_optimization_level": "basic",
+            "enable_cpu_mem_arena": false,
+            "allow_intra_op_spinning": true
+          },
+          "describe": "2t opt:basic no-arena",
+          "status": "ok",
+          "median_ms": 21.5766,
+          "peak_rss_mb": 165.234375,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.2851,
+          "rss_delta_mb": 0.52
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 2,
+            "graph_optimization_level": "basic",
+            "enable_cpu_mem_arena": false,
+            "allow_intra_op_spinning": false
+          },
+          "describe": "2t opt:basic no-arena no-spin",
+          "status": "ok",
+          "median_ms": 21.4913,
+          "peak_rss_mb": 165.25,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.28,
+          "rss_delta_mb": 0.53
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 2,
+            "graph_optimization_level": "extended",
+            "enable_cpu_mem_arena": true,
+            "allow_intra_op_spinning": true
+          },
+          "describe": "2t opt:extended",
+          "status": "ok",
+          "median_ms": 21.205,
+          "peak_rss_mb": 165.25,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.263,
+          "rss_delta_mb": 0.53
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 2,
+            "graph_optimization_level": "extended",
+            "enable_cpu_mem_arena": true,
+            "allow_intra_op_spinning": false
+          },
+          "describe": "2t opt:extended no-spin",
+          "status": "ok",
+          "median_ms": 21.04,
+          "peak_rss_mb": 163.734375,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.2531,
+          "rss_delta_mb": -0.98
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 2,
+            "graph_optimization_level": "extended",
+            "enable_cpu_mem_arena": false,
+            "allow_intra_op_spinning": true
+          },
+          "describe": "2t opt:extended no-arena",
+          "status": "ok",
+          "median_ms": 21.1614,
+          "peak_rss_mb": 165.25,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.2604,
+          "rss_delta_mb": 0.53
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 2,
+            "graph_optimization_level": "extended",
+            "enable_cpu_mem_arena": false,
+            "allow_intra_op_spinning": false
+          },
+          "describe": "2t opt:extended no-arena no-spin",
+          "status": "ok",
+          "median_ms": 21.0856,
+          "peak_rss_mb": 165.25,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.2559,
+          "rss_delta_mb": 0.53
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 2,
+            "graph_optimization_level": "all",
+            "enable_cpu_mem_arena": true,
+            "allow_intra_op_spinning": true
+          },
+          "describe": "2t opt:all",
+          "status": "ok",
+          "median_ms": 21.1214,
+          "peak_rss_mb": 164.71875,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.258,
+          "rss_delta_mb": 0.0
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 2,
+            "graph_optimization_level": "all",
+            "enable_cpu_mem_arena": true,
+            "allow_intra_op_spinning": false
+          },
+          "describe": "2t opt:all no-spin",
+          "status": "ok",
+          "median_ms": 21.2743,
+          "peak_rss_mb": 164.734375,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.2671,
+          "rss_delta_mb": 0.02
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 2,
+            "graph_optimization_level": "all",
+            "enable_cpu_mem_arena": false,
+            "allow_intra_op_spinning": true
+          },
+          "describe": "2t opt:all no-arena",
+          "status": "ok",
+          "median_ms": 21.1712,
+          "peak_rss_mb": 164.71875,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.261,
+          "rss_delta_mb": 0.0
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 2,
+            "graph_optimization_level": "all",
+            "enable_cpu_mem_arena": false,
+            "allow_intra_op_spinning": false
+          },
+          "describe": "2t opt:all no-arena no-spin",
+          "status": "ok",
+          "median_ms": 21.1813,
+          "peak_rss_mb": 164.734375,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.2616,
+          "rss_delta_mb": 0.02
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 4,
+            "graph_optimization_level": "basic",
+            "enable_cpu_mem_arena": true,
+            "allow_intra_op_spinning": true
+          },
+          "describe": "4t opt:basic",
+          "status": "ok",
+          "median_ms": 16.8381,
+          "peak_rss_mb": 165.234375,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.0029,
+          "rss_delta_mb": 0.52
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 4,
+            "graph_optimization_level": "basic",
+            "enable_cpu_mem_arena": true,
+            "allow_intra_op_spinning": false
+          },
+          "describe": "4t opt:basic no-spin",
+          "status": "ok",
+          "median_ms": 16.9464,
+          "peak_rss_mb": 165.25,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.0093,
+          "rss_delta_mb": 0.53
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 4,
+            "graph_optimization_level": "basic",
+            "enable_cpu_mem_arena": false,
+            "allow_intra_op_spinning": true
+          },
+          "describe": "4t opt:basic no-arena",
+          "status": "ok",
+          "median_ms": 17.0394,
+          "peak_rss_mb": 165.25,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.0149,
+          "rss_delta_mb": 0.53
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 4,
+            "graph_optimization_level": "basic",
+            "enable_cpu_mem_arena": false,
+            "allow_intra_op_spinning": false
+          },
+          "describe": "4t opt:basic no-arena no-spin",
+          "status": "ok",
+          "median_ms": 17.1402,
+          "peak_rss_mb": 165.25,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.0209,
+          "rss_delta_mb": 0.53
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 4,
+            "graph_optimization_level": "extended",
+            "enable_cpu_mem_arena": true,
+            "allow_intra_op_spinning": true
+          },
+          "describe": "4t opt:extended",
+          "status": "ok",
+          "median_ms": 16.8841,
+          "peak_rss_mb": 165.234375,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.0056,
+          "rss_delta_mb": 0.52
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 4,
+            "graph_optimization_level": "extended",
+            "enable_cpu_mem_arena": true,
+            "allow_intra_op_spinning": false
+          },
+          "describe": "4t opt:extended no-spin",
+          "status": "ok",
+          "median_ms": 16.948,
+          "peak_rss_mb": 165.234375,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.0094,
+          "rss_delta_mb": 0.52
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 4,
+            "graph_optimization_level": "extended",
+            "enable_cpu_mem_arena": false,
+            "allow_intra_op_spinning": true
+          },
+          "describe": "4t opt:extended no-arena",
+          "status": "ok",
+          "median_ms": 17.1063,
+          "peak_rss_mb": 165.21875,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.0189,
+          "rss_delta_mb": 0.5
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 4,
+            "graph_optimization_level": "extended",
+            "enable_cpu_mem_arena": false,
+            "allow_intra_op_spinning": false
+          },
+          "describe": "4t opt:extended no-arena no-spin",
+          "status": "ok",
+          "median_ms": 16.9939,
+          "peak_rss_mb": 165.234375,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.0122,
+          "rss_delta_mb": 0.52
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 4,
+            "graph_optimization_level": "all",
+            "enable_cpu_mem_arena": true,
+            "allow_intra_op_spinning": true
+          },
+          "describe": "4t opt:all",
+          "status": "ok",
+          "median_ms": 16.7898,
+          "peak_rss_mb": 164.71875,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.0,
+          "rss_delta_mb": 0.0
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 4,
+            "graph_optimization_level": "all",
+            "enable_cpu_mem_arena": true,
+            "allow_intra_op_spinning": false
+          },
+          "describe": "4t opt:all no-spin",
+          "status": "ok",
+          "median_ms": 16.8489,
+          "peak_rss_mb": 164.734375,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.0035,
+          "rss_delta_mb": 0.02
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 4,
+            "graph_optimization_level": "all",
+            "enable_cpu_mem_arena": false,
+            "allow_intra_op_spinning": true
+          },
+          "describe": "4t opt:all no-arena",
+          "status": "ok",
+          "median_ms": 16.836,
+          "peak_rss_mb": 164.71875,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.0028,
+          "rss_delta_mb": 0.0
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 4,
+            "graph_optimization_level": "all",
+            "enable_cpu_mem_arena": false,
+            "allow_intra_op_spinning": false
+          },
+          "describe": "4t opt:all no-arena no-spin",
+          "status": "ok",
+          "median_ms": 16.9512,
+          "peak_rss_mb": 164.734375,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.0096,
+          "rss_delta_mb": 0.02
+        }
+      ],
+      "summary": {
+        "measured": 36,
+        "reference": "4t opt:all",
+        "reference_ms": 16.7898,
+        "fastest": "4t opt:all",
+        "fastest_ms": 16.7898,
+        "reference_is_fastest": true,
+        "leanest": "2t opt:extended no-spin",
+        "leanest_rss_mb": 163.734375,
+        "rss_span_mb": 1.52
+      }
+    },
+    "static_per_channel": {
+      "rows": [
+        {
+          "run": {
+            "intra_op_num_threads": 1,
+            "graph_optimization_level": "basic",
+            "enable_cpu_mem_arena": true,
+            "allow_intra_op_spinning": true
+          },
+          "describe": "1t opt:basic",
+          "status": "ok",
+          "median_ms": 45.2948,
+          "peak_rss_mb": 113.421875,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 13.387,
+          "rss_delta_mb": 7.95
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 1,
+            "graph_optimization_level": "basic",
+            "enable_cpu_mem_arena": true,
+            "allow_intra_op_spinning": false
+          },
+          "describe": "1t opt:basic no-spin",
+          "status": "ok",
+          "median_ms": 45.3848,
+          "peak_rss_mb": 112.921875,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 13.4136,
+          "rss_delta_mb": 7.45
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 1,
+            "graph_optimization_level": "basic",
+            "enable_cpu_mem_arena": false,
+            "allow_intra_op_spinning": true
+          },
+          "describe": "1t opt:basic no-arena",
+          "status": "ok",
+          "median_ms": 45.4017,
+          "peak_rss_mb": 116.421875,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 13.4186,
+          "rss_delta_mb": 10.95
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 1,
+            "graph_optimization_level": "basic",
+            "enable_cpu_mem_arena": false,
+            "allow_intra_op_spinning": false
+          },
+          "describe": "1t opt:basic no-arena no-spin",
+          "status": "ok",
+          "median_ms": 45.6971,
+          "peak_rss_mb": 116.421875,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 13.5059,
+          "rss_delta_mb": 10.95
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 1,
+            "graph_optimization_level": "extended",
+            "enable_cpu_mem_arena": true,
+            "allow_intra_op_spinning": true
+          },
+          "describe": "1t opt:extended",
+          "status": "ok",
+          "median_ms": 10.225,
+          "peak_rss_mb": 105.40625,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 3.022,
+          "rss_delta_mb": -0.06
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 1,
+            "graph_optimization_level": "extended",
+            "enable_cpu_mem_arena": true,
+            "allow_intra_op_spinning": false
+          },
+          "describe": "1t opt:extended no-spin",
+          "status": "ok",
+          "median_ms": 10.2149,
+          "peak_rss_mb": 105.4375,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 3.019,
+          "rss_delta_mb": -0.03
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 1,
+            "graph_optimization_level": "extended",
+            "enable_cpu_mem_arena": false,
+            "allow_intra_op_spinning": true
+          },
+          "describe": "1t opt:extended no-arena",
+          "status": "ok",
+          "median_ms": 10.2818,
+          "peak_rss_mb": 97.4375,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 3.0388,
+          "rss_delta_mb": -8.03
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 1,
+            "graph_optimization_level": "extended",
+            "enable_cpu_mem_arena": false,
+            "allow_intra_op_spinning": false
+          },
+          "describe": "1t opt:extended no-arena no-spin",
+          "status": "ok",
+          "median_ms": 10.3116,
+          "peak_rss_mb": 97.4375,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 3.0476,
+          "rss_delta_mb": -8.03
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 1,
+            "graph_optimization_level": "all",
+            "enable_cpu_mem_arena": true,
+            "allow_intra_op_spinning": true
+          },
+          "describe": "1t opt:all",
+          "status": "ok",
+          "median_ms": 10.0038,
+          "peak_rss_mb": 105.421875,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 2.9566,
+          "rss_delta_mb": -0.05
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 1,
+            "graph_optimization_level": "all",
+            "enable_cpu_mem_arena": true,
+            "allow_intra_op_spinning": false
+          },
+          "describe": "1t opt:all no-spin",
+          "status": "ok",
+          "median_ms": 9.9792,
+          "peak_rss_mb": 105.40625,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 2.9494,
+          "rss_delta_mb": -0.06
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 1,
+            "graph_optimization_level": "all",
+            "enable_cpu_mem_arena": false,
+            "allow_intra_op_spinning": true
+          },
+          "describe": "1t opt:all no-arena",
+          "status": "ok",
+          "median_ms": 10.0342,
+          "peak_rss_mb": 97.421875,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 2.9656,
+          "rss_delta_mb": -8.05
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 1,
+            "graph_optimization_level": "all",
+            "enable_cpu_mem_arena": false,
+            "allow_intra_op_spinning": false
+          },
+          "describe": "1t opt:all no-arena no-spin",
+          "status": "ok",
+          "median_ms": 10.0508,
+          "peak_rss_mb": 97.421875,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 2.9705,
+          "rss_delta_mb": -8.05
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 2,
+            "graph_optimization_level": "basic",
+            "enable_cpu_mem_arena": true,
+            "allow_intra_op_spinning": true
+          },
+          "describe": "2t opt:basic",
+          "status": "ok",
+          "median_ms": 28.2611,
+          "peak_rss_mb": 113.40625,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 8.3526,
+          "rss_delta_mb": 7.94
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 2,
+            "graph_optimization_level": "basic",
+            "enable_cpu_mem_arena": true,
+            "allow_intra_op_spinning": false
+          },
+          "describe": "2t opt:basic no-spin",
+          "status": "ok",
+          "median_ms": 28.4813,
+          "peak_rss_mb": 113.421875,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 8.4177,
+          "rss_delta_mb": 7.95
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 2,
+            "graph_optimization_level": "basic",
+            "enable_cpu_mem_arena": false,
+            "allow_intra_op_spinning": true
+          },
+          "describe": "2t opt:basic no-arena",
+          "status": "ok",
+          "median_ms": 29.2112,
+          "peak_rss_mb": 106.421875,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 8.6334,
+          "rss_delta_mb": 0.95
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 2,
+            "graph_optimization_level": "basic",
+            "enable_cpu_mem_arena": false,
+            "allow_intra_op_spinning": false
+          },
+          "describe": "2t opt:basic no-arena no-spin",
+          "status": "ok",
+          "median_ms": 29.0324,
+          "peak_rss_mb": 106.40625,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 8.5806,
+          "rss_delta_mb": 0.94
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 2,
+            "graph_optimization_level": "extended",
+            "enable_cpu_mem_arena": true,
+            "allow_intra_op_spinning": true
+          },
+          "describe": "2t opt:extended",
+          "status": "ok",
+          "median_ms": 5.7104,
+          "peak_rss_mb": 105.46875,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.6877,
+          "rss_delta_mb": 0.0
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 2,
+            "graph_optimization_level": "extended",
+            "enable_cpu_mem_arena": true,
+            "allow_intra_op_spinning": false
+          },
+          "describe": "2t opt:extended no-spin",
+          "status": "ok",
+          "median_ms": 5.8359,
+          "peak_rss_mb": 105.484375,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.7248,
+          "rss_delta_mb": 0.02
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 2,
+            "graph_optimization_level": "extended",
+            "enable_cpu_mem_arena": false,
+            "allow_intra_op_spinning": true
+          },
+          "describe": "2t opt:extended no-arena",
+          "status": "ok",
+          "median_ms": 5.7647,
+          "peak_rss_mb": 97.453125,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.7038,
+          "rss_delta_mb": -8.02
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 2,
+            "graph_optimization_level": "extended",
+            "enable_cpu_mem_arena": false,
+            "allow_intra_op_spinning": false
+          },
+          "describe": "2t opt:extended no-arena no-spin",
+          "status": "ok",
+          "median_ms": 5.9218,
+          "peak_rss_mb": 98.46875,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.7502,
+          "rss_delta_mb": -7.0
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 2,
+            "graph_optimization_level": "all",
+            "enable_cpu_mem_arena": true,
+            "allow_intra_op_spinning": true
+          },
+          "describe": "2t opt:all",
+          "status": "ok",
+          "median_ms": 5.4592,
+          "peak_rss_mb": 105.46875,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.6135,
+          "rss_delta_mb": 0.0
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 2,
+            "graph_optimization_level": "all",
+            "enable_cpu_mem_arena": true,
+            "allow_intra_op_spinning": false
+          },
+          "describe": "2t opt:all no-spin",
+          "status": "ok",
+          "median_ms": 5.5103,
+          "peak_rss_mb": 105.46875,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.6286,
+          "rss_delta_mb": 0.0
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 2,
+            "graph_optimization_level": "all",
+            "enable_cpu_mem_arena": false,
+            "allow_intra_op_spinning": true
+          },
+          "describe": "2t opt:all no-arena",
+          "status": "ok",
+          "median_ms": 5.5253,
+          "peak_rss_mb": 97.953125,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.633,
+          "rss_delta_mb": -7.52
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 2,
+            "graph_optimization_level": "all",
+            "enable_cpu_mem_arena": false,
+            "allow_intra_op_spinning": false
+          },
+          "describe": "2t opt:all no-arena no-spin",
+          "status": "ok",
+          "median_ms": 5.5584,
+          "peak_rss_mb": 97.484375,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.6428,
+          "rss_delta_mb": -7.98
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 4,
+            "graph_optimization_level": "basic",
+            "enable_cpu_mem_arena": true,
+            "allow_intra_op_spinning": true
+          },
+          "describe": "4t opt:basic",
+          "status": "ok",
+          "median_ms": 23.3813,
+          "peak_rss_mb": 113.421875,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 6.9104,
+          "rss_delta_mb": 7.95
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 4,
+            "graph_optimization_level": "basic",
+            "enable_cpu_mem_arena": true,
+            "allow_intra_op_spinning": false
+          },
+          "describe": "4t opt:basic no-spin",
+          "status": "ok",
+          "median_ms": 23.6016,
+          "peak_rss_mb": 113.40625,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 6.9755,
+          "rss_delta_mb": 7.94
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 4,
+            "graph_optimization_level": "basic",
+            "enable_cpu_mem_arena": false,
+            "allow_intra_op_spinning": true
+          },
+          "describe": "4t opt:basic no-arena",
+          "status": "ok",
+          "median_ms": 24.1126,
+          "peak_rss_mb": 115.90625,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 7.1265,
+          "rss_delta_mb": 10.44
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 4,
+            "graph_optimization_level": "basic",
+            "enable_cpu_mem_arena": false,
+            "allow_intra_op_spinning": false
+          },
+          "describe": "4t opt:basic no-arena no-spin",
+          "status": "ok",
+          "median_ms": 24.5333,
+          "peak_rss_mb": 115.890625,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 7.2509,
+          "rss_delta_mb": 10.42
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 4,
+            "graph_optimization_level": "extended",
+            "enable_cpu_mem_arena": true,
+            "allow_intra_op_spinning": true
+          },
+          "describe": "4t opt:extended",
+          "status": "ok",
+          "median_ms": 3.6105,
+          "peak_rss_mb": 105.484375,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.0671,
+          "rss_delta_mb": 0.02
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 4,
+            "graph_optimization_level": "extended",
+            "enable_cpu_mem_arena": true,
+            "allow_intra_op_spinning": false
+          },
+          "describe": "4t opt:extended no-spin",
+          "status": "ok",
+          "median_ms": 3.9089,
+          "peak_rss_mb": 105.484375,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.1553,
+          "rss_delta_mb": 0.02
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 4,
+            "graph_optimization_level": "extended",
+            "enable_cpu_mem_arena": false,
+            "allow_intra_op_spinning": true
+          },
+          "describe": "4t opt:extended no-arena",
+          "status": "ok",
+          "median_ms": 3.6909,
+          "peak_rss_mb": 97.953125,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.0909,
+          "rss_delta_mb": -7.52
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 4,
+            "graph_optimization_level": "extended",
+            "enable_cpu_mem_arena": false,
+            "allow_intra_op_spinning": false
+          },
+          "describe": "4t opt:extended no-arena no-spin",
+          "status": "ok",
+          "median_ms": 4.0332,
+          "peak_rss_mb": 97.46875,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.192,
+          "rss_delta_mb": -8.0
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 4,
+            "graph_optimization_level": "all",
+            "enable_cpu_mem_arena": true,
+            "allow_intra_op_spinning": true
+          },
+          "describe": "4t opt:all",
+          "status": "ok",
+          "median_ms": 3.3835,
+          "peak_rss_mb": 105.46875,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.0,
+          "rss_delta_mb": 0.0
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 4,
+            "graph_optimization_level": "all",
+            "enable_cpu_mem_arena": true,
+            "allow_intra_op_spinning": false
+          },
+          "describe": "4t opt:all no-spin",
+          "status": "ok",
+          "median_ms": 3.6038,
+          "peak_rss_mb": 105.46875,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.0651,
+          "rss_delta_mb": 0.0
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 4,
+            "graph_optimization_level": "all",
+            "enable_cpu_mem_arena": false,
+            "allow_intra_op_spinning": true
+          },
+          "describe": "4t opt:all no-arena",
+          "status": "ok",
+          "median_ms": 3.4359,
+          "peak_rss_mb": 97.4375,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.0155,
+          "rss_delta_mb": -8.03
+        },
+        {
+          "run": {
+            "intra_op_num_threads": 4,
+            "graph_optimization_level": "all",
+            "enable_cpu_mem_arena": false,
+            "allow_intra_op_spinning": false
+          },
+          "describe": "4t opt:all no-arena no-spin",
+          "status": "ok",
+          "median_ms": 3.5849,
+          "peak_rss_mb": 97.453125,
+          "admissible": true,
+          "stable": true,
+          "latency_vs_reference": 1.0595,
+          "rss_delta_mb": -8.02
+        }
+      ],
+      "summary": {
+        "measured": 36,
+        "reference": "4t opt:all",
+        "reference_ms": 3.3835,
+        "fastest": "4t opt:all",
+        "fastest_ms": 3.3835,
+        "reference_is_fastest": true,
+        "leanest": "1t opt:all no-arena",
+        "leanest_rss_mb": 97.421875,
+        "rss_span_mb": 19.0
+      }
+    }
+  },
+  "created_at_utc": "2026-08-09T14:19:04.552790+00:00"
+}

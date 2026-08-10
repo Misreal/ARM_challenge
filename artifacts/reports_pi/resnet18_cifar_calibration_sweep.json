@@ -1,0 +1,210 @@
+{
+  "model": "resnet18_cifar",
+  "device_state": {
+    "platform": "Linux-6.12.96+rpt-rpi-2712-aarch64-with-glibc2.36",
+    "machine": "aarch64",
+    "is_target": true,
+    "governors": [
+      "performance",
+      "performance",
+      "performance",
+      "performance"
+    ],
+    "governor": "performance",
+    "governor_is_pinned": true,
+    "clock_mhz": 2400.0,
+    "temperature_c": 47.95,
+    "throttle": {
+      "raw": 0,
+      "hex": "0x0",
+      "live": [],
+      "sticky": [],
+      "available": true
+    }
+  },
+  "run_config": {
+    "intra_op_num_threads": 4,
+    "graph_optimization_level": "all",
+    "enable_cpu_mem_arena": true,
+    "allow_intra_op_spinning": true
+  },
+  "schemes": {
+    "per_channel": {
+      "rows": [
+        {
+          "calibration_method": "entropy",
+          "calibration_size": 128,
+          "per_channel": true,
+          "quant_hash": "f827dc1a0335d9e3",
+          "status": "ok",
+          "top1": 78.5,
+          "top5": 93.4,
+          "samples": 3000,
+          "bytes": 11338187,
+          "median_ms": 3.3493,
+          "peak_rss_mb": 105.40625,
+          "admissible": true
+        },
+        {
+          "calibration_method": "entropy",
+          "calibration_size": 256,
+          "per_channel": true,
+          "quant_hash": "7beeecd910141e08",
+          "status": "ok",
+          "top1": 78.5,
+          "top5": 93.4,
+          "samples": 3000,
+          "bytes": 11338186,
+          "median_ms": 3.4019,
+          "peak_rss_mb": 105.40625,
+          "admissible": true
+        },
+        {
+          "calibration_method": "entropy",
+          "calibration_size": 512,
+          "per_channel": true,
+          "quant_hash": "d48f4be75c82beb5",
+          "status": "ok",
+          "top1": 78.4,
+          "top5": 93.23333333333333,
+          "samples": 3000,
+          "bytes": 11338184,
+          "median_ms": 3.3921,
+          "peak_rss_mb": 105.21875,
+          "admissible": true
+        },
+        {
+          "calibration_method": "entropy",
+          "calibration_size": 1000,
+          "per_channel": true,
+          "quant_hash": "39a0d27a1fc628c9",
+          "status": "transport_failed",
+          "error": "score stage exited 4294967295 and no result file came back.\nstderr: \u001b[0;93m2026-08-09 22:31:12.230582682 [W:onnxruntime:Default, device_discovery.cc:283 GetGpuDevices] Failed to detect devices under \""
+        },
+        {
+          "calibration_method": "minmax",
+          "calibration_size": 128,
+          "per_channel": true,
+          "quant_hash": "6244b4c515ffca85",
+          "status": "ok",
+          "top1": 78.5,
+          "top5": 93.4,
+          "samples": 3000,
+          "bytes": 11338187,
+          "median_ms": 3.3942,
+          "peak_rss_mb": 105.375,
+          "admissible": true
+        },
+        {
+          "calibration_method": "minmax",
+          "calibration_size": 256,
+          "per_channel": true,
+          "quant_hash": "afc40031d944e474",
+          "status": "ok",
+          "top1": 78.5,
+          "top5": 93.4,
+          "samples": 3000,
+          "bytes": 11338186,
+          "median_ms": 3.3706,
+          "peak_rss_mb": 105.375,
+          "admissible": true
+        },
+        {
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "per_channel": true,
+          "quant_hash": "6c2712900e73dc56",
+          "status": "ok",
+          "top1": 78.4,
+          "top5": 93.23333333333333,
+          "samples": 3000,
+          "bytes": 11338184,
+          "median_ms": 3.3584,
+          "peak_rss_mb": 105.375,
+          "admissible": true
+        },
+        {
+          "calibration_method": "minmax",
+          "calibration_size": 1000,
+          "per_channel": true,
+          "quant_hash": "22178ef63aaba8c2",
+          "status": "ok",
+          "top1": 78.43333333333334,
+          "top5": 93.06666666666666,
+          "samples": 3000,
+          "bytes": 11338185,
+          "median_ms": 3.3629,
+          "peak_rss_mb": 105.375,
+          "admissible": true
+        },
+        {
+          "calibration_method": "percentile",
+          "calibration_size": 128,
+          "per_channel": true,
+          "quant_hash": "36cb7b75849da877",
+          "status": "ok",
+          "top1": 78.73333333333333,
+          "top5": 93.5,
+          "samples": 3000,
+          "bytes": 11338191,
+          "median_ms": 3.3632,
+          "peak_rss_mb": 105.28125,
+          "admissible": true
+        },
+        {
+          "calibration_method": "percentile",
+          "calibration_size": 256,
+          "per_channel": true,
+          "quant_hash": "bf6c5371d058c137",
+          "status": "ok",
+          "top1": 78.4,
+          "top5": 93.36666666666666,
+          "samples": 3000,
+          "bytes": 11338191,
+          "median_ms": 3.3855,
+          "peak_rss_mb": 105.390625,
+          "admissible": true
+        },
+        {
+          "calibration_method": "percentile",
+          "calibration_size": 512,
+          "per_channel": true,
+          "quant_hash": "990ed924190f9b31",
+          "status": "ok",
+          "top1": 78.7,
+          "top5": 93.56666666666666,
+          "samples": 3000,
+          "bytes": 11338190,
+          "median_ms": 3.3736,
+          "peak_rss_mb": 105.296875,
+          "admissible": true
+        },
+        {
+          "calibration_method": "percentile",
+          "calibration_size": 1000,
+          "per_channel": true,
+          "quant_hash": "a7cbfbc80a427632",
+          "status": "transport_failed",
+          "error": "score stage exited 4294967295 and no result file came back.\nstderr: \u001b[0;93m2026-08-09 22:32:25.594828575 [W:onnxruntime:Default, device_discovery.cc:283 GetGpuDevices] Failed to detect devices under \""
+        }
+      ],
+      "summary": {
+        "measured": 10,
+        "best_top1": 78.73333333333333,
+        "best_recipe": "percentile/128",
+        "top1_span": 0.333,
+        "method_best": {
+          "entropy": 78.5,
+          "minmax": 78.5,
+          "percentile": 78.733
+        },
+        "method_mean": {
+          "entropy": 78.467,
+          "minmax": 78.458,
+          "percentile": 78.611
+        }
+      }
+    }
+  },
+  "created_at_utc": "2026-08-09T14:31:11.885174+00:00"
+}

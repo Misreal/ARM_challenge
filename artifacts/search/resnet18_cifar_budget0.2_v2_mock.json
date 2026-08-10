@@ -1,0 +1,214 @@
+{
+  "study": "resnet18_cifar_budget0.2_v2_mock",
+  "model": "resnet18_cifar",
+  "mock": true,
+  "baseline_top1": 78.5,
+  "accuracy_budget_pt": 0.2,
+  "threshold_top1": 78.3,
+  "groups": [
+    "conv1",
+    "relu",
+    "layer1",
+    "layer2",
+    "layer3",
+    "layer4",
+    "avgpool",
+    "fc"
+  ],
+  "trials": 12,
+  "pareto": [
+    {
+      "values": [
+        3.4,
+        11000000.0,
+        100.0,
+        78.4
+      ],
+      "constraints": [
+        -0.10000000000000853
+      ],
+      "describe": "static per-channel act:uint8 minmax/512",
+      "describe_run": "4t opt:all",
+      "quant_hash": "6c2712900e73dc56",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.4,
+        "size_bytes": 11000000,
+        "peak_rss_mb": 100.0,
+        "top1": 78.4,
+        "screen_top1": 78.4,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "values": [
+        6.55,
+        19250000.0,
+        115.0,
+        78.42
+      ],
+      "constraints": [
+        -0.12000000000000455
+      ],
+      "describe": "static per-channel act:uint8 minmax/512 fp32:conv1+fc",
+      "describe_run": "4t opt:all",
+      "quant_hash": "b3dce3dabb14a76d",
+      "result": {
+        "status": "ok",
+        "latency_ms": 6.55,
+        "size_bytes": 19250000,
+        "peak_rss_mb": 115.0,
+        "top1": 78.42,
+        "screen_top1": 78.42,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "values": [
+        6.55,
+        19250000.0,
+        115.0,
+        78.42
+      ],
+      "constraints": [
+        -0.12000000000000455
+      ],
+      "describe": "static per-channel act:uint8 minmax/512 fp32:conv1+layer1",
+      "describe_run": "4t opt:all",
+      "quant_hash": "c6594a26c3b167fe",
+      "result": {
+        "status": "ok",
+        "latency_ms": 6.55,
+        "size_bytes": 19250000,
+        "peak_rss_mb": 115.0,
+        "top1": 78.42,
+        "screen_top1": 78.42,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "values": [
+        58.8427,
+        35750000.0,
+        133.0,
+        78.47
+      ],
+      "constraints": [
+        -0.1700000000000017
+      ],
+      "describe": "dynamic per-channel fp32:avgpool+conv1+fc+layer3+layer4+relu",
+      "describe_run": "4t opt:extended no-arena",
+      "quant_hash": "d64f75dd23c30633",
+      "result": {
+        "status": "ok",
+        "latency_ms": 58.8427,
+        "size_bytes": 35750000,
+        "peak_rss_mb": 133.0,
+        "top1": 78.47,
+        "screen_top1": 78.47,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "values": [
+        21.094,
+        15125000.0,
+        107.5,
+        78.41
+      ],
+      "constraints": [
+        -0.10999999999999943
+      ],
+      "describe": "dynamic per-channel fp32:avgpool",
+      "describe_run": "4t opt:extended",
+      "quant_hash": "914df5a6c297caee",
+      "result": {
+        "status": "ok",
+        "latency_ms": 21.094,
+        "size_bytes": 15125000,
+        "peak_rss_mb": 107.5,
+        "top1": 78.41,
+        "screen_top1": 78.41,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "values": [
+        11.1046,
+        27500000.0,
+        118.0,
+        78.45
+      ],
+      "constraints": [
+        -0.15000000000000568
+      ],
+      "describe": "static per-channel act:int8 entropy/256 fp32:avgpool+fc+layer1+layer2",
+      "describe_run": "4t opt:extended no-arena",
+      "quant_hash": "67a328f2d84ef281",
+      "result": {
+        "status": "ok",
+        "latency_ms": 11.1046,
+        "size_bytes": 27500000,
+        "peak_rss_mb": 118.0,
+        "top1": 78.45,
+        "screen_top1": 78.45,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "values": [
+        28.296,
+        19250000.0,
+        103.0,
+        78.42
+      ],
+      "constraints": [
+        -0.12000000000000455
+      ],
+      "describe": "dynamic per-channel fp32:conv1+relu",
+      "describe_run": "4t opt:all no-arena",
+      "quant_hash": "bae18ffac6e14b9c",
+      "result": {
+        "status": "ok",
+        "latency_ms": 28.296,
+        "size_bytes": 19250000,
+        "peak_rss_mb": 103.0,
+        "top1": 78.42,
+        "screen_top1": 78.42,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "values": [
+        11.9515,
+        31625000.0,
+        137.5,
+        78.46
+      ],
+      "constraints": [
+        -0.1599999999999966
+      ],
+      "describe": "static per-channel act:uint8 entropy/512 fp32:conv1+fc+layer1+layer4+relu",
+      "describe_run": "4t opt:extended",
+      "quant_hash": "a2b40d945487ce4f",
+      "result": {
+        "status": "ok",
+        "latency_ms": 11.9515,
+        "size_bytes": 31625000,
+        "peak_rss_mb": 137.5,
+        "top1": 78.46,
+        "screen_top1": 78.46,
+        "admissible": true,
+        "error": null
+      }
+    }
+  ],
+  "created_at_utc": "2026-08-09T15:17:38.549344+00:00"
+}
