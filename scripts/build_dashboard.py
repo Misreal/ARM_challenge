@@ -11,7 +11,7 @@ from __future__ import annotations
 import argparse
 import json
 from datetime import UTC, datetime
-from itertools import product
+from itertools import groupby, permutations
 from pathlib import Path
 from typing import Any
 
@@ -25,9 +25,11 @@ CACHE_DIR = Path("artifacts/bench_cache")
 TEMPLATE = Path("scripts/dashboard_template.html")
 DEFAULT_OUT = Path("artifacts/dashboard/index.html")
 
-MODEL = "resnet18_cifar"
-STUDY = "resnet18_cifar_budget0.2_v2"
-SENTINEL = "sentinel_resnet18_cifar_20260808.json"
+DEFAULT_MODEL = "resnet18_cifar"
+
+# How `src.search.study` names a study file: model, accuracy budget, space version.
+DEFAULT_BUDGET_PT = 0.2
+SPACE_VERSION = "v2"
 
 # The runtime the global baselines were measured under in Phases 3-4, and what
 # the study seeds them with. Reference marks must be read back under it or they
@@ -37,19 +39,21 @@ REFERENCE_RUN = RunConfig(intra_op_num_threads=4, graph_optimization_level="all"
 DATA_PLACEHOLDER = "/*__DASHBOARD_DATA__*/"
 
 # The four objectives, in the order the page lays them out. `sense` is which
-# direction is better, which is what the normalizer needs to invert.
-OBJECTIVES: tuple[dict[str, str], ...] = (
-    {"key": "latency_ms", "label": "Latency", "unit": "ms", "sense": "min"},
-    {"key": "size_mb", "label": "Model size", "unit": "MB", "sense": "min"},
-    {"key": "peak_rss_mb", "label": "Peak RAM", "unit": "MB", "sense": "min"},
-    {"key": "top1", "label": "Top-1", "unit": "%", "sense": "max"},
+# direction is better; `decimals` is how many digits the page prints, which is
+# also the finest difference it is allowed to rank on.
+OBJECTIVES: tuple[dict[str, Any], ...] = (
+    {"key": "latency_ms", "label": "Latency", "unit": "ms", "sense": "min", "decimals": 3,
+     "blurb": "Median time to classify one image"},
+    {"key": "size_mb", "label": "Model size", "unit": "MB", "sense": "min", "decimals": 2,
+     "blurb": "Size of the .onnx file on disk"},
+    {"key": "peak_rss_mb", "label": "Peak RAM", "unit": "MB", "sense": "min", "decimals": 1,
+     "blurb": "Most memory the process held while running"},
+    {"key": "top1", "label": "Top-1", "unit": "%", "sense": "max", "decimals": 2,
+     "blurb": "Share of images classified correctly"},
 )
 
-# Slider granularity, shared by the page and by the reachability enumeration
-# below. One constant so the "no slider setting selects this row" claim is made
-# against the grid the sliders actually offer, not an idealised continuous one.
-SLIDER_STEP = 5
-SLIDER_MAX = 100
+# Where the reader's priority list starts before they touch it.
+DEFAULT_PRIORITY = ("latency_ms", "top1", "peak_rss_mb", "size_mb")
 
 
 def read_json(path: Path) -> Any:
@@ -159,14 +163,54 @@ def reference_marks(
     return marks
 
 
-def noise_floor(sentinel: dict[str, Any]) -> dict[str, float]:
-    """Repeat-to-repeat spread of one identical config, as a percentage."""
-    rss = [result["peak_rss_mb"] for result in sentinel["results"]]
+def find_sentinel(device_dir: Path, model: str) -> Path | None:
+    """The most recent repeat-spread report for this model, if one was ever run.
+
+    Only resnet18 has one; the other two campaigns never repeated a config. The
+    build degrades rather than borrowing another model's figure, because a spread
+    measured on a different graph is an estimate, not a measurement.
+    """
+    found = sorted(device_dir.glob(f"sentinel_{model}_*.json"))
+    return found[-1] if found else None
+
+
+def unmeasured_noise() -> dict[str, Any]:
+    """The noise floor for a run that never repeated a config.
+
+    Zero tolerance is not a claim that the device is perfectly repeatable; it is
+    the page refusing to invent one. Ties then fall back to printed digits alone,
+    which understates how many rows are really indistinguishable, and the page
+    says so.
+    """
     return {
+        "measured": False,
+        "trials": 0,
+        "latency_percent": 0.0,
+        "rss_percent": 0.0,
+        "percent": {objective["key"]: 0.0 for objective in OBJECTIVES},
+    }
+
+
+def noise_floor(sentinel: dict[str, Any]) -> dict[str, Any]:
+    """Repeat-to-repeat spread of one identical config, as a percentage.
+
+    Size and top-1 are zero rather than unmeasured: the same artifact is the same
+    bytes, and rescoring a fixed split with a deterministic graph returns the same
+    number. Their only resolution limit is how many digits the page prints.
+    """
+    rss = [result["peak_rss_mb"] for result in sentinel["results"]]
+    rss_percent = round((max(rss) - min(rss)) / (sum(rss) / len(rss)) * 100, 4)
+    return {
+        "measured": True,
         "trials": sentinel["admissible_trials"],
         "latency_percent": sentinel["spread_percent"],
-        "rss_percent": round((max(rss) - min(rss)) / (sum(rss) / len(rss)) * 100, 4),
-        "size_percent": 0.0,
+        "rss_percent": rss_percent,
+        "percent": {
+            "latency_ms": sentinel["spread_percent"],
+            "size_mb": 0.0,
+            "peak_rss_mb": rss_percent,
+            "top1": 0.0,
+        },
     }
 
 
@@ -218,74 +262,107 @@ def front_rows(summary: dict[str, Any], baseline_top1: float, samples: int) -> l
     return rows
 
 
-def normalize(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Min-max each objective across the front, oriented so 1.0 is always best.
+# -------------------------------------------------------------- ranking rule
 
-    A single-valued objective normalizes to 1.0 for every row: it separates
-    nothing, so it must not push the ranking around either.
+
+def tie_groups(rows: list[dict[str, Any]], noise: dict[str, float]) -> dict[str, list[list[str]]]:
+    """Per objective, the rows the page cannot honestly tell apart.
+
+    Two configs are indistinguishable on an objective when they print the same
+    digits or sit inside its measured repeat noise. Grouping chains from each
+    group's leader rather than comparing every pair, because a tolerance applied
+    pairwise is not transitive -- a~b and b~c without a~c -- and sorting on a
+    non-transitive comparison gives an order that depends on which comparisons
+    the sort happened to make.
     """
-    for row in rows:
-        row["norm"] = {}
+    groups: dict[str, list[list[str]]] = {}
     for objective in OBJECTIVES:
-        key = objective["key"]
-        values = [row[key] for row in rows]
-        low, high = min(values), max(values)
-        span = high - low
-        for row in rows:
-            if span == 0:
-                row["norm"][key] = 1.0
-                continue
-            fraction = (row[key] - low) / span
-            row["norm"][key] = fraction if objective["sense"] == "max" else 1.0 - fraction
-    return rows
+        key, decimals = objective["key"], objective["decimals"]
+        tolerance = noise[key] / 100
+        ordered = sorted(rows, key=lambda row: row[key], reverse=objective["sense"] == "max")
+
+        buckets: list[list[str]] = []
+        leaders: list[float] = []
+        for row in ordered:
+            value = row[key]
+            same_digits = bool(buckets) and f"{leaders[-1]:.{decimals}f}" == f"{value:.{decimals}f}"
+            inside_noise = bool(buckets) and abs(value - leaders[-1]) <= abs(leaders[-1]) * tolerance
+            if same_digits or inside_noise:
+                buckets[-1].append(row["id"])
+            else:
+                buckets.append([row["id"]])
+                leaders.append(value)
+        groups[key] = buckets
+    return groups
 
 
-def score(rows: list[dict[str, Any]], weights: dict[str, float]) -> list[float]:
-    """Weighted sum of the normalized objectives, in row order.
+def group_index(groups: dict[str, list[list[str]]]) -> dict[str, dict[str, int]]:
+    """Objective -> row id -> its place in that objective's ordered groups."""
+    return {
+        key: {row_id: place for place, bucket in enumerate(buckets) for row_id in bucket}
+        for key, buckets in groups.items()
+    }
 
-    The page's sliders recompute exactly this line in JavaScript; keeping the
-    normalization here and shipping `norm` with the data leaves only the sum
-    itself duplicated.
+
+def lexicographic(
+    rows: list[dict[str, Any]], order: tuple[str, ...], index: dict[str, dict[str, int]]
+) -> list[dict[str, Any]]:
+    """Rank under one priority order, splitting each tie on the next priority."""
+
+    def resolve(subset: list[dict[str, Any]], depth: int) -> list[dict[str, Any]]:
+        # Out of priorities: hold the incoming order, which is latency-sorted.
+        if len(subset) < 2 or depth >= len(order):
+            return subset
+        place = index[order[depth]]
+        ranked = sorted(subset, key=lambda row: place[row["id"]])
+        out: list[dict[str, Any]] = []
+        for _, bucket in groupby(ranked, key=lambda row: place[row["id"]]):
+            out.extend(resolve(list(bucket), depth + 1))
+        return out
+
+    return resolve(rows, 0)
+
+
+def orderings(
+    rows: list[dict[str, Any]], groups: dict[str, list[list[str]]]
+) -> dict[str, list[dict[str, Any]]]:
+    """Every priority order the reader can build, resolved here rather than on the page.
+
+    Four objectives is 24 permutations, so shipping all of them costs a few
+    kilobytes and leaves the page with a lookup instead of a second copy of the
+    ranking rule that could drift from this one.
     """
-    return [
-        sum(weights.get(objective["key"], 0.0) * row["norm"][objective["key"]] for objective in OBJECTIVES)
-        for row in rows
-    ]
+    index = group_index(groups)
+    resolved: dict[str, list[dict[str, Any]]] = {}
+    for order in permutations(objective["key"] for objective in OBJECTIVES):
+        ranked = lexicographic(rows, order, index)
+        # Which priority separated each row from the one above it -- the page
+        # shows it per row, so a tie-break never looks like an arbitrary choice.
+        entries = [{"id": ranked[0]["id"], "decided_by": None}]
+        for above, row in zip(ranked, ranked[1:], strict=False):
+            entries.append(
+                {
+                    "id": row["id"],
+                    "decided_by": next(
+                        (key for key in order if index[key][above["id"]] != index[key][row["id"]]),
+                        None,
+                    ),
+                }
+            )
+        resolved[",".join(order)] = entries
+    return resolved
 
 
-def rank(rows: list[dict[str, Any]], weights: dict[str, float]) -> list[int]:
-    """Row indices, best first, under one weighting."""
-    scores = score(rows, weights)
-    return sorted(range(len(rows)), key=lambda index: -scores[index])
+def unreachable_rows(resolved: dict[str, list[dict[str, Any]]], rows: list[dict[str, Any]]) -> list[str]:
+    """Rows that no priority order puts first.
 
-
-def unreachable_rows(rows: list[dict[str, Any]], step: int = SLIDER_STEP) -> list[str]:
-    """Rows that no slider setting can lift to rank 1.
-
-    A weighted sum over fixed points can only ever select members of their
-    convex hull, so a front member can be genuinely optimal and still never win
-    a slider contest. Enumerating the slider grid rather than solving the hull
-    answers the question the reader actually has -- can I get this row by moving
-    these controls -- and needs no solver.
+    A lexicographic ranking always starts from a best, so a config that is never
+    the best -- nor tied for best and then ahead on the next priority -- cannot
+    lead any ordering. It can still be genuinely un-dominated, which is why it is
+    on the front at all, so the page marks it rather than dropping it.
     """
-    keys = [objective["key"] for objective in OBJECTIVES]
-    columns = [[row["norm"][key] for row in rows] for key in keys]
-    reachable: set[int] = set()
-
-    for weights in product(range(0, SLIDER_MAX + 1, step), repeat=len(keys)):
-        if not any(weights):
-            continue  # every row scores zero; the page forbids this setting too
-        scores = [
-            sum(weight * column[index] for weight, column in zip(weights, columns, strict=True))
-            for index in range(len(rows))
-        ]
-        best = max(scores)
-        reachable.update(
-            index for index, value in enumerate(scores) if value >= best - 1e-12
-        )
-        if len(reachable) == len(rows):
-            break
-    return [row["id"] for index, row in enumerate(rows) if index not in reachable]
+    leaders = {entries[0]["id"] for entries in resolved.values()}
+    return [row["id"] for row in rows if row["id"] not in leaders]
 
 
 # ------------------------------------------------------- sensitivity vs cost
@@ -383,21 +460,28 @@ def trial_rows(db_path: Path, study_name: str, front: list[dict[str, Any]]) -> l
 
 
 def build_payload(
-    search_dir: Path, report_dir: Path, device_dir: Path, cache_dir: Path
+    model: str,
+    study: str,
+    search_dir: Path,
+    report_dir: Path,
+    device_dir: Path,
+    cache_dir: Path,
+    sentinel_path: Path | None = None,
 ) -> dict[str, Any]:
-    summary = read_json(search_dir / f"{STUDY}.json")
-    baseline = read_json(report_dir / f"{MODEL}_baseline.json")
-    quant_baselines = read_json(device_dir / f"{MODEL}_quant_baselines.json")
-    sensitivity = read_json(device_dir / f"{MODEL}_sensitivity.json")
-    cost_benefit = read_json(device_dir / "cost_benefit.json")[MODEL]
-    sentinel = read_json(device_dir / SENTINEL)
+    summary = read_json(search_dir / f"{study}.json")
+    baseline = read_json(report_dir / f"{model}_baseline.json")
+    quant_baselines = read_json(device_dir / f"{model}_quant_baselines.json")
+    sensitivity = read_json(device_dir / f"{model}_sensitivity.json")
+    cost_benefit = read_json(device_dir / "cost_benefit.json")[model]
 
     samples = quant_baselines["baselines"]["fp32"]["accuracy"]["samples"]
-    rows = normalize(front_rows(summary, summary["baseline_top1"], samples))
-    test = attach_test_scores(rows, device_dir / f"{MODEL}_final_test.json")
+    rows = front_rows(summary, summary["baseline_top1"], samples)
+    test = attach_test_scores(rows, device_dir / f"{model}_final_test.json")
+    noise = noise_floor(read_json(sentinel_path)) if sentinel_path else unmeasured_noise()
+    resolved = orderings(rows, tie_groups(rows, noise["percent"]))
 
     return {
-        "model": MODEL,
+        "model": model,
         "study": summary["study"],
         "built_at_utc": datetime.now(UTC).isoformat(timespec="seconds"),
         "split": {
@@ -416,17 +500,18 @@ def build_payload(
             "threshold_top1": summary["threshold_top1"],
         },
         "objectives": list(OBJECTIVES),
-        "slider": {"step": SLIDER_STEP, "max": SLIDER_MAX},
+        "default_priority": list(DEFAULT_PRIORITY),
         "front": rows,
         "test": test,
-        "unreachable": unreachable_rows(rows),
+        "orderings": resolved,
+        "unreachable": unreachable_rows(resolved, rows),
         "references": reference_marks(
-            quant_baselines, measurements_by_config(MODEL, cache_dir), rows
+            quant_baselines, measurements_by_config(model, cache_dir), rows
         ),
-        "noise": noise_floor(sentinel),
+        "noise": noise,
         "cost_benefit": cost_benefit_rows(cost_benefit),
         "groups": summary["groups"],
-        "trials": trial_rows(search_dir / f"{STUDY}.db", STUDY, rows),
+        "trials": trial_rows(search_dir / f"{study}.db", study, rows),
         "trials_declared": summary["trials"],
         "provenance": {
             "checkpoint_sha256": baseline["checkpoint"]["sha256"][:16],
@@ -445,6 +530,11 @@ def render(payload: dict[str, Any], template: Path) -> str:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser.add_argument("--model", default=DEFAULT_MODEL)
+    parser.add_argument("--study", default=None, help="defaults to <model>_budget0.2_v2")
+    parser.add_argument(
+        "--sentinel", type=Path, default=None, help="repeat-spread report; auto-discovered by model"
+    )
     parser.add_argument("--search-dir", type=Path, default=SEARCH_DIR)
     parser.add_argument("--report-dir", type=Path, default=REPORT_DIR)
     parser.add_argument("--device-dir", type=Path, default=DEVICE_REPORT_DIR)
@@ -453,7 +543,18 @@ def main() -> None:
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
     args = parser.parse_args()
 
-    payload = build_payload(args.search_dir, args.report_dir, args.device_dir, args.cache_dir)
+    study = args.study or f"{args.model}_budget{DEFAULT_BUDGET_PT:g}_{SPACE_VERSION}"
+    sentinel = args.sentinel or find_sentinel(args.device_dir, args.model)
+
+    payload = build_payload(
+        args.model,
+        study,
+        args.search_dir,
+        args.report_dir,
+        args.device_dir,
+        args.cache_dir,
+        sentinel,
+    )
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(render(payload, args.template), encoding="utf-8")
 
@@ -464,7 +565,12 @@ def main() -> None:
             f"  {row['id']:4s}{row['latency_ms']:10.4f}{row['size_mb']:9.3f}"
             f"{row['peak_rss_mb']:9.3f}{row['top1']:8.3f}  {row['describe']} | {row['describe_run']}"
         )
-    print(f"\n  unreachable by any slider setting: {', '.join(payload['unreachable']) or 'none'}")
+    floor = payload["noise"]
+    print(f"\n  repeat noise: "
+          + (f"latency {floor['latency_percent']}% over {floor['trials']} repeats"
+             if floor["measured"] else "not measured, ties on printed digits only"))
+    print(f"  never first under any of the {len(payload['orderings'])} priority orders: "
+          f"{', '.join(payload['unreachable']) or 'none'}")
     print(f"  trial history: {len(payload['trials'])} of {payload['trials_declared']} trials")
     print(f"\nWrote {args.out}")
 

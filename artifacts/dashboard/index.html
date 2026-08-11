@@ -154,14 +154,13 @@ h2 {
 
 @media (max-width: 760px) {
   .band-cols { grid-template-columns: minmax(0, 1fr); gap: 12px; }
-  .slider { grid-template-columns: 84px 1fr 32px; }
   .deltas { grid-template-columns: minmax(0, 1fr); }
 }
 
 /* ------------------------------------------------------------ panel grid */
 @media (min-width: 1080px) {
-  .p-scatter, .p-rank, .p-cost { grid-column: span 7; }
-  .p-weights, .p-detail, .p-trials { grid-column: span 5; }
+  .p-rank, .p-scatter, .p-cost { grid-column: span 7; }
+  .p-detail, .p-trials { grid-column: span 5; }
 }
 
 /* --------------------------------------------------------------- controls */
@@ -177,14 +176,24 @@ button:hover { background: var(--ghost); }
 input[type="checkbox"] { accent-color: var(--series-1); }
 :focus-visible { outline: 2px solid var(--series-1); outline-offset: 2px; }
 
-/* --------------------------------------------------------------- sliders */
-.sliders { display: grid; gap: 9px; }
-.slider { display: grid; grid-template-columns: 92px 1fr 44px; gap: 10px; align-items: center; }
-.slider > span:first-child { font-size: 12px; color: var(--ink-2); }
-.slider output { font-size: 12px; color: var(--ink); text-align: right; }
-input[type="range"] { width: 100%; accent-color: var(--series-1); }
-.presets { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-.presets button { font-size: 11px; padding: 2px 8px; }
+/* -------------------------------------------------------------- priority */
+.prio { list-style: none; display: grid; gap: 4px; margin: 0 0 12px; padding: 0; max-width: 470px; }
+.prio li {
+  display: grid; grid-template-columns: 16px 1fr auto; gap: 0 10px; align-items: center;
+  border: 1px solid var(--rule); border-radius: 3px; padding: 4px 7px; background: var(--ghost);
+}
+.prio li:first-child { border-color: var(--series-1); background: var(--wash); }
+.prio-n { grid-column: 1; grid-row: 1; font-size: 11px; color: var(--muted); text-align: center; }
+.prio-blurb { grid-column: 2; grid-row: 2; font-size: 11px; color: var(--muted); }
+.prio-name {
+  grid-column: 2; grid-row: 1;
+  border: 0; background: none; padding: 1px 0; width: 100%;
+  text-align: left; font-size: 12px;
+}
+.prio-name:hover { background: none; color: var(--series-1); }
+.prio-move { grid-column: 3; grid-row: 1 / span 2; align-self: center; display: flex; gap: 3px; }
+.prio-move button { padding: 0 6px; line-height: 1.5; }
+.prio-move button:disabled { opacity: .3; cursor: default; background: none; }
 
 /* --------------------------------------------------------------- ranking */
 table { border-collapse: collapse; width: 100%; font-size: 12px; }
@@ -195,19 +204,23 @@ tbody tr { cursor: pointer; }
 tbody tr:hover { background: var(--ghost); }
 tbody tr[aria-selected="true"] { background: var(--wash); }
 tbody tr[aria-selected="true"] td { border-bottom-color: var(--series-1); }
-.scorebar { display: block; height: 4px; border-radius: 0 2px 2px 0; background: var(--series-1); }
+.decided { font-size: 11px; color: var(--muted); }
+.tied { color: var(--muted); }
 .tag {
   font-size: 10px; padding: 0 5px; border-radius: 2px; white-space: nowrap;
   border: 1px solid currentColor;
 }
 .tag--dyn { color: var(--series-2); }
-.tag--hull { color: var(--muted); }
 .scroll { overflow-x: auto; }
 
 /* ---------------------------------------------------------------- detail */
 .kv { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; font-size: 12px; margin: 0; }
 .kv dt { color: var(--muted); font-size: 11px; }
 .kv dd { margin: 0; color: var(--ink); }
+.kv--gloss { gap: 7px 14px; align-items: start; }
+.kv--gloss dt { white-space: nowrap; padding-top: 1px; }
+.kv--gloss dd { color: var(--ink-2); max-width: 72ch; }
+.recipe-key { list-style: none; display: grid; gap: 2px; margin: 5px 0 0; padding: 0; }
 .deltas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
 .delta-card { border: 1px solid var(--rule); border-radius: 3px; padding: 8px 10px; }
 .delta-card h3 { font-size: 10px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); margin: 0 0 5px; font-weight: 600; }
@@ -276,6 +289,37 @@ footer {
     <div class="chips" id="header-chips"></div>
   </header>
 
+  <section class="panel p-rank">
+    <p class="eyebrow">Result</p>
+    <h2>Every config, ranked by what you care about</h2>
+    <p class="note" style="margin-bottom:8px">
+      Every row is a way of deploying the same trained network, measured on a real Pi 5.
+      Put what matters most at the top and the table re-sorts.
+    </p>
+    <div id="priority"></div>
+    <div class="scroll"><table id="rank-table"></table></div>
+    <details>
+      <summary>How the ranking works</summary>
+      <p class="note" style="margin-top:6px">
+        The table sorts by your first priority. Two rows count as tied when their numbers are very
+        close, because the Pi gives slightly different results each time you run it. Tied rows get
+        a ≈, and your second priority decides which one goes first. There is no single overall
+        score, because working one out would mean deciding how much each thing matters, and that
+        is your call to make.
+      </p>
+    </details>
+    <p class="eyebrow" style="margin-top:14px">Reading this table</p>
+    <dl class="kv kv--gloss" id="legend"></dl>
+  </section>
+
+  <section class="panel p-detail">
+    <p class="eyebrow">Selected configuration</p>
+    <h2 id="detail-title">—</h2>
+    <p class="note" id="detail-note"></p>
+    <dl class="kv" id="detail-kv"></dl>
+    <div class="deltas" id="detail-deltas"></div>
+  </section>
+
   <section class="panel p-scatter">
     <p class="eyebrow">The trade space</p>
     <h2>Pick any two objectives</h2>
@@ -293,33 +337,12 @@ footer {
     </details>
   </section>
 
-  <section class="panel p-weights">
-    <p class="eyebrow">Your priorities</p>
-    <h2>Say what you care about</h2>
-    <p class="note">
-      Objectives are min-max normalized across the front and direction-corrected,
-      so 1.0 is always the best value present. The score is their weighted sum.
-      Nothing here is a recommendation — you supply the preference.
-    </p>
-    <div class="sliders" id="sliders"></div>
-    <div class="presets" id="presets"></div>
-    <p class="note" id="hull-note" style="margin-top:12px"></p>
-  </section>
-
-  <section class="panel p-rank">
-    <p class="eyebrow">Result</p>
-    <h2>Every config, ranked under your weights</h2>
-    <p class="note" id="rank-note"></p>
-    <div class="scroll"><table id="rank-table"></table></div>
-    <p class="note" id="test-note" style="margin-top:10px"></p>
-  </section>
-
-  <section class="panel p-detail">
-    <p class="eyebrow">Selected configuration</p>
-    <h2 id="detail-title">—</h2>
-    <p class="note" id="detail-note"></p>
-    <dl class="kv" id="detail-kv"></dl>
-    <div class="deltas" id="detail-deltas"></div>
+  <section class="panel p-trials">
+    <p class="eyebrow">Search history</p>
+    <h2>Every trial the device actually ran</h2>
+    <p class="note" id="trials-note"></p>
+    <div id="trials-chart"></div>
+    <div class="legend" id="trials-legend"></div>
   </section>
 
   <section class="panel p-cost">
@@ -337,14 +360,6 @@ footer {
     </details>
   </section>
 
-  <section class="panel p-trials">
-    <p class="eyebrow">Search history</p>
-    <h2>Every trial the device actually ran</h2>
-    <p class="note" id="trials-note"></p>
-    <div id="trials-chart"></div>
-    <div class="legend" id="trials-legend"></div>
-  </section>
-
   <footer id="provenance"></footer>
 </div>
 
@@ -354,7 +369,7 @@ footer {
 {
  "model": "resnet18_cifar",
  "study": "resnet18_cifar_budget0.2_v2",
- "built_at_utc": "2026-08-10T15:08:53+00:00",
+ "built_at_utc": "2026-08-11T18:19:56+00:00",
  "split": {
   "name": "optval",
   "samples": 3000,
@@ -375,31 +390,41 @@ footer {
    "key": "latency_ms",
    "label": "Latency",
    "unit": "ms",
-   "sense": "min"
+   "sense": "min",
+   "decimals": 3,
+   "blurb": "Median time to classify one image"
   },
   {
    "key": "size_mb",
    "label": "Model size",
    "unit": "MB",
-   "sense": "min"
+   "sense": "min",
+   "decimals": 2,
+   "blurb": "Size of the .onnx file on disk"
   },
   {
    "key": "peak_rss_mb",
    "label": "Peak RAM",
    "unit": "MB",
-   "sense": "min"
+   "sense": "min",
+   "decimals": 1,
+   "blurb": "Most memory the process held while running"
   },
   {
    "key": "top1",
    "label": "Top-1",
    "unit": "%",
-   "sense": "max"
+   "sense": "max",
+   "decimals": 2,
+   "blurb": "Share of images classified correctly"
   }
  ],
- "slider": {
-  "step": 5,
-  "max": 100
- },
+ "default_priority": [
+  "latency_ms",
+  "top1",
+  "peak_rss_mb",
+  "size_mb"
+ ],
  "front": [
   {
    "describe": "static per-channel act:uint8 minmax/512",
@@ -424,12 +449,6 @@ footer {
    "screen_top1": 80.2,
    "images_vs_baseline": -3,
    "id": "C1",
-   "norm": {
-    "latency_ms": 1.0,
-    "size_mb": 0.8990687506057808,
-    "peak_rss_mb": 0.37745740498034075,
-    "top1": 0.20000000000001705
-   },
    "test_top1": 77.96
   },
   {
@@ -458,12 +477,6 @@ footer {
    "screen_top1": 80.4,
    "images_vs_baseline": -1,
    "id": "C2",
-   "norm": {
-    "latency_ms": 0.992488271439536,
-    "size_mb": 0.66126399451066,
-    "peak_rss_mb": 0.3302752293577982,
-    "top1": 0.3333333333333428
-   },
    "test_top1": 78.03
   },
   {
@@ -492,12 +505,6 @@ footer {
    "screen_top1": 80.0,
    "images_vs_baseline": -6,
    "id": "C3",
-   "norm": {
-    "latency_ms": 0.9913619663107603,
-    "size_mb": 0.9979399587991764,
-    "peak_rss_mb": 0.0,
-    "top1": 0.0
-   },
    "test_top1": 77.92
   },
   {
@@ -527,12 +534,6 @@ footer {
    "screen_top1": 80.8,
    "images_vs_baseline": 8,
    "id": "C4",
-   "norm": {
-    "latency_ms": 0.9901493716761509,
-    "size_mb": 0.6665994858358708,
-    "peak_rss_mb": 1.0,
-    "top1": 0.9333333333333371
-   },
    "test_top1": 77.89
   },
   {
@@ -563,12 +564,6 @@ footer {
    "screen_top1": 80.8,
    "images_vs_baseline": 9,
    "id": "C5",
-   "norm": {
-    "latency_ms": 0.9021113679611606,
-    "size_mb": 0.0,
-    "peak_rss_mb": 0.3709043250327654,
-    "top1": 1.0
-   },
    "test_top1": 77.9
   },
   {
@@ -598,12 +593,6 @@ footer {
    "screen_top1": 80.6,
    "images_vs_baseline": 2,
    "id": "C6",
-   "norm": {
-    "latency_ms": 0.009369223712356267,
-    "size_mb": 0.9927967790125022,
-    "peak_rss_mb": 0.6867627785058978,
-    "top1": 0.5333333333333314
-   },
    "test_top1": 78.0
   },
   {
@@ -631,12 +620,6 @@ footer {
    "screen_top1": 80.0,
    "images_vs_baseline": -3,
    "id": "C7",
-   "norm": {
-    "latency_ms": 0.0033244167510639855,
-    "size_mb": 0.9992276768612282,
-    "peak_rss_mb": 0.6435124508519003,
-    "top1": 0.20000000000001705
-   },
    "test_top1": 78.0
   },
   {
@@ -664,12 +647,6 @@ footer {
    "screen_top1": 80.0,
    "images_vs_baseline": -5,
    "id": "C8",
-   "norm": {
-    "latency_ms": 0.0,
-    "size_mb": 1.0,
-    "peak_rss_mb": 0.6893840104849279,
-    "top1": 0.06666666666666288
-   },
    "test_top1": 77.99
   }
  ],
@@ -679,9 +656,827 @@ footer {
   "fp32_top1": 77.99,
   "scored": 8
  },
+ "orderings": {
+  "latency_ms,size_mb,peak_rss_mb,top1": [
+   {
+    "id": "C1",
+    "decided_by": null
+   },
+   {
+    "id": "C3",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C4",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C2",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C5",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C8",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C7",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C6",
+    "decided_by": "size_mb"
+   }
+  ],
+  "latency_ms,size_mb,top1,peak_rss_mb": [
+   {
+    "id": "C1",
+    "decided_by": null
+   },
+   {
+    "id": "C3",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C4",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C2",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C5",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C7",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C8",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C6",
+    "decided_by": "size_mb"
+   }
+  ],
+  "latency_ms,peak_rss_mb,size_mb,top1": [
+   {
+    "id": "C1",
+    "decided_by": null
+   },
+   {
+    "id": "C4",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C2",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C3",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C5",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C8",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C6",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C7",
+    "decided_by": "peak_rss_mb"
+   }
+  ],
+  "latency_ms,peak_rss_mb,top1,size_mb": [
+   {
+    "id": "C1",
+    "decided_by": null
+   },
+   {
+    "id": "C4",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C2",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C3",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C5",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C6",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C8",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C7",
+    "decided_by": "peak_rss_mb"
+   }
+  ],
+  "latency_ms,top1,size_mb,peak_rss_mb": [
+   {
+    "id": "C1",
+    "decided_by": null
+   },
+   {
+    "id": "C4",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C2",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C3",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C5",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C6",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C7",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C8",
+    "decided_by": "top1"
+   }
+  ],
+  "latency_ms,top1,peak_rss_mb,size_mb": [
+   {
+    "id": "C1",
+    "decided_by": null
+   },
+   {
+    "id": "C4",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C2",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C3",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C5",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C6",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C7",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C8",
+    "decided_by": "top1"
+   }
+  ],
+  "size_mb,latency_ms,peak_rss_mb,top1": [
+   {
+    "id": "C3",
+    "decided_by": null
+   },
+   {
+    "id": "C8",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C7",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C6",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C1",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C4",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C2",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C5",
+    "decided_by": "size_mb"
+   }
+  ],
+  "size_mb,latency_ms,top1,peak_rss_mb": [
+   {
+    "id": "C3",
+    "decided_by": null
+   },
+   {
+    "id": "C7",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C8",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C6",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C1",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C4",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C2",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C5",
+    "decided_by": "size_mb"
+   }
+  ],
+  "size_mb,peak_rss_mb,latency_ms,top1": [
+   {
+    "id": "C8",
+    "decided_by": null
+   },
+   {
+    "id": "C7",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C3",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C6",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C1",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C4",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C2",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C5",
+    "decided_by": "size_mb"
+   }
+  ],
+  "size_mb,peak_rss_mb,top1,latency_ms": [
+   {
+    "id": "C8",
+    "decided_by": null
+   },
+   {
+    "id": "C7",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C3",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C6",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C1",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C4",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C2",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C5",
+    "decided_by": "size_mb"
+   }
+  ],
+  "size_mb,top1,latency_ms,peak_rss_mb": [
+   {
+    "id": "C7",
+    "decided_by": null
+   },
+   {
+    "id": "C8",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C3",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C6",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C1",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C4",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C2",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C5",
+    "decided_by": "size_mb"
+   }
+  ],
+  "size_mb,top1,peak_rss_mb,latency_ms": [
+   {
+    "id": "C7",
+    "decided_by": null
+   },
+   {
+    "id": "C8",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C3",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C6",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C1",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C4",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C2",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C5",
+    "decided_by": "size_mb"
+   }
+  ],
+  "peak_rss_mb,latency_ms,size_mb,top1": [
+   {
+    "id": "C4",
+    "decided_by": null
+   },
+   {
+    "id": "C8",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C6",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C7",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C1",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C5",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C2",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C3",
+    "decided_by": "peak_rss_mb"
+   }
+  ],
+  "peak_rss_mb,latency_ms,top1,size_mb": [
+   {
+    "id": "C4",
+    "decided_by": null
+   },
+   {
+    "id": "C6",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C8",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C7",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C1",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C5",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C2",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C3",
+    "decided_by": "peak_rss_mb"
+   }
+  ],
+  "peak_rss_mb,size_mb,latency_ms,top1": [
+   {
+    "id": "C4",
+    "decided_by": null
+   },
+   {
+    "id": "C8",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C6",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C7",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C1",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C5",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C2",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C3",
+    "decided_by": "peak_rss_mb"
+   }
+  ],
+  "peak_rss_mb,size_mb,top1,latency_ms": [
+   {
+    "id": "C4",
+    "decided_by": null
+   },
+   {
+    "id": "C8",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C6",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C7",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C1",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C5",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C2",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C3",
+    "decided_by": "peak_rss_mb"
+   }
+  ],
+  "peak_rss_mb,top1,latency_ms,size_mb": [
+   {
+    "id": "C4",
+    "decided_by": null
+   },
+   {
+    "id": "C6",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C8",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C7",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C1",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C5",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C2",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C3",
+    "decided_by": "peak_rss_mb"
+   }
+  ],
+  "peak_rss_mb,top1,size_mb,latency_ms": [
+   {
+    "id": "C4",
+    "decided_by": null
+   },
+   {
+    "id": "C6",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C8",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C7",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C1",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C5",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C2",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C3",
+    "decided_by": "peak_rss_mb"
+   }
+  ],
+  "top1,latency_ms,size_mb,peak_rss_mb": [
+   {
+    "id": "C5",
+    "decided_by": null
+   },
+   {
+    "id": "C4",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C6",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C2",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C1",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C7",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C8",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C3",
+    "decided_by": "top1"
+   }
+  ],
+  "top1,latency_ms,peak_rss_mb,size_mb": [
+   {
+    "id": "C5",
+    "decided_by": null
+   },
+   {
+    "id": "C4",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C6",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C2",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C1",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C7",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C8",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C3",
+    "decided_by": "top1"
+   }
+  ],
+  "top1,size_mb,latency_ms,peak_rss_mb": [
+   {
+    "id": "C5",
+    "decided_by": null
+   },
+   {
+    "id": "C4",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C6",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C2",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C7",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C1",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C8",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C3",
+    "decided_by": "top1"
+   }
+  ],
+  "top1,size_mb,peak_rss_mb,latency_ms": [
+   {
+    "id": "C5",
+    "decided_by": null
+   },
+   {
+    "id": "C4",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C6",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C2",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C7",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C1",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C8",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C3",
+    "decided_by": "top1"
+   }
+  ],
+  "top1,peak_rss_mb,latency_ms,size_mb": [
+   {
+    "id": "C5",
+    "decided_by": null
+   },
+   {
+    "id": "C4",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C6",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C2",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C7",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C1",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C8",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C3",
+    "decided_by": "top1"
+   }
+  ],
+  "top1,peak_rss_mb,size_mb,latency_ms": [
+   {
+    "id": "C5",
+    "decided_by": null
+   },
+   {
+    "id": "C4",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C6",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C2",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C7",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C1",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C8",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C3",
+    "decided_by": "top1"
+   }
+  ]
+ },
  "unreachable": [
   "C2",
-  "C7"
+  "C6"
  ],
  "references": [
   {
@@ -722,10 +1517,16 @@ footer {
   }
  ],
  "noise": {
+  "measured": true,
   "trials": 8,
   "latency_percent": 2.55,
   "rss_percent": 0.0095,
-  "size_percent": 0.0
+  "percent": {
+   "latency_ms": 2.55,
+   "size_mb": 0.0,
+   "peak_rss_mb": 0.0095,
+   "top1": 0.0
+  }
  },
  "cost_benefit": [
   {
@@ -1193,7 +1994,7 @@ const REF_LABELS = {
 const state = {
   x: "latency_ms",
   y: "top1",
-  weights: Object.fromEntries(OBJ.map(o => [o.key, 25])),
+  order: D.default_priority.slice(),
   selected: D.front[0].id,
   showDynamic: true
 };
@@ -1243,24 +2044,22 @@ function placeLabel(parent, x, y, text, cls, anchor, taken) {
   parent.appendChild(svgEl("text", { x: x + dx, y: y + dy, "text-anchor": anchor, class: cls }, text));
 }
 
-// Latency and RAM read to 4 significant-ish figures; accuracy to 2 decimals.
-const fmt = (value, key) => {
-  if (key === "top1") return value.toFixed(2);
-  if (key === "size_mb") return value.toFixed(2);
-  if (key === "peak_rss_mb") return value.toFixed(1);
-  return value.toFixed(3);
-};
+// The build ships the precision it grouped ties on, so the page can never print
+// more digits than it is willing to rank two configs apart on.
+const fmt = (value, key) => value.toFixed(byKey[key].decimals);
 const withUnit = (value, key) => `${fmt(value, key)} ${byKey[key].unit}`;
 const signed = (value, digits = 2) => (value >= 0 ? "+" : "−") + Math.abs(value).toFixed(digits);
 
+// Scatter only. The checkbox lives in that panel, and the ranking sits above it,
+// so hiding rows there must not quietly shorten a table the reader cannot see.
 const visibleRows = () => D.front.filter(r => state.showDynamic || r.quant_type !== "dynamic");
 
-const scoreOf = row =>
-  OBJ.reduce((sum, o) => sum + (state.weights[o.key] || 0) * row.norm[o.key], 0);
-
-const ranked = () => visibleRows().slice().sort((a, b) => scoreOf(b) - scoreOf(a));
-
 const rowById = id => D.front.find(r => r.id === id);
+
+// Every priority order was resolved at build time against the measured noise
+// floor, so the page looks its answer up rather than keeping a second copy of
+// the ranking rule that could drift from the tested one.
+const ranked = () => D.orderings[state.order.join(",")];
 
 /* ----------------------------------------------------------------- tooltip */
 
@@ -1306,7 +2105,9 @@ function renderHeader() {
   }
   add("Pareto members", String(D.front.length));
   add("Measured trials", String(D.trials_declared));
-  add("Repeat noise", `latency ${D.noise.latency_percent}% · RAM ${D.noise.rss_percent}%`, "chip--warn");
+  add("Repeat noise", D.noise.measured
+    ? `latency ${D.noise.latency_percent}% · RAM ${D.noise.rss_percent}%`
+    : "not measured for this run", "chip--warn");
   add("Split fingerprint", D.split.fingerprint);
 }
 
@@ -1514,6 +2315,9 @@ function renderScatter() {
     s.appendChild(document.createTextNode(label));
     legend.appendChild(s);
   });
+  // No whisker is drawn without a measured spread, so the key would describe
+  // something absent from the plot.
+  if (!D.noise.measured) return;
   const s = el("span");
   const w = el("i", { class: "key" });
   w.style.background = "var(--series-1)";
@@ -1531,7 +2335,11 @@ function buildTable(node, headers, rows, opts = {}) {
   clear(node);
   const thead = el("thead");
   const hr = el("tr");
-  headers.forEach((h, i) => hr.appendChild(el("th", i === 0 ? { class: "lft" } : {}, h)));
+  headers.forEach((h, i) => {
+    const attrs = i === 0 ? { class: "lft" } : {};
+    if (h.title) attrs.title = h.title;
+    hr.appendChild(el("th", attrs, typeof h === "string" ? h : h.text));
+  });
   thead.appendChild(hr);
   node.appendChild(thead);
   const tbody = el("tbody");
@@ -1578,74 +2386,78 @@ function renderScatterTable() {
   buildTable(document.getElementById("scatter-table"), headers, rows, { mono: true });
 }
 
-/* ----------------------------------------------------------------- sliders */
+/* ---------------------------------------------------------------- priority */
 
-function renderSliders() {
-  const host = document.getElementById("sliders");
+// Rebuilding the list on every move drops focus, which strands a keyboard user
+// halfway through a reorder, so put it back on the control they just used.
+function refocus(key, direction) {
+  const moved = direction && document.querySelector(
+    `.prio-move button[data-key="${key}"][data-dir="${direction}"]`);
+  const target = moved && !moved.disabled
+    ? moved
+    : document.querySelector(`.prio-name[data-key="${key}"]`);
+  if (target) target.focus();
+}
+
+function movePriority(from, to, direction) {
+  const key = state.order[from];
+  const next = state.order.slice();
+  next.splice(to, 0, next.splice(from, 1)[0]);
+  state.order = next;
+  render();
+  refocus(key, direction);
+}
+
+function renderPriority() {
+  const host = document.getElementById("priority");
   clear(host);
-  OBJ.forEach(o => {
-    const wrap = el("div", { class: "slider" });
-    wrap.appendChild(el("span", {}, `${o.label} ${o.sense === "min" ? "↓" : "↑"}`));
-    const input = el("input", {
-      type: "range", min: "0", max: String(D.slider.max), step: String(D.slider.step),
-      value: String(state.weights[o.key]), "aria-label": `Weight for ${o.label}`
-    });
-    input.addEventListener("input", () => {
-      state.weights[o.key] = Number(input.value);
-      render();
-    });
-    wrap.appendChild(input);
-    wrap.appendChild(el("output", { class: "mono" }, String(state.weights[o.key])));
-    host.appendChild(wrap);
-  });
+  const list = el("ol", { class: "prio" });
 
-  const presets = document.getElementById("presets");
-  clear(presets);
-  const only = key => Object.fromEntries(OBJ.map(o => [o.key, o.key === key ? D.slider.max : 0]));
-  const options = [["Equal weight", Object.fromEntries(OBJ.map(o => [o.key, 25]))]]
-    .concat(OBJ.map(o => [`${o.label} only`, only(o.key)]));
-  options.forEach(([label, weights]) => {
-    const button = el("button", { type: "button" }, label);
-    button.addEventListener("click", () => { state.weights = { ...weights }; render(); });
-    presets.appendChild(button);
-  });
+  state.order.forEach((key, index) => {
+    const objective = byKey[key];
+    const item = el("li");
+    item.appendChild(el("span", { class: "prio-n mono" }, String(index + 1)));
 
-  const hull = document.getElementById("hull-note");
-  clear(hull);
-  if (D.unreachable.length) {
-    hull.appendChild(document.createTextNode("No slider setting can lift "));
-    hull.appendChild(el("b", {}, D.unreachable.join(", ")));
-    hull.appendChild(document.createTextNode(
-      " to rank 1. That is a property of weighted sums, not a flaw in those configs: a weighted " +
-      "sum over fixed points can only ever select members of their convex hull, so a config can be " +
-      "genuinely un-dominated and still sit inside the hull. They are marked in the ranking rather " +
-      "than left looking merely unlucky."));
-  }
+    const name = el("button", {
+      type: "button", class: "prio-name", "data-key": key,
+      title: `Make ${objective.label} the first priority`
+    }, `${objective.label} ${objective.sense === "min" ? "↓ lower is better" : "↑ higher is better"}`);
+    name.addEventListener("click", () => movePriority(index, 0, null));
+    item.appendChild(name);
+    item.appendChild(el("span", { class: "prio-blurb" },
+      `${objective.blurb}, in ${objective.unit === "%" ? "percent" : objective.unit}`));
+
+    const moves = el("span", { class: "prio-move" });
+    [["up", "↑", index - 1, index === 0],
+     ["down", "↓", index + 1, index === state.order.length - 1]].forEach(([dir, glyph, target, atEnd]) => {
+      const button = el("button", { type: "button", "data-key": key, "data-dir": dir,
+        "aria-label": `Move ${objective.label} ${dir}` }, glyph);
+      if (atEnd) button.disabled = true;
+      else button.addEventListener("click", () => movePriority(index, target, dir));
+      moves.appendChild(button);
+    });
+    item.appendChild(moves);
+    list.appendChild(item);
+  });
+  host.appendChild(list);
 }
 
 /* ----------------------------------------------------------------- ranking */
 
 function renderRanking() {
-  const rows = ranked();
-  const best = rows.length ? scoreOf(rows[0]) : 1;
-  const totalWeight = OBJ.reduce((s, o) => s + (state.weights[o.key] || 0), 0);
+  const entries = ranked();
 
-  const note = document.getElementById("rank-note");
-  clear(note);
-  if (totalWeight === 0) {
-    note.textContent = "Every weight is zero, so every config scores the same. Raise at least one slider.";
-  } else {
-    note.appendChild(document.createTextNode("The full ordering under your current weights, not just the winner. "));
-    note.appendChild(el("b", {}, "There is no named “balanced” pick"));
-    note.appendChild(document.createTextNode(
-      " — asserting one would replace your preference with ours, which is the thing a Pareto set exists to avoid."));
-  }
-
-  const headers = ["#", "Config"]
-    .concat(OBJ.map(o => o.key === "top1" ? `Top-1 (${D.split.name})` : `${o.label} (${o.unit})`))
-    .concat(D.test ? [`Top-1 (${D.test.split})`] : [])
-    .concat(["Recipe", "Score"]);
-  const tableRows = rows.map((r, i) => {
+  const headers = [{ text: "#" }, { text: "Config", title: "A label for this row, not a ranking" }]
+    .concat(OBJ.map(o => ({
+      text: o.key === "top1" ? `Top-1 (${D.split.name})` : `${o.label} (${o.unit})`,
+      title: `${o.blurb}. ${o.sense === "min" ? "Lower" : "Higher"} is better.`
+    })))
+    .concat(D.test ? [{ text: `Top-1 (${D.test.split})`,
+      title: "Scored once on the sealed split after the search finished. Shown for confirmation, never ranked on." }] : [])
+    .concat([{ text: "Recipe", title: "How this deployment was built. fp32: lists blocks kept out of INT8." },
+             { text: "Decided by", title: "The priority that separated this row from the one above it" }]);
+  const tableRows = entries.map((entry, i) => {
+    const r = rowById(entry.id);
     const recipe = el("span");
     recipe.appendChild(document.createTextNode(r.describe));
     if (r.quant_type === "dynamic") {
@@ -1654,57 +2466,105 @@ function renderRanking() {
         title: "Pareto-valid but impractical: it wins only on size and RAM, at several times the latency." },
         "not practical"));
     }
-    if (D.unreachable.includes(r.id)) {
-      recipe.appendChild(document.createTextNode(" "));
-      recipe.appendChild(el("span", { class: "tag tag--hull",
-        title: "Inside the convex hull: no slider setting ranks it first." }, "never #1"));
-    }
-    const bar = el("span", { class: "scorebar" });
-    bar.style.width = `${Math.max(2, (best ? scoreOf(r) / best : 0) * 100)}%`;
-    const cell = el("span");
-    cell.appendChild(el("span", { class: "mono" }, (scoreOf(r) / (totalWeight || 1)).toFixed(3)));
-    cell.appendChild(bar);
+    const decided = el("span", { class: "decided" },
+      i === 0 ? "—"
+        : entry.decided_by === null ? "nothing — a tie on all four"
+        : byKey[entry.decided_by].label);
+    // Anything the top priority did not decide is tied with the row above on it,
+    // which is the only reason a first-priority column can read out of order.
+    const tiedAbove = i > 0 && entry.decided_by !== state.order[0];
+    const objectiveCell = o => {
+      const text = fmt(r[o.key], o.key);
+      if (o.key !== state.order[0] || !tiedAbove) return text;
+      return el("span", { class: "tied",
+        title: `Tied with the row above on ${byKey[o.key].label} — your next priority decided the order`
+      }, "≈ " + text);
+    };
     return {
       id: r.id,
       selected: r.id === state.selected,
       values: [String(i + 1), r.id]
-        .concat(OBJ.map(o => fmt(r[o.key], o.key)))
+        .concat(OBJ.map(objectiveCell))
         .concat(D.test ? [r.test_top1 === null ? "—" : r.test_top1.toFixed(2)] : [])
-        .concat([recipe, cell])
+        .concat([recipe, decided])
     };
   });
   buildTable(document.getElementById("rank-table"), headers, tableRows, {
     onPick: cells => { state.selected = cells.id; render(); }
   });
-  renderTestNote();
 }
 
-// The sealed split is scored once, after the search has already chosen. It is
-// shown and never weighted: an objective the search could see would leak it.
-function renderTestNote() {
-  const host = document.getElementById("test-note");
+// What every column actually means. The two accuracy columns are the pair worth
+// separating: one the search could see, one sealed until after it had chosen.
+function renderLegend() {
+  const host = document.getElementById("legend");
   clear(host);
-  if (!D.test) {
-    host.textContent = "The sealed test set has not been evaluated yet, so every accuracy here is the "
-      + `${D.split.name} split the search graded on.`;
-    return;
-  }
-  const scored = D.front.filter(r => r.test_top1 !== null);
-  const bestOptval = scored.slice().sort((a, b) => b.top1 - a.top1)[0];
-  const bestTest = scored.slice().sort((a, b) => b.test_top1 - a.test_top1)[0];
+  const say = (term, build) => {
+    host.appendChild(el("dt", {}, term));
+    const dd = el("dd");
+    build(dd, s => dd.appendChild(document.createTextNode(s)),
+              s => dd.appendChild(el("span", { class: "mono" }, s)));
+    host.appendChild(dd);
+  };
 
-  host.appendChild(el("b", {}, `Top-1 (${D.test.split})`));
-  host.appendChild(document.createTextNode(
-    ` is the sealed ${D.test.samples.toLocaleString()}-image split, scored once after the search finished — ` +
-    "shown for confirmation and deliberately not weighted, because an objective the search can see is a leak. "));
-  if (bestOptval.id !== bestTest.id) {
-    host.appendChild(el("b", {}, "It reorders the accuracy column"));
-    host.appendChild(document.createTextNode(
-      `: ${bestOptval.id} leads on ${D.split.name} at ${bestOptval.top1.toFixed(2)}% but scores ` +
-      `${bestOptval.test_top1.toFixed(2)}% here, behind ${bestTest.id}'s ${bestTest.test_top1.toFixed(2)}%. ` +
-      "That is what a sub-point accuracy gap is worth — which is why the page never called one a win. " +
-      `FP32 itself scores ${D.test.fp32_top1.toFixed(2)}% on this split.`));
+  say(`Latency (${byKey.latency_ms.unit})`, (dd, text) => text(
+    "How long the model takes to recognise one picture, in thousandths of a second. Timed on the " +
+    `Pi itself using ${D.device.threads} of its cores, run many times over, taking the middle ` +
+    "result. Lower is better."));
+
+  say(`Model size (${byKey.size_mb.unit})`, (dd, text) => text(
+    "How much space the model file takes up. This is what you copy onto the Pi. Lower is better."));
+
+  say(`Peak RAM (${byKey.peak_rss_mb.unit})`, (dd, text) => text(
+    "The most memory the model needed at any one moment while running. If the Pi does not have " +
+    "this much free, it cannot run the model. Lower is better."));
+
+  say(`Top-1 (${D.split.name})`, (dd, text) => text(
+    `How often the model gets the answer right, out of ${D.split.samples.toLocaleString()} pictures. ` +
+    "Think of these as practice questions: the search was allowed to look at them while it picked " +
+    "settings, so this is the score the table ranks on. Higher is better."));
+
+  if (D.test) {
+    const scored = D.front.filter(r => r.test_top1 !== null);
+    const bestOptval = scored.slice().sort((a, b) => b.top1 - a.top1)[0];
+    const bestTest = scored.slice().sort((a, b) => b.test_top1 - a.test_top1)[0];
+    say(`Top-1 (${D.test.split})`, (dd, text) => {
+      text(`The same score, but on ${D.test.samples.toLocaleString()} different pictures that stayed ` +
+        "locked away until the search had finished. Think of these as the real exam. It was run once, " +
+        "and it is never used for ranking, because a model that gets to practise on the exam is not " +
+        "really being tested. ");
+      if (bestOptval.id !== bestTest.id) {
+        dd.appendChild(el("b", {}, "It changed the order"));
+        text(`: ${bestOptval.id} looked best on the practice questions at ${bestOptval.top1.toFixed(2)}%, ` +
+          `but scored ${bestOptval.test_top1.toFixed(2)}% on the exam and fell behind ${bestTest.id} at ` +
+          `${bestTest.test_top1.toFixed(2)}%. That is why nothing on this page calls a lead of under a ` +
+          `point a win. Plain FP32 scores ${D.test.fp32_top1.toFixed(2)}%.`);
+      }
+    });
+  } else {
+    say("Top-1 (sealed)", (dd, text) => text(
+      "Not evaluated yet, so every accuracy here is the split the search graded on."));
   }
+
+  say("Recipe", (dd, text, mono) => {
+    text("The settings used to shrink the model, reading left to right:");
+    const list = el("ul", { class: "recipe-key" });
+    [["static", "the shrinking is worked out in advance, using sample pictures. " +
+                "dynamic works it out while the model runs, which is slower"],
+     ["per-channel", "every part of a layer gets its own setting. " +
+                     "per-tensor gives the whole layer one setting, which is rougher"],
+     ["act:uint8", "the number format used inside the model"],
+     ["minmax/512", "the method used to work the settings out, and how many pictures it looked at"],
+     ["fp32:conv1+fc", "parts left at full size, because shrinking them cost too much accuracy. " +
+                       "No fp32: at all means nothing was left out"]
+    ].forEach(([token, gloss]) => {
+      const item = el("li");
+      item.appendChild(el("span", { class: "mono" }, token));
+      item.appendChild(document.createTextNode(": " + gloss));
+      list.appendChild(item);
+    });
+    dd.appendChild(list);
+  });
 }
 
 /* ------------------------------------------------------------------ detail */
@@ -1973,9 +2833,7 @@ function renderProvenance() {
 /* ------------------------------------------------------------------ render */
 
 function render() {
-  document.querySelectorAll("#sliders output").forEach((out, i) => {
-    out.textContent = String(state.weights[OBJ[i].key]);
-  });
+  renderPriority();
   renderScatter();
   renderRanking();
   renderDetail();
@@ -1996,14 +2854,11 @@ function init() {
   });
   document.getElementById("show-dynamic").addEventListener("change", event => {
     state.showDynamic = event.target.checked;
-    if (!state.showDynamic && rowById(state.selected).quant_type === "dynamic") {
-      state.selected = visibleRows()[0].id;
-    }
-    render();
+    renderScatter();
   });
 
   renderHeader();
-  renderSliders();
+  renderLegend();
   renderScatterNote();
   renderScatterTable();
   renderCostBenefit();

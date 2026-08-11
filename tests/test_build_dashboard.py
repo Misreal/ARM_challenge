@@ -6,14 +6,23 @@ import pytest
 
 from scripts.build_dashboard import (
     OBJECTIVES,
+    find_sentinel,
     front_rows,
-    normalize,
+    group_index,
+    lexicographic,
+    noise_floor,
+    orderings,
     parse_quant_describe,
     parse_run_describe,
-    rank,
+    tie_groups,
+    unmeasured_noise,
     unreachable_rows,
 )
 from src.quant.config import QuantConfig, RunConfig
+
+# Perfect resolution, so a grouping test isolates whichever effect it is about.
+NO_NOISE = {"latency_ms": 0.0, "size_mb": 0.0, "peak_rss_mb": 0.0, "top1": 0.0}
+LATENCY_NOISE = {**NO_NOISE, "latency_ms": 2.55}
 
 DESCRIBES = (
     "fp32",
@@ -76,17 +85,18 @@ def member(latency: float, size_mb: float, rss: float, top1: float, describe: st
     }
 
 
+def rows_from(*members: dict) -> list[dict]:
+    return front_rows({"pareto": list(members)}, baseline_top1=78.5, samples=3000)
+
+
 def fixture_rows() -> list[dict]:
-    # Three corners plus one point deliberately inside their hull.
-    summary = {
-        "pareto": [
-            member(3.0, 12.0, 100.0, 78.0, "static per-channel act:uint8 minmax/512"),
-            member(9.0, 11.0, 99.0, 78.4, "static per-tensor act:uint8 minmax/512"),
-            member(6.0, 11.6, 99.6, 78.15, "dynamic"),
-            member(5.0, 13.0, 104.0, 79.0, "static per-channel act:uint8 minmax/512 fp32:fc"),
-        ]
-    }
-    return normalize(front_rows(summary, baseline_top1=78.5, samples=3000))
+    # Three configs that each lead an objective, plus one that leads none.
+    return rows_from(
+        member(3.0, 12.0, 100.0, 78.0, "static per-channel act:uint8 minmax/512"),
+        member(9.0, 11.0, 99.0, 78.4, "static per-tensor act:uint8 minmax/512"),
+        member(6.0, 11.6, 99.6, 78.15, "dynamic"),
+        member(5.0, 13.0, 104.0, 79.0, "static per-channel act:uint8 minmax/512 fp32:fc"),
+    )
 
 
 def test_rows_are_ordered_by_latency_and_labelled_in_that_order() -> None:
@@ -95,54 +105,132 @@ def test_rows_are_ordered_by_latency_and_labelled_in_that_order() -> None:
     assert [row["latency_ms"] for row in rows] == [3.0, 5.0, 6.0, 9.0]
 
 
-def test_normalization_puts_the_best_value_at_one_whichever_way_it_points() -> None:
-    rows = fixture_rows()
-    # Latency is minimized, so the fastest row normalizes to 1.0; top-1 is
-    # maximized, so the most accurate one does.
-    assert rows[0]["norm"]["latency_ms"] == pytest.approx(1.0)
-    assert max(row["norm"]["top1"] for row in rows) == pytest.approx(1.0)
-    assert min(row["norm"]["top1"] for row in rows) == pytest.approx(0.0)
-
-
-def test_an_objective_with_one_distinct_value_cannot_move_the_ranking() -> None:
-    rows = normalize(
-        front_rows(
-            {"pareto": [member(3.0, 12.0, 100.0, 78.0, "dynamic"), member(5.0, 12.0, 100.0, 79.0, "dynamic per-channel")]},
-            baseline_top1=78.5,
-            samples=3000,
-        )
-    )
-    assert [row["norm"]["size_mb"] for row in rows] == [1.0, 1.0]
-    assert rank(rows, {"size_mb": 100}) == [0, 1]  # a tie, resolved by original order
-
-
-@pytest.mark.parametrize(
-    ("key", "expected_id"),
-    # C4 is the extreme on both size and RAM in this fixture; that is what makes
-    # C3 interior, so the two expectations are meant to coincide.
-    [("latency_ms", "C1"), ("size_mb", "C4"), ("peak_rss_mb", "C4"), ("top1", "C2")],
-)
-def test_an_extreme_weighting_selects_that_objectives_extreme(key: str, expected_id: str) -> None:
-    rows = fixture_rows()
-    assert rows[rank(rows, {key: 100})[0]]["id"] == expected_id
-
-
 def test_images_gap_is_reported_against_the_split_size() -> None:
     rows = fixture_rows()
     # 79.0 against a 78.5 baseline is 0.5 pt, which on 3,000 images is 15 pictures.
     assert rows[1]["images_vs_baseline"] == 15
 
 
-def test_a_point_inside_the_hull_is_never_rank_one() -> None:
-    rows = fixture_rows()
-    # C3 is worse than C2 on latency and RAM and worse than C4 on size, while
-    # sitting between them on every axis -- no weighting can lift it.
-    assert unreachable_rows(rows, step=10) == ["C3"]
+def test_only_the_timed_objectives_carry_repeat_noise() -> None:
+    noise = noise_floor(
+        {
+            "admissible_trials": 3,
+            "spread_percent": 2.55,
+            "results": [{"peak_rss_mb": 100.0}, {"peak_rss_mb": 100.1}, {"peak_rss_mb": 99.9}],
+        }
+    )
+    assert noise["percent"]["latency_ms"] == 2.55
+    assert noise["percent"]["peak_rss_mb"] == pytest.approx(0.2)
+    # Rerunning does not move either of these, so their only limit is the printout.
+    assert noise["percent"]["size_mb"] == 0.0
+    assert noise["percent"]["top1"] == 0.0
 
 
-def test_every_hull_member_is_reachable_by_the_weighting_that_favours_it() -> None:
+def test_a_run_without_a_sentinel_claims_no_noise_rather_than_borrowing_one() -> None:
+    floor = unmeasured_noise()
+    assert floor["measured"] is False
+    assert set(floor["percent"]) == {objective["key"] for objective in OBJECTIVES}
+    assert all(value == 0.0 for value in floor["percent"].values())
+
+
+def test_the_sentinel_is_found_by_model_and_never_from_another_model(tmp_path) -> None:
+    (tmp_path / "sentinel_resnet18_cifar_20260808.json").write_text("{}")
+    (tmp_path / "sentinel_resnet18_cifar_20260901.json").write_text("{}")
+    # Dated names sort chronologically, so the newest repeat run is the one used.
+    assert find_sentinel(tmp_path, "resnet18_cifar").name == "sentinel_resnet18_cifar_20260901.json"
+    assert find_sentinel(tmp_path, "mobilenetv2_cifar") is None
+
+
+# ------------------------------------------------------------------- grouping
+
+
+def test_values_that_print_the_same_share_a_tie_group() -> None:
+    # Both round to 11.27 MB, so the page has shown nothing to rank them on.
+    rows = rows_from(
+        member(3.0, 11.271, 100.0, 78.0, "dynamic"),
+        member(4.0, 11.274, 101.0, 78.1, "dynamic per-channel"),
+        member(5.0, 11.400, 102.0, 78.2, "dynamic fp32:avgpool"),
+    )
+    assert tie_groups(rows, NO_NOISE)["size_mb"] == [["C1", "C2"], ["C3"]]
+
+
+def test_repeat_noise_groups_values_that_print_differently() -> None:
+    rows = rows_from(
+        member(3.500, 12.0, 100.0, 78.0, "dynamic"),
+        member(3.560, 12.1, 101.0, 78.1, "dynamic per-channel"),
+        member(3.700, 12.2, 102.0, 78.2, "dynamic fp32:avgpool"),
+    )
+    # 3.500 and 3.560 print differently but are 1.7% apart, inside the 2.55% floor.
+    assert tie_groups(rows, LATENCY_NOISE)["latency_ms"] == [["C1", "C2"], ["C3"]]
+
+
+def test_a_group_is_measured_from_its_leader_not_its_last_member() -> None:
+    rows = rows_from(
+        member(3.500, 12.0, 100.0, 78.0, "dynamic"),
+        member(3.570, 12.1, 101.0, 78.1, "dynamic per-channel"),
+        member(3.640, 12.2, 102.0, 78.2, "dynamic fp32:avgpool"),
+    )
+    # Each neighbouring pair is inside the noise floor but the ends are not, so
+    # chaining off the last member would swallow all three into one group.
+    assert tie_groups(rows, LATENCY_NOISE)["latency_ms"] == [["C1", "C2"], ["C3"]]
+
+
+# -------------------------------------------------------------------- ranking
+
+
+def tied_on_latency() -> list[dict]:
+    return rows_from(
+        member(3.500, 12.0, 100.0, 78.0, "dynamic"),
+        member(3.560, 12.1, 101.0, 78.1, "dynamic per-channel"),
+        member(3.700, 12.2, 102.0, 78.2, "dynamic fp32:avgpool"),
+    )
+
+
+def test_a_tie_on_the_first_priority_is_broken_by_the_second() -> None:
+    rows = tied_on_latency()
+    index = group_index(tie_groups(rows, LATENCY_NOISE))
+    ranked = lexicographic(rows, ("latency_ms", "top1", "size_mb", "peak_rss_mb"), index)
+    # C1 is faster on paper, but not by more than the device's repeat spread, so
+    # the reader's second priority is what actually separates them.
+    assert [row["id"] for row in ranked] == ["C2", "C1", "C3"]
+
+
+def test_each_row_records_the_priority_that_separated_it_from_the_row_above() -> None:
+    rows = tied_on_latency()
+    entries = orderings(rows, tie_groups(rows, LATENCY_NOISE))["latency_ms,top1,size_mb,peak_rss_mb"]
+    assert [entry["id"] for entry in entries] == ["C2", "C1", "C3"]
+    assert [entry["decided_by"] for entry in entries] == [None, "top1", "latency_ms"]
+
+
+def test_every_priority_order_the_reader_can_build_is_precomputed() -> None:
     rows = fixture_rows()
-    unreachable = set(unreachable_rows(rows, step=10))
-    for objective in OBJECTIVES:
-        winner = rows[rank(rows, {objective["key"]: 100})[0]]["id"]
-        assert winner not in unreachable
+    assert len(orderings(rows, tie_groups(rows, NO_NOISE))) == 24
+
+
+@pytest.mark.parametrize(
+    ("key", "expected_id"),
+    # C4 leads on both size and RAM in this fixture; that is what leaves C3
+    # leading nothing, so the two expectations are meant to coincide.
+    [("latency_ms", "C1"), ("size_mb", "C4"), ("peak_rss_mb", "C4"), ("top1", "C2")],
+)
+def test_the_first_priority_selects_that_objectives_best(key: str, expected_id: str) -> None:
+    rows = fixture_rows()
+    resolved = orderings(rows, tie_groups(rows, NO_NOISE))
+    order = [key] + [o["key"] for o in OBJECTIVES if o["key"] != key]
+    assert resolved[",".join(order)][0]["id"] == expected_id
+
+
+def test_a_row_that_leads_no_objective_never_ranks_first() -> None:
+    rows = fixture_rows()
+    # C3 is slower than C1, larger than C4 and less accurate than C2, while
+    # sitting between them on every axis -- no ordering can lift it.
+    resolved = orderings(rows, tie_groups(rows, NO_NOISE))
+    assert unreachable_rows(resolved, rows) == ["C3"]
+
+
+def test_a_tie_break_win_counts_as_reachable() -> None:
+    rows = tied_on_latency()
+    # C2 leads no objective outright, but it ties C1 on latency and takes the
+    # next round, so a latency-first reader really can see it at rank 1.
+    resolved = orderings(rows, tie_groups(rows, LATENCY_NOISE))
+    assert unreachable_rows(resolved, rows) == []
