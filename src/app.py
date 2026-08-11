@@ -48,13 +48,17 @@ def command_run(args: argparse.Namespace) -> None:
             "Import one with: python -m src.import_onnx --onnx <file> --name <name>"
         )
 
+    # Mock run ids carry the suffix so .gitignore can keep simulated results out
+    # of the repo without anyone having to remember not to commit them.
+    default_id = run_id_for(args.model, args.budget_pt) + ("_mock" if venue == "mock" else "")
+
     run = create_run(
         model=args.model,
         budget_pt=args.budget_pt,
         trials=args.trials,
         venue=venue,
         study=study_name(args.model, args.budget_pt, venue),
-        run_id=args.run_id,
+        run_id=args.run_id or default_id,
         runs_dir=args.runs_dir,
     )
 

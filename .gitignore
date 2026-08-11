@@ -76,3 +76,9 @@ artifacts/search/*.db
 
 # Scratch: mock runs, probe scripts, anything not a measured result.
 scratch/
+
+# Simulated runs. Bundled runs are measured runs; the app suffixes mock ones.
+runs/*_mock/
+
+# Simulated study summaries, same reasoning as the mock runs.
+artifacts/search/*_mock.json

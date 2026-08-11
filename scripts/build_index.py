@@ -89,8 +89,11 @@ def headline(run: Run, out: Path, cache_dir: Path = CACHE_DIR) -> dict[str, Any]
     }
 
 
-def build_payload(runs_dir: Path, out: Path) -> dict[str, Any]:
-    cards = [card for card in (headline(run, out) for run in list_runs(runs_dir)) if card]
+def build_payload(runs_dir: Path, out: Path, include_mock: bool = False) -> dict[str, Any]:
+    # The committed landing page lists measured runs only. A simulated card is
+    # useful locally and misleading to a visitor who did not run it themselves.
+    runs = [run for run in list_runs(runs_dir) if include_mock or run.is_measured]
+    cards = [card for card in (headline(run, out) for run in runs) if card]
     # Measured runs first, then by how fast their best candidate is.
     cards.sort(key=lambda card: (card["venue"] != "pi", card["best_latency_ms"]))
     return {
@@ -111,9 +114,10 @@ def main() -> None:
     parser.add_argument("--runs-dir", type=Path, default=RUNS_DIR)
     parser.add_argument("--template", type=Path, default=TEMPLATE)
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
+    parser.add_argument("--include-mock", action="store_true", help="also list simulated runs")
     args = parser.parse_args()
 
-    payload = build_payload(args.runs_dir, args.out)
+    payload = build_payload(args.runs_dir, args.out, args.include_mock)
     if not payload["runs"]:
         raise SystemExit(f"No runs with results under {args.runs_dir}. Run one first.")
 
