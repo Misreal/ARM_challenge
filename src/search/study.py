@@ -170,8 +170,18 @@ def main() -> None:
     args = parse_args()
     args.study_dir.mkdir(parents=True, exist_ok=True)
 
-    group_map = build_group_map(ModelPaths.resolve(args.model, args.onnx_dir).quant_ready, args.model)
-    groups = quantizable_groups(group_map)
+    if args.mock:
+        # The graphs are gitignored, so a fresh clone has none to read groups
+        # from. A mock run never quantizes anything, so the recorded group list
+        # is all it needs, and it is the same list the graph would produce.
+        from src.model_index import entry_for
+
+        groups = entry_for(args.model).groups
+    else:
+        group_map = build_group_map(
+            ModelPaths.resolve(args.model, args.onnx_dir).quant_ready, args.model
+        )
+        groups = quantizable_groups(group_map)
 
     baseline = baseline_top1(args.model)
     threshold = baseline - args.budget_pt

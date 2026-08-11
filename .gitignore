@@ -73,3 +73,6 @@ competition_rules.md
 # Optuna study state: binary and rewritten on every resume. The .json
 # summaries next to it carry the results that matter.
 artifacts/search/*.db
+
+# Scratch: mock runs, probe scripts, anything not a measured result.
+scratch/
