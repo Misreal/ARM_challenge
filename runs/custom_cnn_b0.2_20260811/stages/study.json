@@ -1,0 +1,332 @@
+{
+  "study": "custom_cnn_budget0.2_v2",
+  "model": "custom_cnn",
+  "mock": false,
+  "baseline_top1": 70.53333333333333,
+  "accuracy_budget_pt": 0.2,
+  "threshold_top1": 70.33333333333333,
+  "groups": [
+    "stem",
+    "stage1",
+    "stage2",
+    "stage3",
+    "pool",
+    "classifier"
+  ],
+  "trials": 40,
+  "pareto": [
+    {
+      "values": [
+        16.3153,
+        1811350.0,
+        87.3125,
+        70.5
+      ],
+      "constraints": [
+        -0.1666666666666714
+      ],
+      "describe": "dynamic",
+      "describe_run": "4t opt:all",
+      "quant_hash": "9965282d98520e1e",
+      "result": {
+        "status": "ok",
+        "latency_ms": 16.3153,
+        "size_bytes": 1811350,
+        "peak_rss_mb": 87.3125,
+        "top1": 70.5,
+        "screen_top1": 70.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "values": [
+        1.7858,
+        1811932.0,
+        84.796875,
+        70.43333333333334
+      ],
+      "constraints": [
+        -0.10000000000000853
+      ],
+      "describe": "static per-tensor act:uint8 minmax/512",
+      "describe_run": "4t opt:all",
+      "quant_hash": "06e1b9094831a2a6",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.7858,
+        "size_bytes": 1811932,
+        "peak_rss_mb": 84.796875,
+        "top1": 70.43333333333334,
+        "screen_top1": 71.2,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "values": [
+        1.7966,
+        1839387.0,
+        84.84375,
+        70.5
+      ],
+      "constraints": [
+        -0.1666666666666714
+      ],
+      "describe": "static per-channel act:uint8 minmax/512",
+      "describe_run": "4t opt:all",
+      "quant_hash": "6c2712900e73dc56",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.7966,
+        "size_bytes": 1839387,
+        "peak_rss_mb": 84.84375,
+        "top1": 70.5,
+        "screen_top1": 71.2,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "values": [
+        7.0587,
+        6951775.0,
+        93.796875,
+        71.06666666666666
+      ],
+      "constraints": [
+        -0.7333333333333343
+      ],
+      "describe": "static per-tensor act:uint8 percentile/256 fp32:classifier+pool+stage1+stage3+stem",
+      "describe_run": "4t opt:all",
+      "quant_hash": "222b083524ac4a7d",
+      "result": {
+        "status": "ok",
+        "latency_ms": 7.0587,
+        "size_bytes": 6951775,
+        "peak_rss_mb": 93.796875,
+        "top1": 71.06666666666666,
+        "screen_top1": 71.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "values": [
+        2.568,
+        1893776.0,
+        84.90625,
+        70.86666666666666
+      ],
+      "constraints": [
+        -0.5333333333333314
+      ],
+      "describe": "static per-channel act:int8 minmax/128 fp32:classifier+pool",
+      "describe_run": "4t opt:extended no-arena",
+      "quant_hash": "eceb9d5c4641cb4a",
+      "result": {
+        "status": "ok",
+        "latency_ms": 2.568,
+        "size_bytes": 1893776,
+        "peak_rss_mb": 84.90625,
+        "top1": 70.86666666666666,
+        "screen_top1": 71.2,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "values": [
+        1.9041,
+        1816336.0,
+        85.296875,
+        70.76666666666667
+      ],
+      "constraints": [
+        -0.4333333333333371
+      ],
+      "describe": "static per-tensor act:uint8 percentile/512 fp32:stem",
+      "describe_run": "4t opt:all no-arena",
+      "quant_hash": "206e70c41c205c18",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.9041,
+        "size_bytes": 1816336,
+        "peak_rss_mb": 85.296875,
+        "top1": 70.76666666666667,
+        "screen_top1": 71.2,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "values": [
+        1.8526,
+        1838749.0,
+        85.3125,
+        70.96666666666667
+      ],
+      "constraints": [
+        -0.63333333333334
+      ],
+      "describe": "static per-channel act:uint8 percentile/512 fp32:pool",
+      "describe_run": "4t opt:all no-arena",
+      "quant_hash": "55a391084a9662cd",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.8526,
+        "size_bytes": 1838749,
+        "peak_rss_mb": 85.3125,
+        "top1": 70.96666666666667,
+        "screen_top1": 71.6,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "values": [
+        1.7685,
+        1872692.0,
+        85.359375,
+        70.86666666666666
+      ],
+      "constraints": [
+        -0.5333333333333314
+      ],
+      "describe": "static per-tensor act:int8 entropy/256 fp32:classifier+stem",
+      "describe_run": "4t opt:all",
+      "quant_hash": "f10ce195e7ced1f2",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.7685,
+        "size_bytes": 1872692,
+        "peak_rss_mb": 85.359375,
+        "top1": 70.86666666666666,
+        "screen_top1": 71.4,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "values": [
+        16.173,
+        1815466.0,
+        87.296875,
+        70.76666666666667
+      ],
+      "constraints": [
+        -0.4333333333333371
+      ],
+      "describe": "dynamic fp32:stem",
+      "describe_run": "4t opt:extended no-arena",
+      "quant_hash": "00b87d400ddcab60",
+      "result": {
+        "status": "ok",
+        "latency_ms": 16.173,
+        "size_bytes": 1815466,
+        "peak_rss_mb": 87.296875,
+        "top1": 70.76666666666667,
+        "screen_top1": 71.4,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "values": [
+        1.7805,
+        1872683.0,
+        85.375,
+        70.7
+      ],
+      "constraints": [
+        -0.36666666666667425
+      ],
+      "describe": "static per-tensor act:int8 percentile/512 fp32:classifier+stem",
+      "describe_run": "4t opt:all no-arena",
+      "quant_hash": "b625337b592a1067",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.7805,
+        "size_bytes": 1872683,
+        "peak_rss_mb": 85.375,
+        "top1": 70.7,
+        "screen_top1": 71.4,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "values": [
+        2.5778,
+        1811933.0,
+        85.28125,
+        70.53333333333333
+      ],
+      "constraints": [
+        -0.20000000000000284
+      ],
+      "describe": "static per-tensor act:uint8 entropy/256",
+      "describe_run": "4t opt:extended",
+      "quant_hash": "4f8c0ed167562422",
+      "result": {
+        "status": "ok",
+        "latency_ms": 2.5778,
+        "size_bytes": 1811933,
+        "peak_rss_mb": 85.28125,
+        "top1": 70.53333333333333,
+        "screen_top1": 71.0,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "values": [
+        7.2135,
+        6896761.0,
+        93.75,
+        71.03333333333333
+      ],
+      "constraints": [
+        -0.7000000000000028
+      ],
+      "describe": "static per-tensor act:uint8 percentile/512 fp32:stage1+stage3+stem",
+      "describe_run": "4t opt:all no-arena",
+      "quant_hash": "c64434dcf6721a9c",
+      "result": {
+        "status": "ok",
+        "latency_ms": 7.2135,
+        "size_bytes": 6896761,
+        "peak_rss_mb": 93.75,
+        "top1": 71.03333333333333,
+        "screen_top1": 71.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "values": [
+        16.3656,
+        1811852.0,
+        87.28125,
+        70.53333333333333
+      ],
+      "constraints": [
+        -0.20000000000000284
+      ],
+      "describe": "dynamic per-channel fp32:pool",
+      "describe_run": "4t opt:all",
+      "quant_hash": "62c01093ef87cac9",
+      "result": {
+        "status": "ok",
+        "latency_ms": 16.3656,
+        "size_bytes": 1811852,
+        "peak_rss_mb": 87.28125,
+        "top1": 70.53333333333333,
+        "screen_top1": 71.0,
+        "admissible": true,
+        "error": null
+      }
+    }
+  ],
+  "created_at_utc": "2026-08-11T14:46:48.763248+00:00"
+}

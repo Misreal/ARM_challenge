@@ -1,0 +1,12 @@
+{
+  "schema": "run/1",
+  "run_id": "resnet18_cifar_b0.2_20260809",
+  "model": "resnet18_cifar",
+  "budget_pt": 0.2,
+  "trials": 40,
+  "venue": "pi",
+  "study": "resnet18_cifar_budget0.2_v2",
+  "source": "adopted",
+  "created_at_utc": "2026-08-11T18:25:23+00:00",
+  "notes": "Measured before the run layout existed; stage outputs copied from artifacts/."
+}

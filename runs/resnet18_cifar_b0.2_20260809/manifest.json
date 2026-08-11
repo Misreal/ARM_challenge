@@ -1,0 +1,49 @@
+{
+  "schema": "manifest/1",
+  "stages": {
+    "adopt": {
+      "status": "ok",
+      "seconds": 0.0,
+      "completed_at_utc": "2026-08-11T18:25:23+00:00",
+      "sources": {
+        "baseline": {
+          "from": "artifacts/reports/resnet18_cifar_baseline.json",
+          "sha256": "e1e0af2e631a9dba"
+        },
+        "quant_baselines": {
+          "from": "artifacts/reports_pi/resnet18_cifar_quant_baselines.json",
+          "sha256": "8a2a5b39dca73d46"
+        },
+        "sensitivity": {
+          "from": "artifacts/reports_pi/resnet18_cifar_sensitivity.json",
+          "sha256": "4cd765aa4712ffb7"
+        },
+        "cost_benefit": {
+          "from": "artifacts/reports_pi/cost_benefit.json",
+          "sha256": "0707e64fbdf7f389"
+        },
+        "search_space": {
+          "from": "artifacts/reports_pi/search_space.json",
+          "sha256": "40b35b2290379aaa"
+        },
+        "study": {
+          "from": "artifacts/search/resnet18_cifar_budget0.2_v2.json",
+          "sha256": "40511f25dd0dee79"
+        },
+        "final_test": {
+          "from": "artifacts/reports_pi/resnet18_cifar_final_test.json",
+          "sha256": "b364f5c342965304"
+        },
+        "sentinel": {
+          "from": "artifacts/reports_pi/sentinel_resnet18_cifar_20260808.json",
+          "sha256": "518338d29f2d1904"
+        }
+      }
+    }
+  },
+  "host": {
+    "platform": "Windows-10-10.0.26200-SP0",
+    "machine": "AMD64"
+  },
+  "updated_at_utc": "2026-08-11T18:25:23+00:00"
+}

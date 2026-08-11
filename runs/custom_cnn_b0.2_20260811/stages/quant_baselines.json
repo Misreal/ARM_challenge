@@ -1,0 +1,113 @@
+{
+  "model": "custom_cnn",
+  "eval_split": "optval",
+  "eval_limit": null,
+  "on_target": true,
+  "host": {
+    "platform": "Linux-6.12.93+rpt-rpi-2712-aarch64-with-glibc2.36",
+    "machine": "aarch64",
+    "processor": ""
+  },
+  "run_config": {
+    "intra_op_num_threads": 4,
+    "graph_optimization_level": "all"
+  },
+  "baselines": {
+    "fp32": {
+      "status": "ok",
+      "config": {
+        "quant_type": "none",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [],
+        "reduce_range": false
+      },
+      "quant_hash": "621cee21bf4b25e3",
+      "bytes": 7137449,
+      "qdq_nodes": 0,
+      "build_seconds": 0.0,
+      "accuracy": {
+        "samples": 3000,
+        "top1": 70.53333333333333,
+        "top5": 89.46666666666667
+      },
+      "top1_delta_vs_fp32": 0.0
+    },
+    "dynamic": {
+      "status": "ok",
+      "config": {
+        "quant_type": "dynamic",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [],
+        "reduce_range": false
+      },
+      "quant_hash": "9965282d98520e1e",
+      "bytes": 1811350,
+      "qdq_nodes": 0,
+      "build_seconds": 0.08,
+      "accuracy": {
+        "samples": 3000,
+        "top1": 70.5,
+        "top5": 89.13333333333334
+      },
+      "top1_delta_vs_fp32": -0.03
+    },
+    "static_per_tensor": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [],
+        "reduce_range": false
+      },
+      "quant_hash": "06e1b9094831a2a6",
+      "bytes": 1811932,
+      "qdq_nodes": 58,
+      "build_seconds": 0.0,
+      "accuracy": {
+        "samples": 3000,
+        "top1": 70.43333333333334,
+        "top5": 89.33333333333333
+      },
+      "top1_delta_vs_fp32": -0.1
+    },
+    "static_per_channel": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [],
+        "reduce_range": false
+      },
+      "quant_hash": "6c2712900e73dc56",
+      "bytes": 1839387,
+      "qdq_nodes": 58,
+      "build_seconds": 0.0,
+      "accuracy": {
+        "samples": 3000,
+        "top1": 70.5,
+        "top5": 89.16666666666667
+      },
+      "top1_delta_vs_fp32": -0.03
+    }
+  },
+  "onnxruntime": "1.27.0",
+  "created_at_utc": "2026-07-29T16:09:21.183866+00:00",
+  "note": "Measured on the aarch64 target (Raspberry Pi 5). These are deployment numbers, not screening numbers.",
+  "patched_note": "The `host` block and `note` were added retroactively on 2026-07-30. The generating script hardcoded an x86 note and recorded no host; the values here are copied from this model's *_latency_aarch64.json, produced by the same device in the same session. Accuracy values are untouched."
+}

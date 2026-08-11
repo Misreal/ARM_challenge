@@ -1,0 +1,78 @@
+{
+  "model": "resnet18_cifar",
+  "checkpoint": {
+    "path": "artifacts\\checkpoints\\resnet18_cifar.pt",
+    "sha256": "a03295430aba8a0caa9802e131c7bd67d6e471f9d2f9dc4cb8df769a7db7232d"
+  },
+  "split_fingerprint": "d692cdcdeddfac3b",
+  "onnx": {
+    "path": "artifacts\\onnx\\resnet18_cifar.onnx",
+    "sha256": "10d3572a84d38da1db12edf1900b803d245c9e9a3272a8270115e0e49af0af49",
+    "bytes": 44870838,
+    "opset": 17,
+    "input_name": "images",
+    "input_shape": [
+      1,
+      3,
+      32,
+      32
+    ],
+    "output_name": "logits",
+    "operators": {
+      "Add": 8,
+      "Conv": 20,
+      "Flatten": 1,
+      "Gemm": 1,
+      "GlobalAveragePool": 1,
+      "Relu": 17
+    }
+  },
+  "onnx_quant_ready": {
+    "path": "artifacts\\onnx\\resnet18_cifar_quant_ready.onnx",
+    "sha256": "4c7a3b869487dda8b812288b7d03b6dcdbed9999d0b795a675f241e5b90e82db",
+    "bytes": 44874055,
+    "operators": {
+      "Add": 8,
+      "Conv": 20,
+      "Flatten": 1,
+      "Gemm": 1,
+      "GlobalAveragePool": 1,
+      "Relu": 17
+    },
+    "note": "Shape-inferred and fused graph. Phase 4 must quantize THIS file, never the deployable export (PLAN.md DO-NOT #4)."
+  },
+  "preprocessing": {
+    "input": "normalized_float32_nchw",
+    "mean": [
+      0.5071,
+      0.4865,
+      0.4409
+    ],
+    "std": [
+      0.2673,
+      0.2564,
+      0.2762
+    ]
+  },
+  "metrics": {
+    "optval_top1": 78.5,
+    "test_top1_sealed": 77.99
+  },
+  "verification": {
+    "torch_vs_onnx": {
+      "samples": 512,
+      "top1_agreement": 1.0,
+      "max_logit_delta": 5.245208740234375e-06
+    },
+    "onnx_vs_quant_ready": {
+      "samples": 512,
+      "top1_agreement": 1.0,
+      "max_logit_delta": 0.0
+    }
+  },
+  "package_versions": {
+    "torch": "2.13.0+cu126",
+    "onnxruntime": "1.27.0"
+  },
+  "created_at_utc": "2026-07-25T11:56:38.600017+00:00"
+}

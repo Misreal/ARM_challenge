@@ -374,11 +374,11 @@ footer {
 
 <script type="application/json" id="dashboard-data">
 {
- "model": "resnet18_cifar",
- "model_label": "ResNet-18",
+ "model": "custom_cnn",
+ "model_label": "Custom CNN",
  "venue": "pi",
- "study": "resnet18_cifar_budget0.2_v2",
- "built_at_utc": "2026-08-11T18:29:16+00:00",
+ "study": "custom_cnn_budget0.2_v2",
+ "built_at_utc": "2026-08-11T18:29:12+00:00",
  "split": {
   "name": "optval",
   "samples": 3000,
@@ -390,9 +390,9 @@ footer {
   "threads": 4
  },
  "budget": {
-  "baseline_top1": 78.5,
+  "baseline_top1": 70.53333333333333,
   "budget_pt": 0.2,
-  "threshold_top1": 78.3
+  "threshold_top1": 70.33333333333333
  },
  "objectives": [
   {
@@ -436,6 +436,84 @@ footer {
  ],
  "front": [
   {
+   "describe": "static per-tensor act:int8 entropy/256 fp32:classifier+stem",
+   "describe_run": "4t opt:all",
+   "quant_hash": "f10ce195e7ced1f2",
+   "quant_type": "static",
+   "per_channel": false,
+   "activation_type": "int8",
+   "calibration": "entropy/256",
+   "excluded_groups": [
+    "classifier",
+    "stem"
+   ],
+   "run": {
+    "intra_op_num_threads": 4,
+    "graph_optimization_level": "all",
+    "enable_cpu_mem_arena": true,
+    "allow_intra_op_spinning": true
+   },
+   "latency_ms": 1.7685,
+   "size_mb": 1.872692,
+   "size_bytes": 1872692,
+   "peak_rss_mb": 85.359375,
+   "top1": 70.86666666666666,
+   "screen_top1": 71.4,
+   "images_vs_baseline": 10,
+   "id": "C1"
+  },
+  {
+   "describe": "static per-tensor act:int8 percentile/512 fp32:classifier+stem",
+   "describe_run": "4t opt:all no-arena",
+   "quant_hash": "b625337b592a1067",
+   "quant_type": "static",
+   "per_channel": false,
+   "activation_type": "int8",
+   "calibration": "percentile/512",
+   "excluded_groups": [
+    "classifier",
+    "stem"
+   ],
+   "run": {
+    "intra_op_num_threads": 4,
+    "graph_optimization_level": "all",
+    "enable_cpu_mem_arena": false,
+    "allow_intra_op_spinning": true
+   },
+   "latency_ms": 1.7805,
+   "size_mb": 1.872683,
+   "size_bytes": 1872683,
+   "peak_rss_mb": 85.375,
+   "top1": 70.7,
+   "screen_top1": 71.4,
+   "images_vs_baseline": 5,
+   "id": "C2"
+  },
+  {
+   "describe": "static per-tensor act:uint8 minmax/512",
+   "describe_run": "4t opt:all",
+   "quant_hash": "06e1b9094831a2a6",
+   "quant_type": "static",
+   "per_channel": false,
+   "activation_type": "uint8",
+   "calibration": "minmax/512",
+   "excluded_groups": [],
+   "run": {
+    "intra_op_num_threads": 4,
+    "graph_optimization_level": "all",
+    "enable_cpu_mem_arena": true,
+    "allow_intra_op_spinning": true
+   },
+   "latency_ms": 1.7858,
+   "size_mb": 1.811932,
+   "size_bytes": 1811932,
+   "peak_rss_mb": 84.796875,
+   "top1": 70.43333333333334,
+   "screen_top1": 71.2,
+   "images_vs_baseline": -3,
+   "id": "C3"
+  },
+  {
    "describe": "static per-channel act:uint8 minmax/512",
    "describe_run": "4t opt:all",
    "quant_hash": "6c2712900e73dc56",
@@ -450,84 +528,78 @@ footer {
     "enable_cpu_mem_arena": true,
     "allow_intra_op_spinning": true
    },
-   "latency_ms": 3.3584,
-   "size_mb": 11.338184,
-   "size_bytes": 11338184,
-   "peak_rss_mb": 105.375,
-   "top1": 78.4,
-   "screen_top1": 80.2,
-   "images_vs_baseline": -3,
-   "id": "C1",
-   "test_top1": 77.96
+   "latency_ms": 1.7966,
+   "size_mb": 1.839387,
+   "size_bytes": 1839387,
+   "peak_rss_mb": 84.84375,
+   "top1": 70.5,
+   "screen_top1": 71.2,
+   "images_vs_baseline": -1,
+   "id": "C4"
   },
   {
-   "describe": "static per-channel act:uint8 minmax/512 fp32:conv1+fc",
-   "describe_run": "4t opt:all",
-   "quant_hash": "b3dce3dabb14a76d",
+   "describe": "static per-channel act:uint8 percentile/512 fp32:pool",
+   "describe_run": "4t opt:all no-arena",
+   "quant_hash": "55a391084a9662cd",
    "quant_type": "static",
    "per_channel": true,
    "activation_type": "uint8",
-   "calibration": "minmax/512",
+   "calibration": "percentile/512",
    "excluded_groups": [
-    "conv1",
-    "fc"
+    "pool"
    ],
    "run": {
     "intra_op_num_threads": 4,
     "graph_optimization_level": "all",
-    "enable_cpu_mem_arena": true,
+    "enable_cpu_mem_arena": false,
     "allow_intra_op_spinning": true
    },
-   "latency_ms": 3.5238,
-   "size_mb": 11.492754,
-   "size_bytes": 11492754,
-   "peak_rss_mb": 105.9375,
-   "top1": 78.46666666666667,
-   "screen_top1": 80.4,
-   "images_vs_baseline": -1,
-   "id": "C2",
-   "test_top1": 78.03
+   "latency_ms": 1.8526,
+   "size_mb": 1.838749,
+   "size_bytes": 1838749,
+   "peak_rss_mb": 85.3125,
+   "top1": 70.96666666666667,
+   "screen_top1": 71.6,
+   "images_vs_baseline": 13,
+   "id": "C5"
   },
   {
-   "describe": "static per-tensor act:int8 entropy/128 fp32:avgpool+relu",
-   "describe_run": "4t opt:extended",
-   "quant_hash": "a2bf75a55f4fe038",
+   "describe": "static per-tensor act:uint8 percentile/512 fp32:stem",
+   "describe_run": "4t opt:all no-arena",
+   "quant_hash": "206e70c41c205c18",
    "quant_type": "static",
    "per_channel": false,
-   "activation_type": "int8",
-   "calibration": "entropy/128",
+   "activation_type": "uint8",
+   "calibration": "percentile/512",
    "excluded_groups": [
-    "avgpool",
-    "relu"
+    "stem"
    ],
    "run": {
     "intra_op_num_threads": 4,
-    "graph_optimization_level": "extended",
-    "enable_cpu_mem_arena": true,
+    "graph_optimization_level": "all",
+    "enable_cpu_mem_arena": false,
     "allow_intra_op_spinning": true
    },
-   "latency_ms": 3.5486,
-   "size_mb": 11.273919,
-   "size_bytes": 11273919,
-   "peak_rss_mb": 109.875,
-   "top1": 78.3,
-   "screen_top1": 80.0,
-   "images_vs_baseline": -6,
-   "id": "C3",
-   "test_top1": 77.92
+   "latency_ms": 1.9041,
+   "size_mb": 1.816336,
+   "size_bytes": 1816336,
+   "peak_rss_mb": 85.296875,
+   "top1": 70.76666666666667,
+   "screen_top1": 71.2,
+   "images_vs_baseline": 7,
+   "id": "C6"
   },
   {
-   "describe": "static per-channel act:int8 percentile/128 fp32:avgpool+fc+relu",
+   "describe": "static per-channel act:int8 minmax/128 fp32:classifier+pool",
    "describe_run": "4t opt:extended no-arena",
-   "quant_hash": "3b403041673819e9",
+   "quant_hash": "eceb9d5c4641cb4a",
    "quant_type": "static",
    "per_channel": true,
    "activation_type": "int8",
-   "calibration": "percentile/128",
+   "calibration": "minmax/128",
    "excluded_groups": [
-    "avgpool",
-    "fc",
-    "relu"
+    "classifier",
+    "pool"
    ],
    "run": {
     "intra_op_num_threads": 4,
@@ -535,29 +607,53 @@ footer {
     "enable_cpu_mem_arena": false,
     "allow_intra_op_spinning": true
    },
-   "latency_ms": 3.5753,
-   "size_mb": 11.489286,
-   "size_bytes": 11489286,
-   "peak_rss_mb": 97.953125,
-   "top1": 78.76666666666667,
-   "screen_top1": 80.8,
-   "images_vs_baseline": 8,
-   "id": "C4",
-   "test_top1": 77.89
+   "latency_ms": 2.568,
+   "size_mb": 1.893776,
+   "size_bytes": 1893776,
+   "peak_rss_mb": 84.90625,
+   "top1": 70.86666666666666,
+   "screen_top1": 71.2,
+   "images_vs_baseline": 10,
+   "id": "C7"
   },
   {
-   "describe": "static per-channel act:int8 minmax/1000 fp32:avgpool+fc+layer1+relu",
-   "describe_run": "4t opt:all",
-   "quant_hash": "7b3f052b12a5c899",
+   "describe": "static per-tensor act:uint8 entropy/256",
+   "describe_run": "4t opt:extended",
+   "quant_hash": "4f8c0ed167562422",
    "quant_type": "static",
-   "per_channel": true,
-   "activation_type": "int8",
-   "calibration": "minmax/1000",
+   "per_channel": false,
+   "activation_type": "uint8",
+   "calibration": "entropy/256",
+   "excluded_groups": [],
+   "run": {
+    "intra_op_num_threads": 4,
+    "graph_optimization_level": "extended",
+    "enable_cpu_mem_arena": true,
+    "allow_intra_op_spinning": true
+   },
+   "latency_ms": 2.5778,
+   "size_mb": 1.811933,
+   "size_bytes": 1811933,
+   "peak_rss_mb": 85.28125,
+   "top1": 70.53333333333333,
+   "screen_top1": 71.0,
+   "images_vs_baseline": 0,
+   "id": "C8"
+  },
+  {
+   "describe": "static per-tensor act:uint8 percentile/256 fp32:classifier+pool+stage1+stage3+stem",
+   "describe_run": "4t opt:all",
+   "quant_hash": "222b083524ac4a7d",
+   "quant_type": "static",
+   "per_channel": false,
+   "activation_type": "uint8",
+   "calibration": "percentile/256",
    "excluded_groups": [
-    "avgpool",
-    "fc",
-    "layer1",
-    "relu"
+    "classifier",
+    "pool",
+    "stage1",
+    "stage3",
+    "stem"
    ],
    "run": {
     "intra_op_num_threads": 4,
@@ -565,82 +661,103 @@ footer {
     "enable_cpu_mem_arena": true,
     "allow_intra_op_spinning": true
    },
-   "latency_ms": 5.5138,
-   "size_mb": 11.922567,
-   "size_bytes": 11922567,
-   "peak_rss_mb": 105.453125,
-   "top1": 78.8,
-   "screen_top1": 80.8,
-   "images_vs_baseline": 9,
-   "id": "C5",
-   "test_top1": 77.9
+   "latency_ms": 7.0587,
+   "size_mb": 6.951775,
+   "size_bytes": 6951775,
+   "peak_rss_mb": 93.796875,
+   "top1": 71.06666666666666,
+   "screen_top1": 71.8,
+   "images_vs_baseline": 16,
+   "id": "C9"
   },
   {
-   "describe": "dynamic per-channel fp32:avgpool+conv1+relu",
-   "describe_run": "4t opt:extended",
-   "quant_hash": "0780fe2e6231425b",
-   "quant_type": "dynamic",
-   "per_channel": true,
-   "activation_type": null,
-   "calibration": null,
+   "describe": "static per-tensor act:uint8 percentile/512 fp32:stage1+stage3+stem",
+   "describe_run": "4t opt:all no-arena",
+   "quant_hash": "c64434dcf6721a9c",
+   "quant_type": "static",
+   "per_channel": false,
+   "activation_type": "uint8",
+   "calibration": "percentile/512",
    "excluded_groups": [
-    "avgpool",
-    "conv1",
-    "relu"
+    "stage1",
+    "stage3",
+    "stem"
    ],
    "run": {
     "intra_op_num_threads": 4,
-    "graph_optimization_level": "extended",
-    "enable_cpu_mem_arena": true,
+    "graph_optimization_level": "all",
+    "enable_cpu_mem_arena": false,
     "allow_intra_op_spinning": true
    },
-   "latency_ms": 25.171,
-   "size_mb": 11.277262,
-   "size_bytes": 11277262,
-   "peak_rss_mb": 101.6875,
-   "top1": 78.56666666666666,
-   "screen_top1": 80.6,
-   "images_vs_baseline": 2,
-   "id": "C6",
-   "test_top1": 78.0
+   "latency_ms": 7.2135,
+   "size_mb": 6.896761,
+   "size_bytes": 6896761,
+   "peak_rss_mb": 93.75,
+   "top1": 71.03333333333333,
+   "screen_top1": 71.8,
+   "images_vs_baseline": 15,
+   "id": "C10"
   },
   {
-   "describe": "dynamic per-channel fp32:avgpool",
-   "describe_run": "4t opt:extended",
-   "quant_hash": "914df5a6c297caee",
-   "quant_type": "dynamic",
-   "per_channel": true,
-   "activation_type": null,
-   "calibration": null,
-   "excluded_groups": [
-    "avgpool"
-   ],
-   "run": {
-    "intra_op_num_threads": 4,
-    "graph_optimization_level": "extended",
-    "enable_cpu_mem_arena": true,
-    "allow_intra_op_spinning": true
-   },
-   "latency_ms": 25.3041,
-   "size_mb": 11.273082,
-   "size_bytes": 11273082,
-   "peak_rss_mb": 102.203125,
-   "top1": 78.4,
-   "screen_top1": 80.0,
-   "images_vs_baseline": -3,
-   "id": "C7",
-   "test_top1": 78.0
-  },
-  {
-   "describe": "dynamic fp32:avgpool",
-   "describe_run": "4t opt:all",
-   "quant_hash": "836001ca14aa53f7",
+   "describe": "dynamic fp32:stem",
+   "describe_run": "4t opt:extended no-arena",
+   "quant_hash": "00b87d400ddcab60",
    "quant_type": "dynamic",
    "per_channel": false,
    "activation_type": null,
    "calibration": null,
    "excluded_groups": [
-    "avgpool"
+    "stem"
+   ],
+   "run": {
+    "intra_op_num_threads": 4,
+    "graph_optimization_level": "extended",
+    "enable_cpu_mem_arena": false,
+    "allow_intra_op_spinning": true
+   },
+   "latency_ms": 16.173,
+   "size_mb": 1.815466,
+   "size_bytes": 1815466,
+   "peak_rss_mb": 87.296875,
+   "top1": 70.76666666666667,
+   "screen_top1": 71.4,
+   "images_vs_baseline": 7,
+   "id": "C11"
+  },
+  {
+   "describe": "dynamic",
+   "describe_run": "4t opt:all",
+   "quant_hash": "9965282d98520e1e",
+   "quant_type": "dynamic",
+   "per_channel": false,
+   "activation_type": null,
+   "calibration": null,
+   "excluded_groups": [],
+   "run": {
+    "intra_op_num_threads": 4,
+    "graph_optimization_level": "all",
+    "enable_cpu_mem_arena": true,
+    "allow_intra_op_spinning": true
+   },
+   "latency_ms": 16.3153,
+   "size_mb": 1.81135,
+   "size_bytes": 1811350,
+   "peak_rss_mb": 87.3125,
+   "top1": 70.5,
+   "screen_top1": 70.8,
+   "images_vs_baseline": -1,
+   "id": "C12"
+  },
+  {
+   "describe": "dynamic per-channel fp32:pool",
+   "describe_run": "4t opt:all",
+   "quant_hash": "62c01093ef87cac9",
+   "quant_type": "dynamic",
+   "per_channel": true,
+   "activation_type": null,
+   "calibration": null,
+   "excluded_groups": [
+    "pool"
    ],
    "run": {
     "intra_op_num_threads": 4,
@@ -648,23 +765,17 @@ footer {
     "enable_cpu_mem_arena": true,
     "allow_intra_op_spinning": true
    },
-   "latency_ms": 25.3773,
-   "size_mb": 11.27258,
-   "size_bytes": 11272580,
-   "peak_rss_mb": 101.65625,
-   "top1": 78.33333333333333,
-   "screen_top1": 80.0,
-   "images_vs_baseline": -5,
-   "id": "C8",
-   "test_top1": 77.99
+   "latency_ms": 16.3656,
+   "size_mb": 1.811852,
+   "size_bytes": 1811852,
+   "peak_rss_mb": 87.28125,
+   "top1": 70.53333333333333,
+   "screen_top1": 71.0,
+   "images_vs_baseline": 0,
+   "id": "C13"
   }
  ],
- "test": {
-  "split": "test",
-  "samples": 10000,
-  "fp32_top1": 77.99,
-  "scored": 8
- },
+ "test": null,
  "orderings": {
   "latency_ms,size_mb,peak_rss_mb,top1": [
    {
@@ -672,19 +783,27 @@ footer {
     "decided_by": null
    },
    {
+    "id": "C2",
+    "decided_by": "latency_ms"
+   },
+   {
     "id": "C3",
     "decided_by": "latency_ms"
    },
    {
     "id": "C4",
-    "decided_by": "size_mb"
-   },
-   {
-    "id": "C2",
-    "decided_by": "peak_rss_mb"
+    "decided_by": "latency_ms"
    },
    {
     "id": "C5",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C6",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C7",
     "decided_by": "latency_ms"
    },
    {
@@ -692,12 +811,24 @@ footer {
     "decided_by": "latency_ms"
    },
    {
-    "id": "C7",
-    "decided_by": "peak_rss_mb"
+    "id": "C9",
+    "decided_by": "latency_ms"
    },
    {
-    "id": "C6",
-    "decided_by": "size_mb"
+    "id": "C10",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C11",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C12",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C13",
+    "decided_by": "latency_ms"
    }
   ],
   "latency_ms,size_mb,top1,peak_rss_mb": [
@@ -706,19 +837,23 @@ footer {
     "decided_by": null
    },
    {
+    "id": "C2",
+    "decided_by": "latency_ms"
+   },
+   {
     "id": "C3",
     "decided_by": "latency_ms"
    },
    {
     "id": "C4",
-    "decided_by": "size_mb"
-   },
-   {
-    "id": "C2",
-    "decided_by": "top1"
+    "decided_by": "latency_ms"
    },
    {
     "id": "C5",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C6",
     "decided_by": "latency_ms"
    },
    {
@@ -727,11 +862,27 @@ footer {
    },
    {
     "id": "C8",
-    "decided_by": "top1"
+    "decided_by": "latency_ms"
    },
    {
-    "id": "C6",
-    "decided_by": "size_mb"
+    "id": "C9",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C10",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C11",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C12",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C13",
+    "decided_by": "latency_ms"
    }
   ],
   "latency_ms,peak_rss_mb,size_mb,top1": [
@@ -740,19 +891,27 @@ footer {
     "decided_by": null
    },
    {
+    "id": "C2",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C3",
+    "decided_by": "latency_ms"
+   },
+   {
     "id": "C4",
     "decided_by": "latency_ms"
    },
    {
-    "id": "C2",
-    "decided_by": "peak_rss_mb"
-   },
-   {
-    "id": "C3",
-    "decided_by": "peak_rss_mb"
-   },
-   {
     "id": "C5",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C6",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C7",
     "decided_by": "latency_ms"
    },
    {
@@ -760,12 +919,24 @@ footer {
     "decided_by": "latency_ms"
    },
    {
-    "id": "C6",
-    "decided_by": "size_mb"
+    "id": "C9",
+    "decided_by": "latency_ms"
    },
    {
-    "id": "C7",
-    "decided_by": "peak_rss_mb"
+    "id": "C10",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C11",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C12",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C13",
+    "decided_by": "latency_ms"
    }
   ],
   "latency_ms,peak_rss_mb,top1,size_mb": [
@@ -774,16 +945,16 @@ footer {
     "decided_by": null
    },
    {
-    "id": "C4",
+    "id": "C2",
     "decided_by": "latency_ms"
    },
    {
-    "id": "C2",
-    "decided_by": "peak_rss_mb"
+    "id": "C3",
+    "decided_by": "latency_ms"
    },
    {
-    "id": "C3",
-    "decided_by": "peak_rss_mb"
+    "id": "C4",
+    "decided_by": "latency_ms"
    },
    {
     "id": "C5",
@@ -794,12 +965,32 @@ footer {
     "decided_by": "latency_ms"
    },
    {
-    "id": "C8",
-    "decided_by": "top1"
+    "id": "C7",
+    "decided_by": "latency_ms"
    },
    {
-    "id": "C7",
-    "decided_by": "peak_rss_mb"
+    "id": "C8",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C9",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C10",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C11",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C12",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C13",
+    "decided_by": "latency_ms"
    }
   ],
   "latency_ms,top1,size_mb,peak_rss_mb": [
@@ -808,16 +999,16 @@ footer {
     "decided_by": null
    },
    {
-    "id": "C4",
+    "id": "C2",
     "decided_by": "latency_ms"
    },
    {
-    "id": "C2",
-    "decided_by": "top1"
+    "id": "C3",
+    "decided_by": "latency_ms"
    },
    {
-    "id": "C3",
-    "decided_by": "top1"
+    "id": "C4",
+    "decided_by": "latency_ms"
    },
    {
     "id": "C5",
@@ -829,11 +1020,31 @@ footer {
    },
    {
     "id": "C7",
-    "decided_by": "top1"
+    "decided_by": "latency_ms"
    },
    {
     "id": "C8",
-    "decided_by": "top1"
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C9",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C10",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C11",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C12",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C13",
+    "decided_by": "latency_ms"
    }
   ],
   "latency_ms,top1,peak_rss_mb,size_mb": [
@@ -842,16 +1053,16 @@ footer {
     "decided_by": null
    },
    {
-    "id": "C4",
+    "id": "C2",
     "decided_by": "latency_ms"
    },
    {
-    "id": "C2",
-    "decided_by": "top1"
+    "id": "C3",
+    "decided_by": "latency_ms"
    },
    {
-    "id": "C3",
-    "decided_by": "top1"
+    "id": "C4",
+    "decided_by": "latency_ms"
    },
    {
     "id": "C5",
@@ -863,11 +1074,31 @@ footer {
    },
    {
     "id": "C7",
-    "decided_by": "top1"
+    "decided_by": "latency_ms"
    },
    {
     "id": "C8",
-    "decided_by": "top1"
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C9",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C10",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C11",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C12",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C13",
+    "decided_by": "latency_ms"
    }
   ],
   "size_mb,latency_ms,peak_rss_mb,top1": [
@@ -880,27 +1111,47 @@ footer {
     "decided_by": "latency_ms"
    },
    {
-    "id": "C7",
-    "decided_by": "peak_rss_mb"
+    "id": "C12",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C13",
+    "decided_by": "latency_ms"
    },
    {
     "id": "C6",
     "decided_by": "size_mb"
    },
    {
-    "id": "C1",
-    "decided_by": "size_mb"
+    "id": "C11",
+    "decided_by": "latency_ms"
    },
    {
     "id": "C4",
     "decided_by": "size_mb"
    },
    {
-    "id": "C2",
-    "decided_by": "peak_rss_mb"
+    "id": "C5",
+    "decided_by": "latency_ms"
    },
    {
-    "id": "C5",
+    "id": "C1",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C2",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C7",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C10",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C9",
     "decided_by": "size_mb"
    }
   ],
@@ -910,109 +1161,173 @@ footer {
     "decided_by": null
    },
    {
-    "id": "C7",
+    "id": "C8",
     "decided_by": "latency_ms"
    },
    {
-    "id": "C8",
-    "decided_by": "top1"
+    "id": "C12",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C13",
+    "decided_by": "latency_ms"
    },
    {
     "id": "C6",
     "decided_by": "size_mb"
    },
    {
-    "id": "C1",
-    "decided_by": "size_mb"
+    "id": "C11",
+    "decided_by": "latency_ms"
    },
    {
     "id": "C4",
     "decided_by": "size_mb"
    },
    {
-    "id": "C2",
-    "decided_by": "top1"
+    "id": "C5",
+    "decided_by": "latency_ms"
    },
    {
-    "id": "C5",
+    "id": "C1",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C2",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C7",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C10",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C9",
     "decided_by": "size_mb"
    }
   ],
   "size_mb,peak_rss_mb,latency_ms,top1": [
    {
-    "id": "C8",
+    "id": "C3",
     "decided_by": null
    },
    {
-    "id": "C7",
+    "id": "C8",
     "decided_by": "peak_rss_mb"
    },
    {
-    "id": "C3",
+    "id": "C12",
     "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C13",
+    "decided_by": "latency_ms"
    },
    {
     "id": "C6",
     "decided_by": "size_mb"
    },
    {
-    "id": "C1",
-    "decided_by": "size_mb"
+    "id": "C11",
+    "decided_by": "peak_rss_mb"
    },
    {
     "id": "C4",
     "decided_by": "size_mb"
    },
    {
-    "id": "C2",
+    "id": "C5",
     "decided_by": "peak_rss_mb"
    },
    {
-    "id": "C5",
+    "id": "C1",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C2",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C7",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C10",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C9",
     "decided_by": "size_mb"
    }
   ],
   "size_mb,peak_rss_mb,top1,latency_ms": [
    {
-    "id": "C8",
+    "id": "C3",
     "decided_by": null
    },
    {
-    "id": "C7",
+    "id": "C8",
     "decided_by": "peak_rss_mb"
    },
    {
-    "id": "C3",
+    "id": "C13",
     "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C12",
+    "decided_by": "top1"
    },
    {
     "id": "C6",
     "decided_by": "size_mb"
    },
    {
-    "id": "C1",
-    "decided_by": "size_mb"
+    "id": "C11",
+    "decided_by": "peak_rss_mb"
    },
    {
     "id": "C4",
     "decided_by": "size_mb"
    },
    {
-    "id": "C2",
+    "id": "C5",
     "decided_by": "peak_rss_mb"
    },
    {
-    "id": "C5",
+    "id": "C1",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C2",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C7",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C10",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C9",
     "decided_by": "size_mb"
    }
   ],
   "size_mb,top1,latency_ms,peak_rss_mb": [
    {
-    "id": "C7",
+    "id": "C8",
     "decided_by": null
    },
    {
-    "id": "C8",
+    "id": "C13",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C12",
     "decided_by": "top1"
    },
    {
@@ -1024,11 +1339,19 @@ footer {
     "decided_by": "size_mb"
    },
    {
-    "id": "C1",
+    "id": "C11",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C5",
     "decided_by": "size_mb"
    },
    {
     "id": "C4",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C1",
     "decided_by": "size_mb"
    },
    {
@@ -1036,17 +1359,29 @@ footer {
     "decided_by": "top1"
    },
    {
-    "id": "C5",
+    "id": "C7",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C10",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C9",
     "decided_by": "size_mb"
    }
   ],
   "size_mb,top1,peak_rss_mb,latency_ms": [
    {
-    "id": "C7",
+    "id": "C8",
     "decided_by": null
    },
    {
-    "id": "C8",
+    "id": "C13",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C12",
     "decided_by": "top1"
    },
    {
@@ -1058,11 +1393,19 @@ footer {
     "decided_by": "size_mb"
    },
    {
-    "id": "C1",
+    "id": "C11",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C5",
     "decided_by": "size_mb"
    },
    {
     "id": "C4",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C1",
     "decided_by": "size_mb"
    },
    {
@@ -1070,29 +1413,29 @@ footer {
     "decided_by": "top1"
    },
    {
-    "id": "C5",
+    "id": "C7",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C10",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C9",
     "decided_by": "size_mb"
    }
   ],
   "peak_rss_mb,latency_ms,size_mb,top1": [
    {
-    "id": "C4",
+    "id": "C3",
     "decided_by": null
    },
    {
-    "id": "C8",
-    "decided_by": "peak_rss_mb"
-   },
-   {
-    "id": "C6",
-    "decided_by": "size_mb"
+    "id": "C4",
+    "decided_by": "latency_ms"
    },
    {
     "id": "C7",
-    "decided_by": "peak_rss_mb"
-   },
-   {
-    "id": "C1",
     "decided_by": "peak_rss_mb"
    },
    {
@@ -1100,33 +1443,53 @@ footer {
     "decided_by": "peak_rss_mb"
    },
    {
-    "id": "C2",
+    "id": "C6",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C8",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C1",
     "decided_by": "peak_rss_mb"
    },
    {
-    "id": "C3",
+    "id": "C2",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C11",
     "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C12",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C13",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C9",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C10",
+    "decided_by": "latency_ms"
    }
   ],
   "peak_rss_mb,latency_ms,top1,size_mb": [
    {
-    "id": "C4",
+    "id": "C3",
     "decided_by": null
    },
    {
-    "id": "C6",
-    "decided_by": "peak_rss_mb"
-   },
-   {
-    "id": "C8",
-    "decided_by": "top1"
+    "id": "C4",
+    "decided_by": "latency_ms"
    },
    {
     "id": "C7",
-    "decided_by": "peak_rss_mb"
-   },
-   {
-    "id": "C1",
     "decided_by": "peak_rss_mb"
    },
    {
@@ -1134,18 +1497,54 @@ footer {
     "decided_by": "peak_rss_mb"
    },
    {
-    "id": "C2",
+    "id": "C6",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C8",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C1",
     "decided_by": "peak_rss_mb"
    },
    {
-    "id": "C3",
+    "id": "C2",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C11",
     "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C12",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C13",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C9",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C10",
+    "decided_by": "latency_ms"
    }
   ],
   "peak_rss_mb,size_mb,latency_ms,top1": [
    {
-    "id": "C4",
+    "id": "C3",
     "decided_by": null
+   },
+   {
+    "id": "C4",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C7",
+    "decided_by": "peak_rss_mb"
    },
    {
     "id": "C8",
@@ -1156,30 +1555,50 @@ footer {
     "decided_by": "size_mb"
    },
    {
-    "id": "C7",
-    "decided_by": "peak_rss_mb"
+    "id": "C5",
+    "decided_by": "size_mb"
    },
    {
     "id": "C1",
     "decided_by": "peak_rss_mb"
    },
    {
-    "id": "C5",
-    "decided_by": "peak_rss_mb"
-   },
-   {
     "id": "C2",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C12",
     "decided_by": "peak_rss_mb"
    },
    {
-    "id": "C3",
+    "id": "C13",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C11",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C10",
     "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C9",
+    "decided_by": "size_mb"
    }
   ],
   "peak_rss_mb,size_mb,top1,latency_ms": [
    {
-    "id": "C4",
+    "id": "C3",
     "decided_by": null
+   },
+   {
+    "id": "C4",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C7",
+    "decided_by": "peak_rss_mb"
    },
    {
     "id": "C8",
@@ -1190,24 +1609,36 @@ footer {
     "decided_by": "size_mb"
    },
    {
-    "id": "C7",
-    "decided_by": "peak_rss_mb"
+    "id": "C5",
+    "decided_by": "size_mb"
    },
    {
     "id": "C1",
     "decided_by": "peak_rss_mb"
    },
    {
-    "id": "C5",
-    "decided_by": "peak_rss_mb"
-   },
-   {
     "id": "C2",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C13",
     "decided_by": "peak_rss_mb"
    },
    {
-    "id": "C3",
+    "id": "C12",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C11",
+    "decided_by": "size_mb"
+   },
+   {
+    "id": "C10",
     "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C9",
+    "decided_by": "size_mb"
    }
   ],
   "peak_rss_mb,top1,latency_ms,size_mb": [
@@ -1216,11 +1647,7 @@ footer {
     "decided_by": null
    },
    {
-    "id": "C6",
-    "decided_by": "peak_rss_mb"
-   },
-   {
-    "id": "C8",
+    "id": "C3",
     "decided_by": "top1"
    },
    {
@@ -1228,20 +1655,44 @@ footer {
     "decided_by": "peak_rss_mb"
    },
    {
-    "id": "C1",
-    "decided_by": "peak_rss_mb"
-   },
-   {
     "id": "C5",
     "decided_by": "peak_rss_mb"
    },
    {
-    "id": "C2",
+    "id": "C6",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C8",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C1",
     "decided_by": "peak_rss_mb"
    },
    {
-    "id": "C3",
+    "id": "C2",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C11",
     "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C13",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C12",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C9",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C10",
+    "decided_by": "top1"
    }
   ],
   "peak_rss_mb,top1,size_mb,latency_ms": [
@@ -1250,11 +1701,7 @@ footer {
     "decided_by": null
    },
    {
-    "id": "C6",
-    "decided_by": "peak_rss_mb"
-   },
-   {
-    "id": "C8",
+    "id": "C3",
     "decided_by": "top1"
    },
    {
@@ -1262,37 +1709,57 @@ footer {
     "decided_by": "peak_rss_mb"
    },
    {
-    "id": "C1",
-    "decided_by": "peak_rss_mb"
-   },
-   {
     "id": "C5",
     "decided_by": "peak_rss_mb"
-   },
-   {
-    "id": "C2",
-    "decided_by": "peak_rss_mb"
-   },
-   {
-    "id": "C3",
-    "decided_by": "peak_rss_mb"
-   }
-  ],
-  "top1,latency_ms,size_mb,peak_rss_mb": [
-   {
-    "id": "C5",
-    "decided_by": null
-   },
-   {
-    "id": "C4",
-    "decided_by": "top1"
    },
    {
     "id": "C6",
     "decided_by": "top1"
    },
    {
+    "id": "C8",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C1",
+    "decided_by": "peak_rss_mb"
+   },
+   {
     "id": "C2",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C11",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C13",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C12",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C9",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C10",
+    "decided_by": "top1"
+   }
+  ],
+  "top1,latency_ms,size_mb,peak_rss_mb": [
+   {
+    "id": "C9",
+    "decided_by": null
+   },
+   {
+    "id": "C10",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C5",
     "decided_by": "top1"
    },
    {
@@ -1304,8 +1771,32 @@ footer {
     "decided_by": "latency_ms"
    },
    {
+    "id": "C6",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C11",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C2",
+    "decided_by": "top1"
+   },
+   {
     "id": "C8",
     "decided_by": "top1"
+   },
+   {
+    "id": "C13",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C4",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C12",
+    "decided_by": "latency_ms"
    },
    {
     "id": "C3",
@@ -1314,19 +1805,15 @@ footer {
   ],
   "top1,latency_ms,peak_rss_mb,size_mb": [
    {
-    "id": "C5",
+    "id": "C9",
     "decided_by": null
    },
    {
-    "id": "C4",
+    "id": "C10",
     "decided_by": "top1"
    },
    {
-    "id": "C6",
-    "decided_by": "top1"
-   },
-   {
-    "id": "C2",
+    "id": "C5",
     "decided_by": "top1"
    },
    {
@@ -1338,8 +1825,32 @@ footer {
     "decided_by": "latency_ms"
    },
    {
+    "id": "C6",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C11",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C2",
+    "decided_by": "top1"
+   },
+   {
     "id": "C8",
     "decided_by": "top1"
+   },
+   {
+    "id": "C13",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C4",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C12",
+    "decided_by": "latency_ms"
    },
    {
     "id": "C3",
@@ -1348,32 +1859,52 @@ footer {
   ],
   "top1,size_mb,latency_ms,peak_rss_mb": [
    {
-    "id": "C5",
+    "id": "C9",
     "decided_by": null
    },
    {
-    "id": "C4",
+    "id": "C10",
     "decided_by": "top1"
+   },
+   {
+    "id": "C5",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C1",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C7",
+    "decided_by": "size_mb"
    },
    {
     "id": "C6",
     "decided_by": "top1"
    },
    {
+    "id": "C11",
+    "decided_by": "latency_ms"
+   },
+   {
     "id": "C2",
     "decided_by": "top1"
    },
    {
-    "id": "C7",
-    "decided_by": "top1"
-   },
-   {
-    "id": "C1",
-    "decided_by": "size_mb"
-   },
-   {
     "id": "C8",
     "decided_by": "top1"
+   },
+   {
+    "id": "C13",
+    "decided_by": "latency_ms"
+   },
+   {
+    "id": "C12",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C4",
+    "decided_by": "size_mb"
    },
    {
     "id": "C3",
@@ -1382,32 +1913,52 @@ footer {
   ],
   "top1,size_mb,peak_rss_mb,latency_ms": [
    {
-    "id": "C5",
+    "id": "C9",
     "decided_by": null
    },
    {
-    "id": "C4",
+    "id": "C10",
     "decided_by": "top1"
+   },
+   {
+    "id": "C5",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C1",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C7",
+    "decided_by": "size_mb"
    },
    {
     "id": "C6",
     "decided_by": "top1"
    },
    {
+    "id": "C11",
+    "decided_by": "peak_rss_mb"
+   },
+   {
     "id": "C2",
     "decided_by": "top1"
    },
    {
-    "id": "C7",
-    "decided_by": "top1"
-   },
-   {
-    "id": "C1",
-    "decided_by": "size_mb"
-   },
-   {
     "id": "C8",
     "decided_by": "top1"
+   },
+   {
+    "id": "C13",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C12",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C4",
+    "decided_by": "size_mb"
    },
    {
     "id": "C3",
@@ -1416,19 +1967,15 @@ footer {
   ],
   "top1,peak_rss_mb,latency_ms,size_mb": [
    {
-    "id": "C5",
+    "id": "C9",
     "decided_by": null
    },
    {
-    "id": "C4",
+    "id": "C10",
     "decided_by": "top1"
    },
    {
-    "id": "C6",
-    "decided_by": "top1"
-   },
-   {
-    "id": "C2",
+    "id": "C5",
     "decided_by": "top1"
    },
    {
@@ -1440,8 +1987,32 @@ footer {
     "decided_by": "peak_rss_mb"
    },
    {
+    "id": "C6",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C11",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C2",
+    "decided_by": "top1"
+   },
+   {
     "id": "C8",
     "decided_by": "top1"
+   },
+   {
+    "id": "C13",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C4",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C12",
+    "decided_by": "peak_rss_mb"
    },
    {
     "id": "C3",
@@ -1450,19 +2021,15 @@ footer {
   ],
   "top1,peak_rss_mb,size_mb,latency_ms": [
    {
-    "id": "C5",
+    "id": "C9",
     "decided_by": null
    },
    {
-    "id": "C4",
+    "id": "C10",
     "decided_by": "top1"
    },
    {
-    "id": "C6",
-    "decided_by": "top1"
-   },
-   {
-    "id": "C2",
+    "id": "C5",
     "decided_by": "top1"
    },
    {
@@ -1474,8 +2041,32 @@ footer {
     "decided_by": "peak_rss_mb"
    },
    {
+    "id": "C6",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C11",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C2",
+    "decided_by": "top1"
+   },
+   {
     "id": "C8",
     "decided_by": "top1"
+   },
+   {
+    "id": "C13",
+    "decided_by": "peak_rss_mb"
+   },
+   {
+    "id": "C4",
+    "decided_by": "top1"
+   },
+   {
+    "id": "C12",
+    "decided_by": "peak_rss_mb"
    },
    {
     "id": "C3",
@@ -1485,500 +2076,488 @@ footer {
  },
  "unreachable": [
   "C2",
-  "C6"
+  "C5",
+  "C6",
+  "C7",
+  "C10",
+  "C11",
+  "C12",
+  "C13"
  ],
  "references": [
   {
    "name": "fp32",
    "describe": "fp32",
-   "latency_ms": 16.7898,
-   "size_mb": 44.870838,
-   "peak_rss_mb": 164.71875,
-   "top1": 78.5,
+   "latency_ms": 6.8971,
+   "size_mb": 7.137449,
+   "peak_rss_mb": 93.9375,
+   "top1": 70.53333333333333,
    "same_as": null
   },
   {
    "name": "dynamic",
    "describe": "dynamic",
-   "latency_ms": 25.3817,
-   "size_mb": 11.27258,
-   "peak_rss_mb": 102.359375,
-   "top1": 78.33333333333333,
-   "same_as": null
+   "latency_ms": 16.3153,
+   "size_mb": 1.81135,
+   "peak_rss_mb": 87.3125,
+   "top1": 70.5,
+   "same_as": "C12"
   },
   {
    "name": "static_per_tensor",
    "describe": "static per-tensor act:uint8 minmax/512",
-   "latency_ms": 3.3171,
-   "size_mb": 11.273804,
-   "peak_rss_mb": 109.828125,
-   "top1": 78.13333333333334,
-   "same_as": null
+   "latency_ms": 1.7858,
+   "size_mb": 1.811932,
+   "peak_rss_mb": 84.796875,
+   "top1": 70.43333333333334,
+   "same_as": "C3"
   },
   {
    "name": "static_per_channel",
    "describe": "static per-channel act:uint8 minmax/512",
-   "latency_ms": 3.3376,
-   "size_mb": 11.338184,
-   "peak_rss_mb": 105.359375,
-   "top1": 78.4,
-   "same_as": "C1"
+   "latency_ms": 1.7966,
+   "size_mb": 1.839387,
+   "peak_rss_mb": 84.84375,
+   "top1": 70.5,
+   "same_as": "C4"
   }
  ],
  "noise": {
-  "measured": true,
-  "trials": 8,
-  "latency_percent": 2.55,
-  "rss_percent": 0.0095,
+  "measured": false,
+  "trials": 0,
+  "latency_percent": 0.0,
+  "rss_percent": 0.0,
   "percent": {
-   "latency_ms": 2.55,
+   "latency_ms": 0.0,
    "size_mb": 0.0,
-   "peak_rss_mb": 0.0095,
+   "peak_rss_mb": 0.0,
    "top1": 0.0
   }
  },
  "cost_benefit": [
   {
-   "group": "layer1",
-   "recovery_share": 0.4331359617018612,
-   "cost_ms": 2.3777,
-   "share_per_ms": 0.18216594259236288,
+   "group": "stage2",
+   "recovery_share": 0.31151388860233686,
+   "cost_ms": 0.5347000000000002,
+   "share_per_ms": 0.5825956398023878,
    "kl_rank": 1,
    "efficiency_rank": 2
   },
   {
-   "group": "conv1",
-   "recovery_share": 0.2033201640546969,
-   "cost_ms": 0.14000000000000012,
-   "share_per_ms": 1.4522868861049767,
+   "group": "stem",
+   "recovery_share": 0.18611786227623153,
+   "cost_ms": 0.08230000000000004,
+   "share_per_ms": 2.2614564067585836,
    "kl_rank": 2,
    "efficiency_rank": 1
   },
   {
-   "group": "layer2",
-   "recovery_share": 0.094340665865368,
-   "cost_ms": 1.8360000000000003,
-   "share_per_ms": 0.05138380493756426,
+   "group": "stage3",
+   "recovery_share": 0.13023664610369515,
+   "cost_ms": 1.9664,
+   "share_per_ms": 0.06623100391766433,
    "kl_rank": 3,
    "efficiency_rank": 3
   },
   {
-   "group": "layer3",
-   "recovery_share": 0.08489608563717171,
-   "cost_ms": 2.9359,
-   "share_per_ms": 0.028916545399084337,
+   "group": "classifier",
+   "recovery_share": 0.052081949287173246,
+   "cost_ms": -0.011400000000000077,
+   "share_per_ms": null,
    "kl_rank": 4,
+   "efficiency_rank": 6
+  },
+  {
+   "group": "stage1",
+   "recovery_share": 0.05080333133893141,
+   "cost_ms": 3.6366000000000005,
+   "share_per_ms": 0.013970008067681736,
+   "kl_rank": 5,
    "efficiency_rank": 4
   },
   {
-   "group": "layer4",
-   "recovery_share": 0.041501867428005115,
-   "cost_ms": 6.5157,
-   "share_per_ms": 0.006369517845819347,
-   "kl_rank": 5,
-   "efficiency_rank": 5
-  },
-  {
-   "group": "fc",
-   "recovery_share": 0.028355731369334808,
-   "cost_ms": -0.039699999999999847,
-   "share_per_ms": null,
-   "kl_rank": 6,
-   "efficiency_rank": 8
-  },
-  {
-   "group": "avgpool",
+   "group": "pool",
    "recovery_share": 0.0,
-   "cost_ms": -0.05339999999999989,
-   "share_per_ms": null,
-   "kl_rank": 7,
-   "efficiency_rank": 7
-  },
-  {
-   "group": "relu",
-   "recovery_share": -0.20549687533313268,
-   "cost_ms": 0.09010000000000007,
-   "share_per_ms": -2.2807644321102387,
-   "kl_rank": 8,
-   "efficiency_rank": 6
+   "cost_ms": 0.029300000000000104,
+   "share_per_ms": 0.0,
+   "kl_rank": 6,
+   "efficiency_rank": 5
   }
  ],
  "groups": [
-  "conv1",
-  "relu",
-  "layer1",
-  "layer2",
-  "layer3",
-  "layer4",
-  "avgpool",
-  "fc"
+  "stem",
+  "stage1",
+  "stage2",
+  "stage3",
+  "pool",
+  "classifier"
  ],
  "trials": [
   {
    "number": 0,
    "status": "ok",
-   "top1": 78.33333333333333,
-   "screen_top1": 80.0,
-   "latency_ms": 25.3817,
+   "top1": 70.5,
+   "screen_top1": 70.8,
+   "latency_ms": 16.3153,
    "describe": "dynamic",
-   "on_front": false
+   "on_front": true
   },
   {
    "number": 1,
-   "status": "below_threshold",
-   "top1": 78.13333333333334,
-   "screen_top1": 79.8,
-   "latency_ms": 3.3171,
+   "status": "ok",
+   "top1": 70.43333333333334,
+   "screen_top1": 71.2,
+   "latency_ms": 1.7858,
    "describe": "static per-tensor act:uint8 minmax/512",
-   "on_front": false
+   "on_front": true
   },
   {
    "number": 2,
    "status": "ok",
-   "top1": 78.4,
-   "screen_top1": 80.2,
-   "latency_ms": 3.3584,
+   "top1": 70.5,
+   "screen_top1": 71.2,
+   "latency_ms": 1.7966,
    "describe": "static per-channel act:uint8 minmax/512",
    "on_front": true
   },
   {
    "number": 3,
    "status": "ok",
-   "top1": 78.46666666666667,
-   "screen_top1": 80.4,
-   "latency_ms": 3.5238,
-   "describe": "static per-channel act:uint8 minmax/512 fp32:conv1+fc",
-   "on_front": true
+   "top1": 70.56666666666666,
+   "screen_top1": 70.8,
+   "latency_ms": 1.8878,
+   "describe": "static per-channel act:uint8 minmax/512 fp32:classifier+stem",
+   "on_front": false
   },
   {
    "number": 4,
    "status": "ok",
-   "top1": 78.6,
-   "screen_top1": 80.4,
-   "latency_ms": 5.5724,
-   "describe": "static per-channel act:uint8 minmax/512 fp32:conv1+layer1",
+   "top1": 70.66666666666667,
+   "screen_top1": 71.0,
+   "latency_ms": 2.4076,
+   "describe": "static per-channel act:uint8 minmax/512 fp32:stage2+stem",
    "on_front": false
   },
   {
    "number": 5,
    "status": "ok",
-   "top1": 78.46666666666667,
-   "screen_top1": 80.4,
-   "latency_ms": 24.2697,
-   "describe": "dynamic per-channel fp32:avgpool+conv1+fc+layer3+layer4+relu",
+   "top1": 70.83333333333333,
+   "screen_top1": 72.2,
+   "latency_ms": 11.3488,
+   "describe": "dynamic per-channel fp32:classifier+pool+stage1+stem",
    "on_front": false
   },
   {
    "number": 6,
    "status": "ok",
-   "top1": 78.43333333333334,
-   "screen_top1": 80.0,
-   "latency_ms": 15.5194,
-   "describe": "dynamic fp32:avgpool+layer1+layer2+layer3+relu",
-   "on_front": false
+   "top1": 71.06666666666666,
+   "screen_top1": 71.8,
+   "latency_ms": 7.0587,
+   "describe": "static per-tensor act:uint8 percentile/256 fp32:classifier+pool+stage1+stage3+stem",
+   "on_front": true
   },
   {
    "number": 7,
    "status": "ok",
-   "top1": 78.4,
-   "screen_top1": 80.0,
-   "latency_ms": 25.3041,
-   "describe": "dynamic per-channel fp32:avgpool",
-   "on_front": true
+   "top1": 70.53333333333333,
+   "screen_top1": 71.0,
+   "latency_ms": 16.5634,
+   "describe": "dynamic per-channel",
+   "on_front": false
   },
   {
    "number": 8,
    "status": "ok",
-   "top1": 78.63333333333334,
-   "screen_top1": 80.2,
-   "latency_ms": 7.4621,
-   "describe": "static per-channel act:int8 entropy/256 fp32:avgpool+fc+layer1+layer2",
-   "on_front": false
+   "top1": 70.86666666666666,
+   "screen_top1": 71.2,
+   "latency_ms": 2.568,
+   "describe": "static per-channel act:int8 minmax/128 fp32:classifier+pool",
+   "on_front": true
   },
   {
    "number": 9,
    "status": "ok",
-   "top1": 78.56666666666666,
-   "screen_top1": 80.6,
-   "latency_ms": 25.2264,
-   "describe": "dynamic per-channel fp32:conv1+relu",
+   "top1": 70.63333333333334,
+   "screen_top1": 70.2,
+   "latency_ms": 13.5459,
+   "describe": "dynamic fp32:stage2+stem",
    "on_front": false
   },
   {
    "number": 10,
    "status": "ok",
-   "top1": 78.66666666666667,
-   "screen_top1": 80.2,
-   "latency_ms": 12.1692,
-   "describe": "static per-channel act:uint8 entropy/512 fp32:conv1+fc+layer1+layer4+relu",
+   "top1": 70.9,
+   "screen_top1": 71.6,
+   "latency_ms": 14.8174,
+   "describe": "dynamic fp32:pool+stage3+stem",
    "on_front": false
   },
   {
    "number": 11,
    "status": "ok",
-   "top1": 78.3,
-   "screen_top1": 80.0,
-   "latency_ms": 3.5486,
-   "describe": "static per-tensor act:int8 entropy/128 fp32:avgpool+relu",
+   "top1": 70.76666666666667,
+   "screen_top1": 71.2,
+   "latency_ms": 1.9041,
+   "describe": "static per-tensor act:uint8 percentile/512 fp32:stem",
    "on_front": true
   },
   {
    "number": 12,
    "status": "ok",
-   "top1": 78.53333333333333,
-   "screen_top1": 80.6,
-   "latency_ms": 19.0256,
-   "describe": "dynamic per-channel fp32:avgpool+conv1+layer1+layer3+relu",
+   "top1": 70.36666666666666,
+   "screen_top1": 70.6,
+   "latency_ms": 6.9257,
+   "describe": "static per-tensor act:uint8 minmax/512 fp32:classifier+stage1+stage2+stage3+stem",
    "on_front": false
   },
   {
    "number": 13,
    "status": "ok",
-   "top1": 78.5,
-   "screen_top1": 80.4,
-   "latency_ms": 20.8812,
-   "describe": "dynamic fp32:conv1+fc+layer1+relu",
+   "top1": 70.76666666666667,
+   "screen_top1": 71.2,
+   "latency_ms": 7.2604,
+   "describe": "static per-tensor act:uint8 minmax/128 fp32:classifier+stage1+stage3+stem",
    "on_front": false
   },
   {
    "number": 14,
-   "status": "ok",
-   "top1": 78.5,
-   "screen_top1": 80.2,
-   "latency_ms": 7.2356,
-   "describe": "static per-channel act:uint8 minmax/128 fp32:avgpool+layer1+layer2",
+   "status": "below_threshold",
+   "top1": 70.3,
+   "screen_top1": 70.6,
+   "latency_ms": 4.3422,
+   "describe": "static per-channel act:uint8 entropy/128 fp32:stage2+stage3+stem",
    "on_front": false
   },
   {
    "number": 15,
    "status": "ok",
-   "top1": 78.6,
-   "screen_top1": 79.8,
-   "latency_ms": 14.5349,
-   "describe": "static per-channel act:int8 entropy/128 fp32:fc+layer2+layer3+layer4",
+   "top1": 70.7,
+   "screen_top1": 71.4,
+   "latency_ms": 5.805,
+   "describe": "static per-tensor act:uint8 minmax/256 fp32:stage1+stem",
    "on_front": false
   },
   {
    "number": 16,
    "status": "ok",
-   "top1": 78.5,
-   "screen_top1": 80.4,
-   "latency_ms": 9.8917,
-   "describe": "static per-tensor act:int8 percentile/256 fp32:conv1+layer1+layer2+layer3",
+   "top1": 70.36666666666666,
+   "screen_top1": 70.0,
+   "latency_ms": 13.4825,
+   "describe": "dynamic per-channel fp32:stage2",
    "on_front": false
   },
   {
    "number": 17,
    "status": "ok",
-   "top1": 78.4,
-   "screen_top1": 80.2,
-   "latency_ms": 18.6409,
-   "describe": "dynamic fp32:avgpool+conv1+layer1+layer2+layer4+relu",
-   "on_front": false
+   "top1": 70.96666666666667,
+   "screen_top1": 71.6,
+   "latency_ms": 1.8526,
+   "describe": "static per-channel act:uint8 percentile/512 fp32:pool",
+   "on_front": true
   },
   {
    "number": 18,
    "status": "ok",
-   "top1": 78.6,
-   "screen_top1": 80.4,
-   "latency_ms": 13.6405,
-   "describe": "static per-tensor act:int8 entropy/128 fp32:conv1+fc+layer1+layer2+layer4+relu",
+   "top1": 70.63333333333334,
+   "screen_top1": 70.2,
+   "latency_ms": 13.2764,
+   "describe": "dynamic fp32:stage2+stem",
    "on_front": false
   },
   {
    "number": 19,
    "status": "ok",
-   "top1": 78.53333333333333,
-   "screen_top1": 80.2,
-   "latency_ms": 10.4753,
-   "describe": "static per-channel act:uint8 percentile/512 fp32:layer4+relu",
+   "top1": 70.96666666666667,
+   "screen_top1": 71.8,
+   "latency_ms": 9.8543,
+   "describe": "dynamic per-channel fp32:pool+stage1+stage3+stem",
    "on_front": false
   },
   {
    "number": 20,
    "status": "ok",
-   "top1": 78.43333333333334,
-   "screen_top1": 80.0,
-   "latency_ms": 19.837,
-   "describe": "dynamic fp32:avgpool+fc+layer2+layer3",
+   "top1": 70.56666666666666,
+   "screen_top1": 71.0,
+   "latency_ms": 3.8632,
+   "describe": "static per-channel act:int8 entropy/512 fp32:stage2+stage3",
    "on_front": false
   },
   {
    "number": 21,
    "status": "ok",
-   "top1": 78.66666666666667,
-   "screen_top1": 80.4,
-   "latency_ms": 5.5141,
-   "describe": "static per-channel act:int8 percentile/128 fp32:avgpool+conv1+fc+layer1+relu",
+   "top1": 70.83333333333333,
+   "screen_top1": 72.2,
+   "latency_ms": 11.2938,
+   "describe": "dynamic fp32:classifier+stage1+stem",
    "on_front": false
   },
   {
    "number": 22,
    "status": "ok",
-   "top1": 78.63333333333334,
-   "screen_top1": 80.6,
-   "latency_ms": 14.3847,
-   "describe": "static per-channel act:int8 percentile/128 fp32:layer2+layer3+layer4+relu",
-   "on_front": false
+   "top1": 70.86666666666666,
+   "screen_top1": 71.4,
+   "latency_ms": 1.7685,
+   "describe": "static per-tensor act:int8 entropy/256 fp32:classifier+stem",
+   "on_front": true
   },
   {
    "number": 23,
    "status": "ok",
-   "top1": 78.4,
-   "screen_top1": 80.6,
-   "latency_ms": 6.4659,
-   "describe": "static per-channel act:int8 minmax/256 fp32:conv1+fc+layer3",
+   "top1": 70.5,
+   "screen_top1": 71.0,
+   "latency_ms": 11.4058,
+   "describe": "dynamic fp32:classifier+stage1",
    "on_front": false
   },
   {
    "number": 24,
    "status": "ok",
-   "top1": 78.5,
-   "screen_top1": 80.2,
-   "latency_ms": 20.0127,
-   "describe": "dynamic per-channel fp32:fc+layer2+layer3+relu",
+   "top1": 70.76666666666667,
+   "screen_top1": 70.8,
+   "latency_ms": 5.5792,
+   "describe": "static per-channel act:uint8 entropy/512 fp32:pool+stage1+stage2",
    "on_front": false
   },
   {
    "number": 25,
    "status": "ok",
-   "top1": 78.4,
-   "screen_top1": 79.6,
-   "latency_ms": 7.2694,
-   "describe": "static per-tensor act:uint8 entropy/128 fp32:avgpool+fc+layer1+layer2+relu",
+   "top1": 70.66666666666667,
+   "screen_top1": 70.8,
+   "latency_ms": 6.9459,
+   "describe": "static per-channel act:int8 entropy/512 fp32:pool+stage1+stage2+stage3",
    "on_front": false
   },
   {
    "number": 26,
    "status": "ok",
-   "top1": 78.76666666666667,
-   "screen_top1": 80.8,
-   "latency_ms": 12.5771,
-   "describe": "static per-channel act:uint8 percentile/128 fp32:avgpool+fc+layer3+layer4",
+   "top1": 70.63333333333334,
+   "screen_top1": 71.2,
+   "latency_ms": 7.0174,
+   "describe": "static per-tensor act:uint8 entropy/128 fp32:stage1+stage2+stage3+stem",
    "on_front": false
   },
   {
    "number": 27,
-   "status": "ok",
-   "top1": 78.56666666666666,
-   "screen_top1": 80.6,
-   "latency_ms": 25.171,
-   "describe": "dynamic per-channel fp32:avgpool+conv1+relu",
-   "on_front": true
+   "status": "below_threshold",
+   "top1": 70.3,
+   "screen_top1": 70.6,
+   "latency_ms": 3.8919,
+   "describe": "static per-channel act:uint8 entropy/128 fp32:stage2+stage3+stem",
+   "on_front": false
   },
   {
    "number": 28,
    "status": "ok",
-   "top1": 78.46666666666667,
-   "screen_top1": 80.4,
-   "latency_ms": 23.1443,
-   "describe": "dynamic fp32:conv1+layer3",
+   "top1": 70.9,
+   "screen_top1": 71.6,
+   "latency_ms": 14.8535,
+   "describe": "dynamic fp32:classifier+pool+stage3+stem",
    "on_front": false
   },
   {
    "number": 29,
    "status": "ok",
-   "top1": 78.33333333333333,
-   "screen_top1": 80.0,
-   "latency_ms": 25.3773,
-   "describe": "dynamic fp32:avgpool",
+   "top1": 70.76666666666667,
+   "screen_top1": 71.4,
+   "latency_ms": 16.173,
+   "describe": "dynamic fp32:stem",
    "on_front": true
   },
   {
    "number": 30,
    "status": "ok",
-   "top1": 78.5,
-   "screen_top1": 80.4,
-   "latency_ms": 16.9165,
-   "describe": "static per-tensor act:int8 entropy/128 fp32:avgpool+conv1+fc+layer1+layer2+layer3+layer4",
+   "top1": 70.83333333333333,
+   "screen_top1": 72.2,
+   "latency_ms": 11.2938,
+   "describe": "dynamic fp32:classifier+stage1+stem",
    "on_front": false
   },
   {
    "number": 31,
    "status": "ok",
-   "top1": 78.46666666666667,
-   "screen_top1": 80.4,
-   "latency_ms": 22.8586,
-   "describe": "dynamic fp32:avgpool+conv1+layer3",
-   "on_front": false
+   "top1": 70.7,
+   "screen_top1": 71.4,
+   "latency_ms": 1.7805,
+   "describe": "static per-tensor act:int8 percentile/512 fp32:classifier+stem",
+   "on_front": true
   },
   {
    "number": 32,
-   "status": "below_threshold",
-   "top1": 78.13333333333334,
-   "screen_top1": 79.8,
-   "latency_ms": 10.1051,
-   "describe": "static per-tensor act:int8 minmax/1000 fp32:avgpool+fc+layer4",
+   "status": "ok",
+   "top1": 70.5,
+   "screen_top1": 70.4,
+   "latency_ms": 5.565,
+   "describe": "static per-channel act:uint8 minmax/1000 fp32:classifier+stage1",
    "on_front": false
   },
   {
    "number": 33,
    "status": "ok",
-   "top1": 78.43333333333334,
-   "screen_top1": 80.0,
-   "latency_ms": 9.8555,
-   "describe": "static per-tensor act:uint8 percentile/128 fp32:layer1+layer2+layer3",
+   "top1": 70.83333333333333,
+   "screen_top1": 71.6,
+   "latency_ms": 14.8632,
+   "describe": "dynamic per-channel fp32:pool+stage3+stem",
    "on_front": false
   },
   {
    "number": 34,
    "status": "ok",
-   "top1": 78.53333333333333,
-   "screen_top1": 80.2,
-   "latency_ms": 7.3856,
-   "describe": "static per-tensor act:uint8 percentile/512 fp32:conv1+layer1+layer2+relu",
-   "on_front": false
+   "top1": 70.53333333333333,
+   "screen_top1": 71.0,
+   "latency_ms": 2.5778,
+   "describe": "static per-tensor act:uint8 entropy/256",
+   "on_front": true
   },
   {
    "number": 35,
    "status": "ok",
-   "top1": 78.53333333333333,
-   "screen_top1": 80.4,
-   "latency_ms": 15.6102,
-   "describe": "dynamic per-channel fp32:conv1+fc+layer1+layer2+layer3",
-   "on_front": false
+   "top1": 71.03333333333333,
+   "screen_top1": 71.8,
+   "latency_ms": 7.2135,
+   "describe": "static per-tensor act:uint8 percentile/512 fp32:stage1+stage3+stem",
+   "on_front": true
   },
   {
    "number": 36,
    "status": "ok",
-   "top1": 78.43333333333334,
-   "screen_top1": 80.0,
-   "latency_ms": 19.899,
-   "describe": "dynamic fp32:avgpool+layer2+layer3",
+   "top1": 70.56666666666666,
+   "screen_top1": 71.0,
+   "latency_ms": 5.4732,
+   "describe": "static per-channel act:uint8 entropy/512 fp32:pool+stage1+stage2+stem",
    "on_front": false
   },
   {
    "number": 37,
    "status": "ok",
-   "top1": 78.63333333333334,
-   "screen_top1": 80.4,
-   "latency_ms": 8.2301,
-   "describe": "static per-tensor act:uint8 entropy/512 fp32:conv1+layer2+layer3+relu",
+   "top1": 70.33333333333333,
+   "screen_top1": 70.8,
+   "latency_ms": 7.0348,
+   "describe": "dynamic per-channel fp32:stage1+stage2+stage3",
    "on_front": false
   },
   {
    "number": 38,
    "status": "ok",
-   "top1": 78.8,
-   "screen_top1": 80.8,
-   "latency_ms": 5.5138,
-   "describe": "static per-channel act:int8 minmax/1000 fp32:avgpool+fc+layer1+relu",
-   "on_front": true
+   "top1": 70.83333333333333,
+   "screen_top1": 72.2,
+   "latency_ms": 11.3488,
+   "describe": "dynamic per-channel fp32:classifier+pool+stage1+stem",
+   "on_front": false
   },
   {
    "number": 39,
    "status": "ok",
-   "top1": 78.76666666666667,
-   "screen_top1": 80.8,
-   "latency_ms": 3.5753,
-   "describe": "static per-channel act:int8 percentile/128 fp32:avgpool+fc+relu",
+   "top1": 70.53333333333333,
+   "screen_top1": 71.0,
+   "latency_ms": 16.3656,
+   "describe": "dynamic per-channel fp32:pool",
    "on_front": true
   }
  ],
  "trials_declared": 40,
  "provenance": {
-  "checkpoint_sha256": "a03295430aba8a0c",
-  "onnx_sha256": "10d3572a84d38da1",
+  "checkpoint_sha256": "b17a9418e26e6039",
+  "onnx_sha256": "132eceeb940ab7c6",
   "torch": "2.13.0+cu126"
  }
 }

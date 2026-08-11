@@ -1,0 +1,154 @@
+{
+  "study": "mobilenetv2_cifar_budget0.2_v2",
+  "model": "mobilenetv2_cifar",
+  "mock": false,
+  "baseline_top1": 77.4,
+  "accuracy_budget_pt": 0.2,
+  "threshold_top1": 77.2,
+  "groups": [
+    "features.0",
+    "features.1",
+    "features.2",
+    "features.3",
+    "features.4",
+    "features.5",
+    "features.6",
+    "features.7",
+    "features.8",
+    "features.9",
+    "features.10",
+    "features.11",
+    "features.12",
+    "features.13",
+    "features.14",
+    "features.15",
+    "features.16",
+    "features.17",
+    "features.18",
+    "classifier.1"
+  ],
+  "trials": 36,
+  "pareto": [
+    {
+      "values": [
+        1.4758,
+        2503586.0,
+        86.5,
+        77.3
+      ],
+      "constraints": [
+        -0.09999999999999432
+      ],
+      "describe": "static per-tensor act:uint8 minmax/512",
+      "describe_run": "4t opt:all",
+      "quant_hash": "06e1b9094831a2a6",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.4758,
+        "size_bytes": 2503586,
+        "peak_rss_mb": 86.5,
+        "top1": 77.3,
+        "screen_top1": 78.0,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "values": [
+        1.5397,
+        2728300.0,
+        86.828125,
+        77.4
+      ],
+      "constraints": [
+        -0.20000000000000284
+      ],
+      "describe": "static per-channel act:uint8 minmax/512",
+      "describe_run": "4t opt:all",
+      "quant_hash": "6c2712900e73dc56",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.5397,
+        "size_bytes": 2728300,
+        "peak_rss_mb": 86.828125,
+        "top1": 77.4,
+        "screen_top1": 78.2,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "values": [
+        1.6387,
+        2729231.0,
+        87.78125,
+        77.53333333333333
+      ],
+      "constraints": [
+        -0.3333333333333286
+      ],
+      "describe": "static per-channel act:uint8 minmax/512 fp32:features.0+features.1",
+      "describe_run": "4t opt:all",
+      "quant_hash": "84878afb894c784c",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.6387,
+        "size_bytes": 2729231,
+        "peak_rss_mb": 87.78125,
+        "top1": 77.53333333333333,
+        "screen_top1": 78.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "values": [
+        3.2953,
+        7174641.0,
+        94.25,
+        77.8
+      ],
+      "constraints": [
+        -0.5999999999999943
+      ],
+      "describe": "static per-channel act:uint8 percentile/128 fp32:classifier.1+features.0+features.1+features.10+features.14+features.15+features.16+features.17+features.3+features.5+features.6+features.7+features.8",
+      "describe_run": "4t opt:all",
+      "quant_hash": "a7576139f68fc37b",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.2953,
+        "size_bytes": 7174641,
+        "peak_rss_mb": 94.25,
+        "top1": 77.8,
+        "screen_top1": 79.0,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "values": [
+        3.1002,
+        4303994.0,
+        90.65625,
+        77.66666666666667
+      ],
+      "constraints": [
+        -0.46666666666666856
+      ],
+      "describe": "static per-channel act:int8 minmax/128 fp32:features.0+features.1+features.10+features.12+features.15+features.2+features.3+features.4+features.8",
+      "describe_run": "4t opt:extended no-arena",
+      "quant_hash": "407767080f28edcb",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.1002,
+        "size_bytes": 4303994,
+        "peak_rss_mb": 90.65625,
+        "top1": 77.66666666666667,
+        "screen_top1": 78.8,
+        "admissible": true,
+        "error": null
+      }
+    }
+  ],
+  "created_at_utc": "2026-08-11T15:30:46.576112+00:00"
+}

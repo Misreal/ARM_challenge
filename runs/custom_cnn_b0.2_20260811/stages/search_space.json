@@ -1,0 +1,24 @@
+{
+  "model": "custom_cnn",
+  "pinned_fp32": [
+    "classifier"
+  ],
+  "pinned_int8": [
+    "stage3",
+    "stage1",
+    "pool"
+  ],
+  "searchable": [
+    "stem",
+    "stage2"
+  ],
+  "precision_vectors_full": 64,
+  "precision_vectors_reduced": 4,
+  "greedy_order": [
+    "classifier",
+    "stem",
+    "stage2",
+    "stage3",
+    "stage1"
+  ]
+}

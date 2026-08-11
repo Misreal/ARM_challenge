@@ -1,0 +1,27 @@
+{
+  "model": "resnet18_cifar",
+  "pinned_fp32": [
+    "fc"
+  ],
+  "pinned_int8": [
+    "layer2",
+    "layer3",
+    "layer4",
+    "relu",
+    "avgpool"
+  ],
+  "searchable": [
+    "conv1",
+    "layer1"
+  ],
+  "precision_vectors_full": 256,
+  "precision_vectors_reduced": 4,
+  "greedy_order": [
+    "fc",
+    "conv1",
+    "layer1",
+    "layer2",
+    "layer3",
+    "layer4"
+  ]
+}

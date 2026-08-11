@@ -152,6 +152,12 @@ h2 {
 .chip--split::before { background: var(--series-1); }
 .chip--warn::before { background: var(--warning); }
 
+.mock-banner {
+  border: 2px solid var(--warning); border-radius: 4px;
+  padding: 10px 12px; margin: 0 0 14px;
+  font-size: 13px; line-height: 1.5; font-weight: 600;
+}
+
 @media (max-width: 760px) {
   .band-cols { grid-template-columns: minmax(0, 1fr); gap: 12px; }
   .deltas { grid-template-columns: minmax(0, 1fr); }
@@ -272,6 +278,7 @@ footer {
 <div class="page">
 
   <header class="panel band">
+    <div id="venue-banner"></div>
     <p class="eyebrow">Hardware-in-the-loop deployment search · Phase 7 output</p>
     <p class="claim">
       There is no single best way to deploy a model. This is the set of ways that
@@ -479,12 +486,26 @@ const hideTip = () => { tip.style.opacity = "0"; };
 
 function renderHeader() {
   const b = D.budget;
+
+  // A simulated run must never be readable as a measured one, so this sits
+  // above everything else on the page rather than in the chip row.
+  if (D.venue === "mock") {
+    const banner = document.getElementById("venue-banner");
+    banner.className = "mock-banner";
+    banner.textContent =
+      "Simulated run. Every latency and RAM figure below came from a fake device, not a " +
+      "Raspberry Pi. It exists to prove the pipeline runs end to end without hardware.";
+  }
+
   document.getElementById("header-note").textContent =
-    `ResNet-18 on CIFAR-100, ONNX Runtime ${D.device.onnxruntime} on a Raspberry Pi 5 CPU at ` +
+    `${D.model_label} on CIFAR-100, ONNX Runtime ${D.device.onnxruntime} on a ` +
+    `${D.venue === "mock" ? "simulated device" : "Raspberry Pi 5 CPU"} at ` +
     `${D.device.threads} threads. A configuration is admitted only if it stays within ` +
     `${b.budget_pt} points of the FP32 baseline's ${b.baseline_top1.toFixed(2)}% top-1, ` +
     `i.e. at or above ${b.threshold_top1.toFixed(2)}% — a hard filter, not a soft objective. ` +
-    `Latency, size and RAM are measured on the device; nothing here is estimated from FLOPs.`;
+    (D.venue === "mock"
+      ? `Latency, size and RAM come from the simulator; treat none of them as real.`
+      : `Latency, size and RAM are measured on the device; nothing here is estimated from FLOPs.`);
 
   const chips = document.getElementById("header-chips");
   const add = (label, value, cls) => {

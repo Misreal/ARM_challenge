@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from dataclasses import dataclass
 from datetime import UTC, datetime
 from itertools import groupby, permutations
 from pathlib import Path
@@ -17,6 +18,7 @@ from typing import Any
 
 from src.quant.baselines import BASELINE_CONFIGS
 from src.quant.config import DeploymentConfig, QuantConfig, RunConfig
+from src.runs import RUNS_DIR, Run, load_run
 
 SEARCH_DIR = Path("artifacts/search")
 REPORT_DIR = Path("artifacts/reports")
@@ -55,9 +57,91 @@ OBJECTIVES: tuple[dict[str, Any], ...] = (
 # Where the reader's priority list starts before they touch it.
 DEFAULT_PRIORITY = ("latency_ms", "top1", "peak_rss_mb", "size_mb")
 
+# Display names for the models trained here. An imported model has no entry and
+# falls back to its own slug, which is what the importer was told to call it.
+MODEL_LABELS = {
+    "resnet18_cifar": "ResNet-18",
+    "mobilenetv2_cifar": "MobileNetV2",
+    "custom_cnn": "Custom CNN",
+}
+
 
 def read_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+# ---------------------------------------------------------------- where files are
+
+
+@dataclass(frozen=True)
+class Sources:
+    """Every file one page is built from, named individually.
+
+    Two layouts produce the same page: a run directory, where stages are named
+    by what they are, and the original per-phase directories, where they carry
+    the model name. Naming each file here is what lets both work without the
+    payload builder knowing which layout it is reading.
+    """
+
+    model: str
+    study: str
+    summary: Path
+    baseline: Path
+    quant_baselines: Path
+    sensitivity: Path
+    cost_benefit: Path
+    cache_dir: Path
+    final_test: Path | None = None
+    sentinel: Path | None = None
+    study_db: Path | None = None
+    venue: str = "pi"
+
+    @classmethod
+    def legacy(
+        cls,
+        model: str,
+        study: str,
+        search_dir: Path,
+        report_dir: Path,
+        device_dir: Path,
+        cache_dir: Path,
+        sentinel: Path | None = None,
+    ) -> Sources:
+        final_test = device_dir / f"{model}_final_test.json"
+        return cls(
+            model=model,
+            study=study,
+            summary=search_dir / f"{study}.json",
+            baseline=report_dir / f"{model}_baseline.json",
+            quant_baselines=device_dir / f"{model}_quant_baselines.json",
+            sensitivity=device_dir / f"{model}_sensitivity.json",
+            cost_benefit=device_dir / "cost_benefit.json",
+            cache_dir=cache_dir,
+            final_test=final_test if final_test.exists() else None,
+            sentinel=sentinel if sentinel is None or sentinel.exists() else None,
+            study_db=search_dir / f"{study}.db",
+        )
+
+    @classmethod
+    def from_run(cls, run: Run, cache_dir: Path, search_dir: Path) -> Sources:
+        stage = run.paths.stage
+        optional = {name: stage(name) for name in ("final_test", "sentinel")}
+        return cls(
+            model=run.model,
+            study=run.study,
+            summary=stage("study"),
+            baseline=stage("baseline"),
+            quant_baselines=stage("quant_baselines"),
+            sensitivity=stage("sensitivity"),
+            cost_benefit=stage("cost_benefit"),
+            cache_dir=cache_dir,
+            final_test=optional["final_test"] if optional["final_test"].exists() else None,
+            sentinel=optional["sentinel"] if optional["sentinel"].exists() else None,
+            # The sqlite study stays where optuna wrote it: it is gitignored and
+            # rewritten on every resume, so a run copies the summary, not the db.
+            study_db=search_dir / f"{run.study}.db",
+            venue=run.venue,
+        )
 
 
 # ---------------------------------------------------------------- config text
@@ -459,29 +543,28 @@ def trial_rows(db_path: Path, study_name: str, front: list[dict[str, Any]]) -> l
 # ------------------------------------------------------------------- payload
 
 
-def build_payload(
-    model: str,
-    study: str,
-    search_dir: Path,
-    report_dir: Path,
-    device_dir: Path,
-    cache_dir: Path,
-    sentinel_path: Path | None = None,
-) -> dict[str, Any]:
-    summary = read_json(search_dir / f"{study}.json")
-    baseline = read_json(report_dir / f"{model}_baseline.json")
-    quant_baselines = read_json(device_dir / f"{model}_quant_baselines.json")
-    sensitivity = read_json(device_dir / f"{model}_sensitivity.json")
-    cost_benefit = read_json(device_dir / "cost_benefit.json")[model]
+def build_payload(sources: Sources) -> dict[str, Any]:
+    model = sources.model
+    summary = read_json(sources.summary)
+    baseline = read_json(sources.baseline)
+    quant_baselines = read_json(sources.quant_baselines)
+    sensitivity = read_json(sources.sensitivity)
+
+    cost_benefit = read_json(sources.cost_benefit)
+    # The legacy file holds every model at once; a run's copy holds only its own.
+    if isinstance(cost_benefit, dict):
+        cost_benefit = cost_benefit[model]
 
     samples = quant_baselines["baselines"]["fp32"]["accuracy"]["samples"]
     rows = front_rows(summary, summary["baseline_top1"], samples)
-    test = attach_test_scores(rows, device_dir / f"{model}_final_test.json")
-    noise = noise_floor(read_json(sentinel_path)) if sentinel_path else unmeasured_noise()
+    test = attach_test_scores(rows, sources.final_test) if sources.final_test else None
+    noise = noise_floor(read_json(sources.sentinel)) if sources.sentinel else unmeasured_noise()
     resolved = orderings(rows, tie_groups(rows, noise["percent"]))
 
     return {
         "model": model,
+        "model_label": MODEL_LABELS.get(model, model),
+        "venue": sources.venue,
         "study": summary["study"],
         "built_at_utc": datetime.now(UTC).isoformat(timespec="seconds"),
         "split": {
@@ -506,12 +589,12 @@ def build_payload(
         "orderings": resolved,
         "unreachable": unreachable_rows(resolved, rows),
         "references": reference_marks(
-            quant_baselines, measurements_by_config(model, cache_dir), rows
+            quant_baselines, measurements_by_config(model, sources.cache_dir), rows
         ),
         "noise": noise,
         "cost_benefit": cost_benefit_rows(cost_benefit),
         "groups": summary["groups"],
-        "trials": trial_rows(search_dir / f"{study}.db", study, rows),
+        "trials": trial_rows(sources.study_db, sources.study, rows) if sources.study_db else [],
         "trials_declared": summary["trials"],
         "provenance": {
             "checkpoint_sha256": baseline["checkpoint"]["sha256"][:16],
@@ -530,6 +613,8 @@ def render(payload: dict[str, Any], template: Path) -> str:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser.add_argument("--run", default=None, help="run id; writes into that run's directory")
+    parser.add_argument("--runs-dir", type=Path, default=RUNS_DIR)
     parser.add_argument("--model", default=DEFAULT_MODEL)
     parser.add_argument("--study", default=None, help="defaults to <model>_budget0.2_v2")
     parser.add_argument(
@@ -540,23 +625,29 @@ def main() -> None:
     parser.add_argument("--device-dir", type=Path, default=DEVICE_REPORT_DIR)
     parser.add_argument("--cache-dir", type=Path, default=CACHE_DIR)
     parser.add_argument("--template", type=Path, default=TEMPLATE)
-    parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
+    parser.add_argument("--out", type=Path, default=None)
     args = parser.parse_args()
 
-    study = args.study or f"{args.model}_budget{DEFAULT_BUDGET_PT:g}_{SPACE_VERSION}"
-    sentinel = args.sentinel or find_sentinel(args.device_dir, args.model)
+    if args.run:
+        run = load_run(args.run, args.runs_dir)
+        sources = Sources.from_run(run, args.cache_dir, args.search_dir)
+        out = args.out or run.paths.dashboard
+    else:
+        study = args.study or f"{args.model}_budget{DEFAULT_BUDGET_PT:g}_{SPACE_VERSION}"
+        sources = Sources.legacy(
+            args.model,
+            study,
+            args.search_dir,
+            args.report_dir,
+            args.device_dir,
+            args.cache_dir,
+            args.sentinel or find_sentinel(args.device_dir, args.model),
+        )
+        out = args.out or DEFAULT_OUT
 
-    payload = build_payload(
-        args.model,
-        study,
-        args.search_dir,
-        args.report_dir,
-        args.device_dir,
-        args.cache_dir,
-        sentinel,
-    )
-    args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(render(payload, args.template), encoding="utf-8")
+    payload = build_payload(sources)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(render(payload, args.template), encoding="utf-8")
 
     print(f"{payload['study']}  split {payload['split']['name']} ({payload['split']['samples']})")
     print(f"  {'id':4s}{'latency':>10s}{'size MB':>9s}{'RSS MB':>9s}{'top-1':>8s}  config")
@@ -572,7 +663,7 @@ def main() -> None:
     print(f"  never first under any of the {len(payload['orderings'])} priority orders: "
           f"{', '.join(payload['unreachable']) or 'none'}")
     print(f"  trial history: {len(payload['trials'])} of {payload['trials_declared']} trials")
-    print(f"\nWrote {args.out}")
+    print(f"\nWrote {out}")
 
 
 if __name__ == "__main__":
