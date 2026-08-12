@@ -31,10 +31,10 @@ def recorder(run, written=(), fail=(), skip=()):
             raise RuntimeError("boom")
         if stage.name in skip:
             return None
-        if stage.name != "dashboard":
-            run.paths.stage(stage.name).write_text(json.dumps({"stage": stage.name}))
-        else:
+        if stage.name == "dashboard":
             run.paths.dashboard.write_text("<p>page</p>", encoding="utf-8")
+        elif stage.name != "index":
+            run.paths.stage(stage.name).write_text(json.dumps({"stage": stage.name}))
         return {"ok": True}
 
     return executor, seen
@@ -47,8 +47,8 @@ def test_every_stage_only_depends_on_stages_declared_before_it() -> None:
             assert STAGE_NAMES.index(need) < index, f"{name} needs {need}, declared later"
 
 
-def test_the_dashboard_is_the_last_stage() -> None:
-    assert STAGE_NAMES[-1] == "dashboard"
+def test_the_pages_are_built_last_and_the_shared_one_last_of_all() -> None:
+    assert STAGE_NAMES[-2:] == ("dashboard", "index")
 
 
 def test_selecting_stages_keeps_declaration_order_not_the_order_given() -> None:
@@ -69,13 +69,15 @@ def test_a_full_run_executes_every_stage_once(tmp_path) -> None:
     assert set(outcomes.values()) == {"ok"}
 
 
-def test_a_second_run_repeats_nothing(tmp_path) -> None:
+def test_a_second_run_repeats_nothing_but_the_shared_page(tmp_path) -> None:
+    # The landing page lists every run, so the newest campaign always refreshes
+    # it. Everything that belongs to this run alone is skipped.
     run = make(tmp_path)
     run_pipeline(run, recorder(run)[0])
     executor, seen = recorder(run)
     outcomes = run_pipeline(run, executor)
-    assert seen == []
-    assert set(outcomes.values()) == {"skipped"}
+    assert seen == ["index"]
+    assert {name: outcome for name, outcome in outcomes.items() if outcome != "skipped"} == {"index": "ok"}
 
 
 def test_force_repeats_work_that_was_already_done(tmp_path) -> None:
@@ -111,7 +113,7 @@ def test_a_stage_that_did_not_apply_is_attempted_again_next_time(tmp_path) -> No
     executor, seen = recorder(run, skip=("sentinel",))
     run_pipeline(run, executor)
     # A device may be attached next time, and then there is a noise floor to take.
-    assert seen == ["sentinel"]
+    assert seen == ["sentinel", "index"]
 
 
 def test_running_one_stage_alone_is_blocked_when_its_input_is_missing(tmp_path) -> None:

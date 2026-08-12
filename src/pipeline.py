@@ -14,7 +14,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable
 
-from src.runs import Run, completed_stages, record_stage
+from src.runs import RUNS_DIR, Run, completed_stages, record_stage
+
+DEFAULT_INDEX = Path("artifacts/dashboard/index.html")
 
 
 @dataclass(frozen=True)
@@ -40,6 +42,7 @@ STAGES: tuple[Stage, ...] = (
     Stage("sentinel", ("study",), "repeat one config to measure the noise floor", device=True),
     Stage("final_test", ("study",), "score the front once on the sealed test set", device=True),
     Stage("dashboard", ("study",), "render this run's page"),
+    Stage("index", ("dashboard",), "refresh the landing page that lists every run"),
 )
 
 STAGE_NAMES = tuple(stage.name for stage in STAGES)
@@ -56,9 +59,32 @@ def resolve_order(only: tuple[str, ...] | None) -> list[Stage]:
     return [stage for stage in STAGES if stage.name in only]
 
 
+def produced_path(stage: Stage, run: Run) -> Path | None:
+    """Where this stage's output lands, or None when it writes outside the run."""
+    if stage.name == "dashboard":
+        return run.paths.dashboard
+    if stage.name == "index":
+        # The landing page belongs to the whole tree, so there is nothing here to
+        # skip on: every finished run refreshes it.
+        return None
+    return run.paths.stage(stage.name)
+
+
+def index_out(runs_dir: Path) -> Path:
+    """The landing page for this tree. A scratch tree gets its own, not the committed one."""
+    if runs_dir.resolve() == RUNS_DIR.resolve():
+        return DEFAULT_INDEX
+    return runs_dir.parent / "dashboard" / "index.html"
+
+
 def missing_needs(stage: Stage, run: Run) -> list[str]:
     """Prerequisites whose output is not on disk yet."""
-    return [need for need in stage.needs if not run.paths.stage(need).exists()]
+    blocked = []
+    for need in stage.needs:
+        path = produced_path(BY_NAME[need], run)
+        if path is not None and not path.exists():
+            blocked.append(need)
+    return blocked
 
 
 # --------------------------------------------------------------- local stages
@@ -78,6 +104,16 @@ def local_command(stage: str, run: Run) -> list[str] | None:
         # scratch tree must not write its page into the committed one.
         return [sys.executable, "-m", "scripts.build_dashboard", "--run", run.run_id,
                 "--runs-dir", str(run.paths.root.parent)]
+    if stage == "index":
+        runs_dir = run.paths.root.parent
+        out = index_out(runs_dir)
+        argv = [sys.executable, "-m", "scripts.build_index",
+                "--runs-dir", str(runs_dir), "--out", str(out)]
+        # A scratch tree is where simulated runs are tested, so list them there.
+        # The committed page stays measured-only whoever triggers the rebuild.
+        if out != DEFAULT_INDEX:
+            argv.append("--include-mock")
+        return argv
     return None
 
 
@@ -103,8 +139,8 @@ def run_pipeline(
     outcomes: dict[str, str] = {}
 
     for stage in resolve_order(only):
-        produced = run.paths.stage(stage.name) if stage.name != "dashboard" else run.paths.dashboard
-        if not force and stage.name in done and produced.exists():
+        produced = produced_path(stage, run)
+        if not force and stage.name in done and produced is not None and produced.exists():
             print(f"  {stage.name:16s} skip      already done")
             outcomes[stage.name] = "skipped"
             continue

@@ -108,6 +108,13 @@ code {
   border: 1px solid var(--rule); border-radius: 3px; padding: 1px 6px; color: var(--ink-2);
 }
 .tag--mock { border-color: var(--warning); color: var(--warning); }
+.tag--live { border-color: var(--series-1); color: var(--series-1); }
+
+.bar { height: 3px; background: var(--ghost); border-radius: 2px; margin: 10px 0 8px; }
+.bar > i { display: block; height: 100%; background: var(--series-1); border-radius: 2px; }
+.stage-line { font-size: 12px; color: var(--ink-2); }
+.stage-line b { font-weight: 600; }
+.failed { color: var(--warning); }
 
 .figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; }
 .fig { border-left: 2px solid var(--rule); padding-left: 9px; }
@@ -137,6 +144,13 @@ footer { color: var(--muted); font-size: 11px; margin-top: 18px; }
 
 <script>
 const D = JSON.parse(document.getElementById("index-data").textContent);
+
+const STAGE_LABELS = {
+  final_test: "sealed test-set scoring",
+  sentinel: "repeat-noise measurement",
+  group_cost: "per-group latency cost",
+  dashboard: "its own page"
+};
 
 const el = (tag, attrs = {}, text = null) => {
   const node = document.createElement(tag);
@@ -178,8 +192,36 @@ function figure(key, value, note) {
   return box;
 }
 
+function renderProgress(run) {
+  const box = el("div");
+  const bar = el("div", { class: "bar" });
+  bar.appendChild(el("i", { style: `width:${(run.stages_done / run.stages_total) * 100}%` }));
+  box.appendChild(bar);
+
+  const line = el("div", { class: "stage-line" });
+  line.appendChild(el("b", {}, `${run.stages_done} of ${run.stages_total} stages`));
+  if (run.state === "failed") {
+    line.appendChild(document.createTextNode(" · "));
+    line.appendChild(el("span", { class: "failed" }, `stopped at ${run.failed_stage}`));
+  } else if (run.next_stage) {
+    line.appendChild(document.createTextNode(` · next up ${run.next_stage}`));
+  }
+  line.appendChild(document.createTextNode(` · last wrote ${run.updated_on}`));
+  box.appendChild(line);
+
+  if (run.state === "failed" && run.failed_error) {
+    box.appendChild(el("div", { class: "fig-n mono", style: "margin-top:6px" }, run.failed_error));
+  }
+  return box;
+}
+
 function renderRuns() {
   const host = document.getElementById("runs");
+  if (!D.runs.length) {
+    host.appendChild(el("p", { class: "note" },
+      "No runs here yet. Start one with: python -m src.app run --model resnet18_cifar"));
+    return;
+  }
   D.runs.forEach(run => {
     const card = el("a", {
       class: "run" + (run.page ? "" : " run--dead"),
@@ -189,20 +231,32 @@ function renderRuns() {
     const head = el("div", { class: "run-head" });
     head.appendChild(el("span", { class: "run-name" }, run.label));
     if (run.venue === "mock") head.appendChild(el("span", { class: "tag tag--mock" }, "simulated"));
-    if (!run.page) head.appendChild(el("span", { class: "tag" }, "no page built"));
-    head.appendChild(el("span", { class: "run-id mono" }, run.run_id));
+    if (run.state === "running") head.appendChild(el("span", { class: "tag tag--live" }, "in progress"));
+    if (run.state === "failed") head.appendChild(el("span", { class: "tag tag--mock" }, "stopped"));
+    head.appendChild(el("span", { class: "run-id mono" },
+      `${run.venue === "pi" ? "Pi 5" : "simulator"} · ${run.measured_on}`));
     card.appendChild(head);
 
-    const figs = el("div", { class: "figs" });
-    figs.appendChild(figure("Fastest", `${run.best_latency_ms.toFixed(2)} ms`,
-      run.speedup ? `${run.speedup.toFixed(1)}x the FP32 export` : "per image"));
-    figs.appendChild(figure("Smallest", `${run.best_size_mb.toFixed(1)} MB`,
-      `from ${run.fp32_size_mb.toFixed(1)} MB`));
-    figs.appendChild(figure("Most accurate", `${run.best_top1.toFixed(2)}%`,
-      `baseline ${run.baseline_top1.toFixed(2)}%`));
-    figs.appendChild(figure("On the front", String(run.front_size),
-      `of ${run.trials} measured trials`));
-    card.appendChild(figs);
+    if (run.state === "done") {
+      const figs = el("div", { class: "figs" });
+      figs.appendChild(figure("Fastest", `${run.best_latency_ms.toFixed(2)} ms`,
+        run.speedup ? `${run.speedup.toFixed(1)}x the FP32 export` : "per image"));
+      figs.appendChild(figure("Smallest", `${run.best_size_mb.toFixed(1)} MB`,
+        `from ${run.fp32_size_mb.toFixed(1)} MB`));
+      figs.appendChild(figure("Most accurate", `${run.best_top1.toFixed(2)}%`,
+        `baseline ${run.baseline_top1.toFixed(2)}%`));
+      figs.appendChild(figure("On the front", String(run.front_size),
+        `of ${run.trials} measured trials`));
+      card.appendChild(figs);
+      // Name what this campaign never produced, rather than letting a finished
+      // search imply every check was run against it.
+      if (run.missing.length) {
+        card.appendChild(el("div", { class: "stage-line", style: "margin-top:10px" },
+          `Not run for this campaign: ${run.missing.map(s => STAGE_LABELS[s] || s).join(", ")}.`));
+      }
+    } else {
+      card.appendChild(renderProgress(run));
+    }
 
     host.appendChild(card);
   });

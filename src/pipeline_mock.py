@@ -18,7 +18,7 @@ from typing import Any
 
 from src.bench.agent import BenchSpec
 from src.model_index import entry_for
-from src.pipeline import Stage, execute, local_command
+from src.pipeline import Stage, execute, index_out, local_command
 from src.quant.baselines import BASELINE_CONFIGS
 from src.quant.config import DeploymentConfig, QuantConfig, RunConfig
 from src.runs import Run
@@ -290,6 +290,9 @@ def make_executor(run: Run):
         if name == "dashboard":
             execute(local_command("dashboard", run))
             return {"page": run.paths.dashboard.as_posix()}
+        if name == "index":
+            execute(local_command("index", run))
+            return {"index": index_out(run.paths.root.parent).as_posix()}
         raise RuntimeError(f"no simulator for stage {name!r}")
 
     return executor

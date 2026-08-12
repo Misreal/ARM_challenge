@@ -15,7 +15,7 @@ from pathlib import Path
 from typing import Any
 
 from src.bench.remote import PiConnection, RemoteBenchmarker
-from src.pipeline import Stage, execute, local_command
+from src.pipeline import Stage, execute, index_out, local_command
 from src.runs import Run
 
 REPORT_DIR = Path("artifacts/reports")
@@ -124,6 +124,10 @@ def make_executor(run: Run):
         if name == "dashboard":
             execute(local_command("dashboard", run))
             return {"page": run.paths.dashboard.as_posix()}
+
+        if name == "index":
+            execute(local_command("index", run))
+            return {"index": index_out(run.paths.root.parent).as_posix()}
 
         raise RuntimeError(f"no device runner for stage {name!r}")
 
