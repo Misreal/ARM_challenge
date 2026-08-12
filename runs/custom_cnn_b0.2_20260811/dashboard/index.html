@@ -119,26 +119,6 @@ h2 {
   max-width: 46ch;
 }
 .claim em { font-style: normal; color: var(--series-1); }
-.band-cols {
-  display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
-  gap: 20px;
-  align-items: start;
-}
-.contract {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 3px 12px;
-  font-size: 12px;
-  border-left: 2px solid var(--series-1);
-  padding-left: 12px;
-}
-.contract dt {
-  font-size: 10px; font-weight: 600; letter-spacing: 0.1em;
-  text-transform: uppercase; color: var(--muted); padding-top: 2px;
-}
-.contract dd { margin: 0; color: var(--ink-2); }
-
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .chip {
   display: inline-flex; align-items: center; gap: 5px;
@@ -159,7 +139,6 @@ h2 {
 }
 
 @media (max-width: 760px) {
-  .band-cols { grid-template-columns: minmax(0, 1fr); gap: 12px; }
   .deltas { grid-template-columns: minmax(0, 1fr); }
 }
 
@@ -279,20 +258,12 @@ footer {
 
   <header class="panel band">
     <div id="venue-banner"></div>
-    <p class="eyebrow">Hardware-in-the-loop deployment search · Phase 7 output</p>
+    <p class="eyebrow">Hardware-in-the-loop deployment search</p>
     <p class="claim">
       There is no single best way to deploy a model. This is the set of ways that
       are <em>not beaten on every count</em> — each one measured on the device.
     </p>
-    <div class="band-cols">
-      <p class="note" id="header-note"></p>
-      <dl class="contract">
-        <dt>In</dt>
-        <dd>ONNX model (PyTorch-exported, named nodes) · calibration set · labeled eval set · accuracy budget</dd>
-        <dt>Out</dt>
-        <dd>Measured Pareto set of deployment configurations</dd>
-      </dl>
-    </div>
+    <p class="note" id="header-note"></p>
     <div class="chips" id="header-chips"></div>
   </header>
 
@@ -378,7 +349,7 @@ footer {
  "model_label": "Custom CNN",
  "venue": "pi",
  "study": "custom_cnn_budget0.2_v2",
- "built_at_utc": "2026-08-11T18:29:12+00:00",
+ "built_at_utc": "2026-08-12T15:34:31+00:00",
  "split": {
   "name": "optval",
   "samples": 3000,
@@ -3109,56 +3080,33 @@ function renderLegend() {
     host.appendChild(dd);
   };
 
-  say(`Latency (${byKey.latency_ms.unit})`, (dd, text) => text(
-    "How long the model takes to recognise one picture, in thousandths of a second. Timed on the " +
-    `Pi itself using ${D.device.threads} of its cores, run many times over, taking the middle ` +
-    "result. Lower is better."));
-
-  say(`Model size (${byKey.size_mb.unit})`, (dd, text) => text(
-    "How much space the model file takes up. This is what you copy onto the Pi. Lower is better."));
-
-  say(`Peak RAM (${byKey.peak_rss_mb.unit})`, (dd, text) => text(
-    "The most memory the model needed at any one moment while running. If the Pi does not have " +
-    "this much free, it cannot run the model. Lower is better."));
-
-  say(`Top-1 (${D.split.name})`, (dd, text) => text(
-    `How often the model gets the answer right, out of ${D.split.samples.toLocaleString()} pictures. ` +
-    "Think of these as practice questions: the search was allowed to look at them while it picked " +
-    "settings, so this is the score the table ranks on. Higher is better."));
-
+  // Every objective column already carries its definition as a header tooltip.
+  // What is left here is what a tooltip cannot hold: a finding, and a key to the
+  // recipe tokens, which are opaque without one.
   if (D.test) {
     const scored = D.front.filter(r => r.test_top1 !== null);
     const bestOptval = scored.slice().sort((a, b) => b.top1 - a.top1)[0];
     const bestTest = scored.slice().sort((a, b) => b.test_top1 - a.test_top1)[0];
-    say(`Top-1 (${D.test.split})`, (dd, text) => {
-      text(`The same score, but on ${D.test.samples.toLocaleString()} different pictures that stayed ` +
-        "locked away until the search had finished. Think of these as the real exam. It was run once, " +
-        "and it is never used for ranking, because a model that gets to practise on the exam is not " +
-        "really being tested. ");
-      if (bestOptval.id !== bestTest.id) {
-        dd.appendChild(el("b", {}, "It changed the order"));
-        text(`: ${bestOptval.id} looked best on the practice questions at ${bestOptval.top1.toFixed(2)}%, ` +
-          `but scored ${bestOptval.test_top1.toFixed(2)}% on the exam and fell behind ${bestTest.id} at ` +
-          `${bestTest.test_top1.toFixed(2)}%. That is why nothing on this page calls a lead of under a ` +
-          `point a win. Plain FP32 scores ${D.test.fp32_top1.toFixed(2)}%.`);
-      }
-    });
+    if (bestOptval.id !== bestTest.id) {
+      say("The sealed split changed the order", (dd, text) => text(
+        `${bestOptval.id} led at ${bestOptval.top1.toFixed(2)}% on the split the search graded, ` +
+        `then scored ${bestOptval.test_top1.toFixed(2)}% on the sealed one and fell behind ` +
+        `${bestTest.id} at ${bestTest.test_top1.toFixed(2)}%. That is why nothing here calls a lead ` +
+        `of under a point a win. FP32 scores ${D.test.fp32_top1.toFixed(2)}%.`));
+    }
   } else {
     say("Top-1 (sealed)", (dd, text) => text(
-      "Not evaluated yet, so every accuracy here is the split the search graded on."));
+      "Not evaluated for this run, so every accuracy here is the split the search graded on."));
   }
 
   say("Recipe", (dd, text, mono) => {
-    text("The settings used to shrink the model, reading left to right:");
+    text("Reading left to right:");
     const list = el("ul", { class: "recipe-key" });
-    [["static", "the shrinking is worked out in advance, using sample pictures. " +
-                "dynamic works it out while the model runs, which is slower"],
-     ["per-channel", "every part of a layer gets its own setting. " +
-                     "per-tensor gives the whole layer one setting, which is rougher"],
-     ["act:uint8", "the number format used inside the model"],
-     ["minmax/512", "the method used to work the settings out, and how many pictures it looked at"],
-     ["fp32:conv1+fc", "parts left at full size, because shrinking them cost too much accuracy. " +
-                       "No fp32: at all means nothing was left out"]
+    [["static", "scales fixed in advance from calibration images; dynamic computes them per inference"],
+     ["per-channel", "one scale per output channel; per-tensor gives the whole layer one"],
+     ["act:uint8", "activation dtype"],
+     ["minmax/512", "calibration method, and how many images it saw"],
+     ["fp32:conv1+fc", "blocks kept out of INT8. No fp32: means every block was quantized"]
     ].forEach(([token, gloss]) => {
       const item = el("li");
       item.appendChild(el("span", { class: "mono" }, token));

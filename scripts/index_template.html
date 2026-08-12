@@ -88,6 +88,18 @@ code {
   font-size: 12px; background: var(--ghost); padding: 1px 5px; border-radius: 3px;
 }
 
+.section-label {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.13em; text-transform: uppercase;
+  color: var(--muted); margin: 20px 0 8px 2px;
+}
+
+.cmd {
+  font-family: ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace;
+  font-size: 12px; background: var(--ghost); border: 1px solid var(--rule);
+  border-radius: 3px; padding: 8px 10px; margin: 0 0 6px;
+  overflow-x: auto; white-space: pre;
+}
+
 .runs { display: grid; gap: 12px; }
 
 .run {
@@ -133,7 +145,25 @@ footer { color: var(--muted); font-size: 11px; margin-top: 18px; }
     <ol class="how" id="how"></ol>
   </section>
 
+  <p class="section-label">Load an existing run</p>
   <div class="runs" id="runs"></div>
+
+  <section class="panel" style="margin-top:20px">
+    <p class="eyebrow">Or bring your own</p>
+    <h2>Any CIFAR-100 model with a 32&times;32 input</h2>
+    <p class="note" style="margin:0 0 10px">
+      The importer checks the graph, builds the quantization-ready variant, recovers the block
+      structure sensitivity analysis reads, and scores the FP32 baseline. Then the same pipeline
+      runs on it.
+    </p>
+    <div class="cmd">python -m src.import_onnx --onnx yours.onnx --name yours --seal-test</div>
+    <div class="cmd">python -m src.app run --model yours</div>
+    <p class="note">
+      Needs a static 1&times;3&times;32&times;32 input, 100 classes, opset 13 or later, and nodes
+      carrying module paths &mdash; a normal PyTorch export has all four. The second command
+      measures on a Raspberry Pi, so it needs one configured in <code>pi_target.json</code>.
+    </p>
+  </section>
 
   <footer id="footer"></footer>
 </div>
@@ -163,10 +193,10 @@ function renderIntro() {
   document.getElementById("title").textContent =
     "There is no single best way to deploy a model.";
   document.getElementById("lede").textContent =
-    `Each run below searched the deployment settings for one network -- how to quantize it, ` +
-    `which layers to leave alone, how to configure the runtime -- and kept every setting that ` +
-    `nothing else beats on all four counts at once. Speed, file size, memory and accuracy were ` +
-    `measured on the device, not predicted. Open a run to explore its trade space.`;
+    `Each run below searched one network's deployment settings — how to quantize it, which ` +
+    `blocks to leave alone, how to configure the runtime — and kept every configuration that ` +
+    `nothing else beats on all four counts at once. Speed, size, memory and accuracy were ` +
+    `measured on a Raspberry Pi 5, never predicted.`;
 
   const how = document.getElementById("how");
   [
