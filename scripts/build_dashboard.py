@@ -40,6 +40,10 @@ REFERENCE_RUN = RunConfig(intra_op_num_threads=4, graph_optimization_level="all"
 
 DATA_PLACEHOLDER = "/*__DASHBOARD_DATA__*/"
 
+# Pi 5 firmware soft-limits the clock at 80 C. The panel draws the axis up to it
+# so the distance between the measurements and the limit is the visible claim.
+THROTTLE_SOFT_C = 80.0
+
 # The four objectives, in the order the page lays them out. `sense` is which
 # direction is better; `decimals` is how many digits the page prints, which is
 # also the finest difference it is allowed to rank on.
@@ -204,6 +208,53 @@ def measurements_by_config(model: str, cache_dir: Path) -> dict[str, dict[str, A
             continue
         found.setdefault(result["config_hash"], result)
     return found
+
+
+def thermal_rows(model: str, cache_dir: Path) -> dict[str, Any] | None:
+    """Every cached measurement's thermal state, in the order the device took them.
+
+    Comparing two latencies only means something if the device was in the same
+    state for both, so the page has to show that state rather than assert it.
+    Reads the whole cache, not just this run's front: a candidate that was built
+    and rejected still cost a measurement, and its temperature is evidence too.
+    """
+    samples: list[dict[str, Any]] = []
+    for path in sorted((cache_dir / model).glob("*.json")):
+        result = read_json(path)
+        before = result.get("device_before") or {}
+        after = result.get("device_after") or {}
+        if result.get("status") != "ok" or before.get("temperature_c") is None:
+            continue
+        throttle = (after.get("throttle") or {}).get("sticky") or []
+        samples.append(
+            {
+                "at": result["created_at_utc"],
+                "before_c": before["temperature_c"],
+                "after_c": after.get("temperature_c", before["temperature_c"]),
+                "clock_mhz": before.get("clock_mhz"),
+                "pinned": bool(before.get("governor_is_pinned")),
+                "throttled": bool(throttle or result.get("throttle_events")),
+                "stable": bool((result.get("latency") or {}).get("stable")),
+            }
+        )
+    if not samples:
+        return None
+
+    samples.sort(key=lambda sample: sample["at"])
+    peaks = [sample["after_c"] for sample in samples]
+    return {
+        "soft_limit_c": THROTTLE_SOFT_C,
+        "samples": samples,
+        "count": len(samples),
+        "min_c": min(sample["before_c"] for sample in samples),
+        "max_c": max(peaks),
+        "median_rise_c": round(
+            sorted(sample["after_c"] - sample["before_c"] for sample in samples)[len(samples) // 2], 2
+        ),
+        "throttled": sum(1 for sample in samples if sample["throttled"]),
+        "unpinned": sum(1 for sample in samples if not sample["pinned"]),
+        "unstable": sum(1 for sample in samples if not sample["stable"]),
+    }
 
 
 def reference_marks(
@@ -592,6 +643,7 @@ def build_payload(sources: Sources) -> dict[str, Any]:
             quant_baselines, measurements_by_config(model, sources.cache_dir), rows
         ),
         "noise": noise,
+        "thermal": thermal_rows(model, sources.cache_dir),
         "cost_benefit": cost_benefit_rows(cost_benefit),
         "groups": summary["groups"],
         "trials": trial_rows(sources.study_db, sources.study, rows) if sources.study_db else [],
@@ -663,6 +715,10 @@ def main() -> None:
     print(f"  never first under any of the {len(payload['orderings'])} priority orders: "
           f"{', '.join(payload['unreachable']) or 'none'}")
     print(f"  trial history: {len(payload['trials'])} of {payload['trials_declared']} trials")
+    heat = payload["thermal"]
+    if heat:
+        print(f"  thermal: {heat['count']} measurements, {heat['min_c']}-{heat['max_c']} C, "
+              f"{heat['throttled']} throttled, {heat['unpinned']} unpinned, {heat['unstable']} unstable")
     print(f"\nWrote {out}")
 
 

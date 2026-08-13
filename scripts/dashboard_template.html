@@ -145,7 +145,8 @@ h2 {
 /* ------------------------------------------------------------ panel grid */
 @media (min-width: 1080px) {
   .p-rank, .p-scatter, .p-cost { grid-column: span 7; }
-  .p-detail, .p-trials { grid-column: span 5; }
+  .p-detail, .p-trials, .p-test { grid-column: span 5; }
+  .p-thermal { grid-column: span 12; }
 }
 
 /* --------------------------------------------------------------- controls */
@@ -336,6 +337,22 @@ footer {
       <summary>Table view — per-block benefit, cost and efficiency</summary>
       <div class="scroll"><table id="cost-table"></table></div>
     </details>
+  </section>
+
+  <section class="panel p-test" id="test-panel" hidden>
+    <p class="eyebrow">Held-out check</p>
+    <h2>What the sealed split did to the ranking</h2>
+    <p class="note" id="test-note"></p>
+    <div id="test-chart"></div>
+    <div class="legend" id="test-legend"></div>
+  </section>
+
+  <section class="panel p-thermal" id="thermal-panel" hidden>
+    <p class="eyebrow">Measurement conditions</p>
+    <h2>The device never throttled</h2>
+    <p class="note" id="thermal-note"></p>
+    <div id="thermal-chart"></div>
+    <div class="legend" id="thermal-legend"></div>
   </section>
 
   <footer id="provenance"></footer>
@@ -1177,6 +1194,222 @@ function renderTrials() {
   });
 }
 
+/* ------------------------------------------------------------ sealed split */
+
+function renderTest() {
+  const rows = D.test ? D.front.filter(r => r.test_top1 !== null) : [];
+  if (rows.length < 2) return;
+  document.getElementById("test-panel").hidden = false;
+
+  const place = key => {
+    const order = rows.slice().sort((a, b) => b[key] - a[key]);
+    return new Map(order.map((r, i) => [r.id, i + 1]));
+  };
+  const optRank = place("top1"), testRank = place("test_top1");
+  const drops = rows.map(r => r.top1 - r.test_top1);
+  const leader = rows.slice().sort((a, b) => b.top1 - a.top1)[0];
+  const fp32 = D.test.fp32_top1;
+
+  const note = document.getElementById("test-note");
+  clear(note);
+  note.appendChild(document.createTextNode(
+    "Each line is one Pareto member: on the left the split the search graded every trial on, on the " +
+    `right the sealed test set it was shown once. Every member scored lower there, by ` +
+    `${Math.min(...drops).toFixed(2)} to ${Math.max(...drops).toFixed(2)} points, and the order changed. `));
+  note.appendChild(el("b", {}, leader.id));
+  note.appendChild(document.createTextNode(
+    ` led the search at ${leader.top1.toFixed(2)}% and placed ${testRank.get(leader.id)} of ${rows.length} ` +
+    `on the sealed split at ${leader.test_top1.toFixed(2)}%. ` +
+    (fp32 === null ? "" :
+      `FP32 scores ${fp32.toFixed(2)}% on that same split, so nothing here meaningfully beats it on ` +
+      "accuracy — what the search bought is latency, size and RAM at the same accuracy.")));
+
+  const host = document.getElementById("test-chart");
+  clear(host);
+  const W = 520, H = 300, M = { t: 26, r: 76, b: 24, l: 76 };
+  const leftX = M.l, rightX = W - M.r;
+  const values = rows.flatMap(r => [r.top1, r.test_top1]).concat(fp32 === null ? [] : [fp32]);
+  const lo = Math.min(...values) - 0.1, hi = Math.max(...values) + 0.1;
+  const sy = v => H - M.b - (v - lo) / (hi - lo) * (H - M.t - M.b);
+
+  const svg = svgEl("svg", { viewBox: `0 0 ${W} ${H}`, role: "img",
+    "aria-label": "Top-1 accuracy of each Pareto member on the search split and on the sealed test set" });
+  [[leftX, "Search split"], [rightX, "Sealed test"]].forEach(([x, label]) => {
+    svg.appendChild(svgEl("line", { x1: x, x2: x, y1: M.t - 6, y2: H - M.b,
+      stroke: "var(--axis)", "stroke-width": 1 }));
+    svg.appendChild(svgEl("text", { x, y: 12, "text-anchor": "middle", class: "axis-title" }, label));
+  });
+  [lo, (lo + hi) / 2, hi].forEach(v => {
+    svg.appendChild(svgEl("text", { x: 10, y: sy(v) + 3, class: "tick" }, v.toFixed(2)));
+  });
+  if (fp32 !== null) {
+    svg.appendChild(svgEl("line", { x1: leftX, x2: rightX, y1: sy(fp32), y2: sy(fp32),
+      stroke: "var(--axis)", "stroke-width": 1, "stroke-dasharray": "4 3" }));
+    svg.appendChild(svgEl("text", { x: (leftX + rightX) / 2, y: sy(fp32) - 6,
+      "text-anchor": "middle", class: "tick" }, `FP32 ${fp32.toFixed(2)}%`));
+  }
+
+  // Stack the end labels instead of nudging them one by one: on the sealed side
+  // every member sits inside a tenth of a point, so each preferred position is
+  // already taken and a collision search just scatters them.
+  const stack = key => {
+    const points = rows.map(r => ({ id: r.id, y: sy(r[key]) })).sort((a, b) => a.y - b.y);
+    for (let i = 1; i < points.length; i++) {
+      points[i].y = Math.max(points[i].y, points[i - 1].y + 12);
+    }
+    const overflow = points[points.length - 1].y - (H - M.b);
+    if (overflow > 0) points.forEach(p => { p.y -= overflow; });
+    return new Map(points.map(p => [p.id, p.y]));
+  };
+  const labelled = { top1: stack("top1"), test_top1: stack("test_top1") };
+
+  // Colour carries the finding, not the identity: a member that lost places on
+  // the split it never tuned against is the thing worth seeing at a glance.
+  rows.forEach(r => {
+    const moved = testRank.get(r.id) - optRank.get(r.id);
+    const colour = moved > 0 ? "var(--critical)" : moved < 0 ? "var(--series-1)" : "var(--muted)";
+    const y0 = sy(r.top1), y1 = sy(r.test_top1);
+    const g = svgEl("g");
+    g.appendChild(svgEl("line", { x1: leftX, x2: rightX, y1: y0, y2: y1,
+      stroke: colour, "stroke-width": moved === 0 ? 1.2 : 2, opacity: moved === 0 ? .45 : .9 }));
+    [[leftX, y0], [rightX, y1]].forEach(([x, y]) => {
+      g.appendChild(svgEl("circle", { cx: x, cy: y, r: 4, fill: colour,
+        stroke: "var(--surface)", "stroke-width": 1.5, "paint-order": "stroke" }));
+    });
+    [["top1", leftX, -8, "end", y0], ["test_top1", rightX, 8, "start", y1]].forEach(
+      ([key, x, dx, anchor, dotY]) => {
+        const ly = labelled[key].get(r.id);
+        // A leader only when the stack moved the label off its dot, so a label
+        // sitting where it belongs is not cluttered by a redundant line.
+        if (Math.abs(ly - dotY) > 2) {
+          g.appendChild(svgEl("line", { x1: x + dx / 4, x2: x + dx * 0.8, y1: dotY, y2: ly - 3,
+            stroke: colour, "stroke-width": 0.8, opacity: .5 }));
+        }
+        g.appendChild(svgEl("text", { x: x + dx, y: ly, "text-anchor": anchor, class: "tick" }, r.id));
+      });
+
+    const lines = () => [
+      [r.id, r.describe],
+      [r.top1.toFixed(2) + "%", `search split · rank ${optRank.get(r.id)} of ${rows.length}`],
+      [r.test_top1.toFixed(2) + "%", `sealed test · rank ${testRank.get(r.id)} of ${rows.length}`],
+      [signed(r.test_top1 - r.top1) + " pt", moved === 0 ? "held its place" :
+        moved > 0 ? `lost ${moved} place${moved > 1 ? "s" : ""}` : `gained ${-moved} place${moved < -1 ? "s" : ""}`]
+    ];
+    const hit = svgEl("line", { x1: leftX, x2: rightX, y1: y0, y2: y1, class: "hit",
+      "stroke-width": 14, stroke: "transparent", tabindex: "0",
+      "aria-label": `${r.id}: ${r.top1.toFixed(2)}% on the search split, ${r.test_top1.toFixed(2)}% sealed` });
+    hit.addEventListener("pointermove", e => showTip(e, lines()));
+    hit.addEventListener("pointerleave", hideTip);
+    hit.addEventListener("focus", () => {
+      const b = hit.getBoundingClientRect();
+      showTip({ clientX: b.left + b.width / 2, clientY: b.top + b.height / 2 }, lines());
+    });
+    hit.addEventListener("blur", hideTip);
+    g.appendChild(hit);
+    svg.appendChild(g);
+  });
+  host.appendChild(svg);
+
+  const legend = document.getElementById("test-legend");
+  clear(legend);
+  [["Lost places on the sealed split", "var(--critical)"],
+   ["Gained places", "var(--series-1)"],
+   ["Held its place", "var(--muted)"]].forEach(([label, colour]) => {
+    const s = el("span");
+    const key = el("i", { class: "key" });
+    key.style.background = colour;
+    s.appendChild(key);
+    s.appendChild(document.createTextNode(label));
+    legend.appendChild(s);
+  });
+}
+
+/* ---------------------------------------------------------------- thermal */
+
+function renderThermal() {
+  const T = D.thermal;
+  if (!T || !T.samples.length) return;
+  document.getElementById("thermal-panel").hidden = false;
+
+  const note = document.getElementById("thermal-note");
+  clear(note);
+  note.appendChild(document.createTextNode(
+    `Every latency on this page was taken with the governor pinned to performance. Across all ` +
+    `${T.count} cached measurements the core sat between ${T.min_c.toFixed(1)} and ${T.max_c.toFixed(1)} °C, ` +
+    `rising a median of ${T.median_rise_c.toFixed(2)} °C during a run, and the firmware's ` +
+    `${T.soft_limit_c.toFixed(0)} °C throttle never engaged: ${T.throttled} throttle events, ` +
+    `${T.unpinned} unpinned governors, ${T.unstable} runs that failed the drift check. ` +
+    "That is what makes two latencies here comparable rather than a reading of the room temperature."));
+
+  const host = document.getElementById("thermal-chart");
+  clear(host);
+  const n = T.samples.length;
+  const W = 1080, H = 170, M = { t: 16, r: 78, b: 26, l: 34 };
+  // The axis runs to the throttle limit rather than to the data: the gap between
+  // the measurements and the red line is the whole claim of this panel.
+  const lo = 42, hi = T.soft_limit_c + 3;
+  const sx = i => M.l + (n === 1 ? 0.5 : i / (n - 1)) * (W - M.l - M.r);
+  const sy = v => H - M.b - (v - lo) / (hi - lo) * (H - M.t - M.b);
+
+  const svg = svgEl("svg", { viewBox: `0 0 ${W} ${H}`, role: "img",
+    "aria-label": `Core temperature for ${n} measurements, all below the ${T.soft_limit_c} degree throttle limit` });
+  svg.appendChild(svgEl("line", { x1: M.l, x2: W - M.r, y1: sy(T.soft_limit_c), y2: sy(T.soft_limit_c),
+    stroke: "var(--critical)", "stroke-width": 1.5, "stroke-dasharray": "5 3" }));
+  svg.appendChild(svgEl("text", { x: W - M.r + 6, y: sy(T.soft_limit_c) + 3, class: "tick" },
+    `throttle ${T.soft_limit_c.toFixed(0)} °C`));
+  [50, 60, 70].forEach(v => {
+    svg.appendChild(svgEl("line", { x1: M.l, x2: W - M.r, y1: sy(v), y2: sy(v),
+      stroke: "var(--axis)", "stroke-width": 1, opacity: .35 }));
+    svg.appendChild(svgEl("text", { x: M.l - 6, y: sy(v) + 3, "text-anchor": "end", class: "tick" }, String(v)));
+  });
+  svg.appendChild(svgEl("text", { x: (M.l + W - M.r) / 2, y: H - 4, "text-anchor": "middle", class: "axis-title" },
+    "Measurements, in the order the device took them"));
+  svg.appendChild(svgEl("text", { x: M.l - 6, y: 11, "text-anchor": "end", class: "axis-title" }, "°C"));
+
+  T.samples.forEach((s, i) => {
+    const x = sx(i);
+    const top = Math.min(s.before_c, s.after_c), bottom = Math.max(s.before_c, s.after_c);
+    const colour = s.throttled ? "var(--critical)" : "var(--series-2)";
+    const g = svgEl("g");
+    // One tick per measurement, spanning idle temperature to peak, so the rise a
+    // run causes is visible without a second series.
+    g.appendChild(svgEl("line", { x1: x, x2: x, y1: sy(bottom), y2: sy(top),
+      stroke: colour, "stroke-width": Math.max(1, (W - M.l - M.r) / n * 0.6),
+      "stroke-linecap": "round", opacity: .8 }));
+    const lines = () => [
+      [`${s.after_c.toFixed(2)} °C peak`, `from ${s.before_c.toFixed(2)} °C at rest`],
+      [s.throttled ? "throttled" : "no throttle", s.pinned ? "governor pinned" : "governor NOT pinned"],
+      [s.clock_mhz === null ? "—" : `${(s.clock_mhz / 1000).toFixed(1)} GHz`,
+        s.stable ? "passed the drift check" : "failed the drift check"],
+      [s.at.slice(0, 16).replace("T", " "), "measured at (UTC)"]
+    ];
+    const hit = svgEl("rect", { x: x - 4, y: M.t, width: 8, height: H - M.t - M.b, class: "hit", tabindex: "0",
+      "aria-label": `Measurement ${i + 1}: peak ${s.after_c.toFixed(1)} degrees, ${s.throttled ? "throttled" : "no throttle"}` });
+    hit.addEventListener("pointermove", e => showTip(e, lines()));
+    hit.addEventListener("pointerleave", hideTip);
+    hit.addEventListener("focus", () => {
+      const b = hit.getBoundingClientRect();
+      showTip({ clientX: b.left + b.width / 2, clientY: b.top + 40 }, lines());
+    });
+    hit.addEventListener("blur", hideTip);
+    g.appendChild(hit);
+    svg.appendChild(g);
+  });
+  host.appendChild(svg);
+
+  const legend = document.getElementById("thermal-legend");
+  clear(legend);
+  [["One measurement, at rest to peak", "var(--series-2)"],
+   ["Throttled during the run", "var(--critical)"]].forEach(([label, colour]) => {
+    const s = el("span");
+    const key = el("i", { class: "key" });
+    key.style.background = colour;
+    s.appendChild(key);
+    s.appendChild(document.createTextNode(label));
+    legend.appendChild(s);
+  });
+}
+
 /* -------------------------------------------------------------- provenance */
 
 function renderProvenance() {
@@ -1226,6 +1459,8 @@ function init() {
   renderScatterTable();
   renderCostBenefit();
   renderTrials();
+  renderTest();
+  renderThermal();
   renderProvenance();
   render();
 }
