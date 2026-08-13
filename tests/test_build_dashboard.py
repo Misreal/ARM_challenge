@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
 from scripts.build_dashboard import (
     OBJECTIVES,
+    configs_for,
     find_sentinel,
     front_rows,
     group_index,
@@ -15,10 +18,11 @@ from scripts.build_dashboard import (
     parse_quant_describe,
     parse_run_describe,
     tie_groups,
+    trial_rows,
     unmeasured_noise,
     unreachable_rows,
 )
-from src.quant.config import QuantConfig, RunConfig
+from src.quant.config import DeploymentConfig, QuantConfig, RunConfig
 
 # Perfect resolution, so a grouping test isolates whichever effect it is about.
 NO_NOISE = {"latency_ms": 0.0, "size_mb": 0.0, "peak_rss_mb": 0.0, "top1": 0.0}
@@ -67,6 +71,61 @@ def test_run_describe_recovers_the_non_default_knobs() -> None:
     assert parse_run_describe("4t opt:extended no-arena") == RunConfig(
         graph_optimization_level="extended", enable_cpu_mem_arena=False
     )
+
+
+# --------------------------------------------------- reading configs back
+
+
+def front_member(**overrides) -> dict:
+    row = {
+        "describe": "static per-channel act:uint8 minmax/512",
+        "describe_run": "4t opt:all",
+        "quant_hash": "x",
+        "result": {"status": "ok", "latency_ms": 3.4, "size_bytes": 1, "peak_rss_mb": 90.0,
+                   "top1": 78.4, "screen_top1": 78.0},
+    }
+    row.update(overrides)
+    return row
+
+
+def test_a_stored_config_is_read_back_rather_than_parsed() -> None:
+    stored = DeploymentConfig(
+        quant=QuantConfig(quant_type="static", per_channel=True, calibration_size=128),
+        run=RunConfig(graph_optimization_level="extended"),
+    )
+    # The label deliberately disagrees with the stored config: whichever wins is
+    # visible, and the stored bytes are the ones that were measured.
+    quant, run = configs_for(front_member(config=stored.as_dict()))
+    assert quant == stored.quant
+    assert run == stored.run
+
+
+def test_a_campaign_without_stored_configs_still_parses_its_labels() -> None:
+    quant, run = configs_for(front_member())
+    assert quant.describe() == "static per-channel act:uint8 minmax/512"
+    assert run.describe() == "4t opt:all"
+
+
+def test_the_trial_panel_prefers_the_committed_summary_over_sqlite(tmp_path) -> None:
+    # An enumerated campaign writes no sqlite at all, so reading the summary is
+    # what keeps the panel on the page.
+    rows = [{**front_member(), "config_hash": "a", "round": "canonical"}]
+    summary = {"evaluated_configs": rows}
+    panel = trial_rows(summary, tmp_path / "absent.db", "study", [])
+    assert [row["number"] for row in panel] == [0]
+    assert panel[0]["round"] == "canonical"
+    assert panel[0]["on_front"] is False
+
+
+def test_a_summary_without_evaluations_and_without_sqlite_drops_the_panel(tmp_path) -> None:
+    assert trial_rows({"trials": 40}, tmp_path / "absent.db", "study", []) == []
+
+
+def test_the_panel_marks_which_evaluations_reached_the_front() -> None:
+    rows = [{**front_member(), "config_hash": "a"}]
+    panel = trial_rows({"evaluated_configs": rows}, Path("absent.db"), "study",
+                       [{"quant_hash": "x", "describe_run": "4t opt:all"}])
+    assert panel[0]["on_front"] is True
 
 
 def member(latency: float, size_mb: float, rss: float, top1: float, describe: str) -> dict:

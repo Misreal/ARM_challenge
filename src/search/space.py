@@ -5,6 +5,7 @@ Both reductions here are measured, from `*_runtime_sweep.json` on the Pi.
 
 from __future__ import annotations
 
+from dataclasses import replace
 from typing import Any
 
 from src.quant.config import CALIBRATION_METHODS, DeploymentConfig, QuantConfig, RunConfig
@@ -12,7 +13,12 @@ from src.quant.config import CALIBRATION_METHODS, DeploymentConfig, QuantConfig,
 # Capped at the 1000 images `export_pi_data` actually writes: a larger value is
 # not a slow candidate, it is an unsatisfiable one that spends a trial to fail.
 CALIBRATION_SIZES = (128, 256, 512, 1000)
-QUANT_TYPES = ("static", "dynamic")
+
+# Dynamic was sampled half the time and measured 9-19x slower than static on all
+# three models, reaching the front only through top-1 differences smaller than the
+# noise floor. It stays a reported baseline in `*_quant_baselines.json`; searching
+# it just halved the budget for the per-layer decision the method is about.
+QUANT_TYPES = ("static",)
 
 # Entropy and percentile accumulate a histogram per tensor across the whole
 # calibration set and OOM the 4 GB Pi at 1000 images. MinMax keeps a running
@@ -48,6 +54,19 @@ def suggest_run_config(trial: Any) -> RunConfig:
         # latency change inside the noise floor.
         enable_cpu_mem_arena=trial.suggest_categorical("enable_cpu_mem_arena", [True, False]),
         allow_intra_op_spinning=FIXED_SPINNING,
+    )
+
+
+def suggest_within(trial: Any, space: Any) -> DeploymentConfig:
+    """One point inside a reduced space: pins composed, searchable groups sampled.
+
+    The pins are composed rather than sampled, so no trial can spend device time
+    on a precision vector the measurements already decided.
+    """
+    config = suggest_config(trial, tuple(sorted(space.searchable)))
+    excluded = tuple(sorted(set(config.quant.excluded_groups) | set(space.pinned_fp32)))
+    return DeploymentConfig(
+        quant=replace(config.quant, excluded_groups=excluded), run=config.run
     )
 
 

@@ -19,6 +19,7 @@ from typing import Any
 from src.quant.baselines import BASELINE_CONFIGS
 from src.quant.config import DeploymentConfig, QuantConfig, RunConfig
 from src.runs import RUNS_DIR, Run, load_run
+from src.search.version import SPACE_VERSION, study_name
 
 SEARCH_DIR = Path("artifacts/search")
 REPORT_DIR = Path("artifacts/reports")
@@ -29,9 +30,7 @@ DEFAULT_OUT = Path("artifacts/dashboard/index.html")
 
 DEFAULT_MODEL = "resnet18_cifar"
 
-# How `src.search.study` names a study file: model, accuracy budget, space version.
 DEFAULT_BUDGET_PT = 0.2
-SPACE_VERSION = "v2"
 
 # The runtime the global baselines were measured under in Phases 3-4, and what
 # the study seeds them with. Reference marks must be read back under it or they
@@ -151,14 +150,31 @@ class Sources:
 # ---------------------------------------------------------------- config text
 
 
+def configs_for(member: dict[str, Any]) -> tuple[QuantConfig, RunConfig]:
+    """This front member's configs, read back rather than reconstructed.
+
+    A study/2 summary stores them in full. Only the pre-study/2 campaigns need
+    the label parsers, and those are measured history that still has to render.
+    """
+    stored = member.get("config")
+    if stored:
+        config = DeploymentConfig.from_dict(stored)
+        return config.quant, config.run
+
+    quant = parse_quant_describe(member["describe"])
+    run = parse_run_describe(member["describe_run"])
+    # A silent parse slip would relabel a config on the page, so make it loud.
+    assert quant.describe() == member["describe"], member["describe"]
+    assert run.describe() == member["describe_run"], member["describe_run"]
+    return quant, run
+
+
 def parse_quant_describe(text: str) -> QuantConfig:
     """Rebuild the config behind one of `QuantConfig.describe`'s strings.
 
-    The search summary stores configs only as these labels, and the study's
-    sqlite file that holds the raw parameters is gitignored. Parsing the label
-    keeps every panel buildable from a fresh clone; `front_rows` asserts the
-    round trip, so a format change fails the build rather than mislabelling a
-    config on the page.
+    Only reached for a campaign measured before the summary carried full
+    configs. `configs_for` asserts the round trip, so a format change fails the
+    build rather than mislabelling a config on the page.
     """
     if text == "fp32":
         return QuantConfig(quant_type="none")
@@ -359,12 +375,7 @@ def front_rows(summary: dict[str, Any], baseline_top1: float, samples: int) -> l
         result = member["result"]
         if result["status"] != "ok":
             continue
-        quant = parse_quant_describe(member["describe"])
-        run = parse_run_describe(member["describe_run"])
-        # A silent parse slip would relabel a config on the page, so make it loud.
-        assert quant.describe() == member["describe"], member["describe"]
-        assert run.describe() == member["describe_run"], member["describe_run"]
-
+        quant, run = configs_for(member)
         rows.append(
             {
                 "describe": member["describe"],
@@ -552,24 +563,44 @@ def attach_test_scores(front: list[dict[str, Any]], path: Path) -> dict[str, Any
     }
 
 
-def trial_rows(db_path: Path, study_name: str, front: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Every measured trial from the study, or an empty list if it is not here.
+def trial_rows(
+    summary: dict[str, Any], db_path: Path, study: str, front: list[dict[str, Any]]
+) -> list[dict[str, Any]]:
+    """Every evaluated candidate, from the summary when it carries them.
 
-    The sqlite study is gitignored -- it is rewritten on every resume and the
-    JSON summary beside it carries the results -- so a fresh clone builds every
-    other panel and simply omits this one.
+    A `study/2` summary records each evaluation in full and is committed, so the
+    panel survives a fresh clone. Only the pre-`study/2` campaigns fall back to
+    the gitignored sqlite file, and there the panel is simply dropped when it is
+    not present.
     """
+    evaluated = summary.get("evaluated_configs")
+    if evaluated is not None:
+        on_front = {(row["quant_hash"], row["describe_run"]) for row in front}
+        return [
+            {
+                "number": number,
+                "status": row["result"]["status"],
+                "top1": row["result"]["top1"],
+                "screen_top1": row["result"]["screen_top1"],
+                "latency_ms": row["result"]["latency_ms"],
+                "describe": row["describe"],
+                "round": row.get("round"),
+                "on_front": (row["quant_hash"], row["describe_run"]) in on_front,
+            }
+            for number, row in enumerate(evaluated)
+        ]
+
     if not db_path.exists():
         return []
 
     import optuna
 
     optuna.logging.set_verbosity(optuna.logging.WARNING)
-    study = optuna.load_study(study_name=study_name, storage=f"sqlite:///{db_path.as_posix()}")
+    loaded = optuna.load_study(study_name=study, storage=f"sqlite:///{db_path.as_posix()}")
     on_front = {(row["quant_hash"], row["describe_run"]) for row in front}
 
     rows: list[dict[str, Any]] = []
-    for trial in study.trials:
+    for trial in loaded.trials:
         result = trial.user_attrs.get("result")
         if not result:
             continue
@@ -646,7 +677,7 @@ def build_payload(sources: Sources) -> dict[str, Any]:
         "thermal": thermal_rows(model, sources.cache_dir),
         "cost_benefit": cost_benefit_rows(cost_benefit),
         "groups": summary["groups"],
-        "trials": trial_rows(sources.study_db, sources.study, rows) if sources.study_db else [],
+        "trials": trial_rows(summary, sources.study_db, sources.study, rows),
         "trials_declared": summary["trials"],
         "provenance": {
             "checkpoint_sha256": baseline["checkpoint"]["sha256"][:16],
@@ -663,12 +694,12 @@ def render(payload: dict[str, Any], template: Path) -> str:
     return text.replace(DATA_PLACEHOLDER, json.dumps(payload, indent=1))
 
 
-def main() -> None:
+def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--run", default=None, help="run id; writes into that run's directory")
     parser.add_argument("--runs-dir", type=Path, default=RUNS_DIR)
     parser.add_argument("--model", default=DEFAULT_MODEL)
-    parser.add_argument("--study", default=None, help="defaults to <model>_budget0.2_v2")
+    parser.add_argument("--study", default=None, help=f"defaults to <model>_budget0.2_{SPACE_VERSION}")
     parser.add_argument(
         "--sentinel", type=Path, default=None, help="repeat-spread report; auto-discovered by model"
     )
@@ -678,14 +709,18 @@ def main() -> None:
     parser.add_argument("--cache-dir", type=Path, default=CACHE_DIR)
     parser.add_argument("--template", type=Path, default=TEMPLATE)
     parser.add_argument("--out", type=Path, default=None)
-    args = parser.parse_args()
+    return parser.parse_args()
+
+
+def main() -> None:
+    args = parse_args()
 
     if args.run:
         run = load_run(args.run, args.runs_dir)
         sources = Sources.from_run(run, args.cache_dir, args.search_dir)
         out = args.out or run.paths.dashboard
     else:
-        study = args.study or f"{args.model}_budget{DEFAULT_BUDGET_PT:g}_{SPACE_VERSION}"
+        study = args.study or study_name(args.model, DEFAULT_BUDGET_PT)
         sources = Sources.legacy(
             args.model,
             study,

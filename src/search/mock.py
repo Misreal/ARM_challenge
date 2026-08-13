@@ -6,6 +6,7 @@ table; `--mock` marks the study name so a mock run cannot be mistaken for one.
 
 from __future__ import annotations
 
+import hashlib
 from typing import Any
 
 from src.bench.agent import BenchSpec
@@ -24,6 +25,12 @@ MOCK_NO_ARENA_PENALTY = 1.08
 MOCK_NO_ARENA_RSS_SAVING_MB = 12.0
 MOCK_NO_SPIN_PENALTY = 1.03
 
+# Repeat-to-repeat spread. Without it the simulator is exact, so the finalist
+# median, MAD and tie logic would never be exercised by the mock run that exists
+# to cover them. Shaped after the measured dispersion on byte-equivalent work:
+# 0.66% median, 1.91% at p90.
+MOCK_JITTER_FRACTION = 0.012
+
 
 def _int8_fraction(spec: BenchSpec, groups: tuple[str, ...]) -> float:
     """How much of the graph stayed quantized, by group count."""
@@ -38,6 +45,13 @@ class MockRunner:
     def __init__(self, groups: tuple[str, ...]) -> None:
         self.groups = groups
         self.calls: list[tuple[str, str]] = []
+        # How many uncached measurements this config has already had, so repeats
+        # differ from each other while a cache hit repeats itself exactly.
+        self.repeats: dict[str, int] = {}
+
+    def _jitter(self, spec: BenchSpec, repeat: int) -> float:
+        digest = hashlib.sha256(f"{spec.config.hash}:{repeat}".encode()).digest()
+        return 1.0 + ((digest[0] / 255.0) - 0.5) * 2.0 * MOCK_JITTER_FRACTION
 
     def score(self, spec: BenchSpec, limit: int | None = None) -> dict[str, Any]:
         self.calls.append(("score", spec.quant.hash))
@@ -70,12 +84,21 @@ class MockRunner:
         if not run.allow_intra_op_spinning:
             latency *= MOCK_NO_SPIN_PENALTY
 
+        repeat = 0 if use_cache else self.repeats.get(spec.config.hash, 0) + 1
+        if not use_cache:
+            self.repeats[spec.config.hash] = repeat
+        latency *= self._jitter(spec, repeat)
+
         return {
             "status": "ok",
             "admissible": True,
             "latency": {"median_ms": round(latency, 4)},
             "peak_rss_mb": round(rss, 1),
             "bytes": self._bytes(spec),
+            "from_cache": use_cache,
+            # A simulator has no die to read, so the page can say "simulated"
+            # rather than print an invented temperature as if it were measured.
+            "readiness": {"device": {"temperature_c": None, "throttled": False}},
         }
 
     def _bytes(self, spec: BenchSpec) -> int:

@@ -14,18 +14,11 @@ from pathlib import Path
 from src.model_index import known_models
 from src.pipeline import STAGE_NAMES, run_pipeline, summarize
 from src.runs import RUNS_DIR, create_run, list_runs, load_run, run_id_for
+from src.search.version import DEFAULT_POPULATION_SIZE, study_name
 
 DEFAULT_BUDGET_PT = 0.2
-DEFAULT_TRIALS = 40
-SPACE_VERSION = "v2"
 
 PI_TARGET = Path("pi_target.json")
-
-
-def study_name(model: str, budget_pt: float, venue: str) -> str:
-    """Match what `src.search.study` names its own files, mock suffix included."""
-    suffix = "_mock" if venue == "mock" else ""
-    return f"{model}_budget{budget_pt:g}_{SPACE_VERSION}{suffix}"
 
 
 def choose_venue(requested_mock: bool) -> str:
@@ -57,9 +50,11 @@ def command_run(args: argparse.Namespace) -> None:
         budget_pt=args.budget_pt,
         trials=args.trials,
         venue=venue,
-        study=study_name(args.model, args.budget_pt, venue),
+        study=study_name(args.model, args.budget_pt, venue == "mock", args.population_size),
         run_id=args.run_id or default_id,
         runs_dir=args.runs_dir,
+        population_size=args.population_size,
+        max_rss_mb=args.max_rss_mb,
     )
 
     if venue == "mock":
@@ -69,7 +64,8 @@ def command_run(args: argparse.Namespace) -> None:
     else:
         from src.pipeline_device import make_executor
 
-    print(f"{run.run_id}  model {run.model}  venue {run.venue}  {run.trials} trials")
+    budget = "budget from the plan" if run.trials is None else f"{run.trials} trials"
+    print(f"{run.run_id}  model {run.model}  venue {run.venue}  {budget}")
     outcomes = run_pipeline(run, make_executor(run), tuple(args.only) if args.only else None, args.force)
 
     print(f"\n{summarize(outcomes)}")
@@ -84,7 +80,8 @@ def command_list(args: argparse.Namespace) -> None:
         return
     for run in runs:
         page = "page" if run.paths.dashboard.exists() else "no page"
-        print(f"{run.run_id:34s} {run.venue:5s} {run.trials:3d} trials  {run.source:8s}  {page}")
+        trials = "auto" if run.trials is None else f"{run.trials:3d}"
+        print(f"{run.run_id:34s} {run.venue:5s} {trials:>4s} trials  {run.source:8s}  {page}")
 
 
 def command_dashboard(args: argparse.Namespace) -> None:
@@ -107,8 +104,13 @@ def parse_args() -> argparse.Namespace:
     runner = with_runs_dir(sub.add_parser("run", help="run a campaign end to end"))
     runner.add_argument("--model", required=True)
     runner.add_argument("--mock", action="store_true", help="simulate the device")
-    runner.add_argument("--trials", type=int, default=DEFAULT_TRIALS)
+    runner.add_argument("--trials", type=int, default=None,
+                        help="max candidate evaluations; sized from the reduced space if absent")
     runner.add_argument("--budget-pt", type=float, default=DEFAULT_BUDGET_PT)
+    runner.add_argument("--max-rss-mb", type=float, default=None, help="reject candidates above it")
+    # Only reachable when the reduced space is too large to enumerate, which no
+    # bundled model is; an imported one can be.
+    runner.add_argument("--population-size", type=int, default=DEFAULT_POPULATION_SIZE)
     runner.add_argument("--run-id", default=None)
     runner.add_argument("--only", nargs="+", choices=STAGE_NAMES, help="run just these stages")
     runner.add_argument("--force", action="store_true", help="redo stages already done")

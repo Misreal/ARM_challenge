@@ -1,9 +1,9 @@
 {
   "custom_cnn": {
+    "schema": "search-space/2",
     "model": "custom_cnn",
-    "pinned_fp32": [
-      "classifier"
-    ],
+    "fingerprint": "84618aa148f93323",
+    "pinned_fp32": [],
     "pinned_int8": [
       "stage3",
       "stage1",
@@ -11,10 +11,17 @@
     ],
     "searchable": [
       "stem",
-      "stage2"
+      "stage2",
+      "classifier"
     ],
     "precision_vectors_full": 64,
-    "precision_vectors_reduced": 4,
+    "precision_vectors_reduced": 8,
+    "band": {
+      "fraction": 0.02,
+      "ms": 0.0359,
+      "source": "default",
+      "reference_ms": 1.7966
+    },
     "greedy_order": [
       "classifier",
       "stem",
@@ -24,11 +31,10 @@
     ]
   },
   "mobilenetv2_cifar": {
+    "schema": "search-space/2",
     "model": "mobilenetv2_cifar",
-    "pinned_fp32": [
-      "classifier.1",
-      "features.18"
-    ],
+    "fingerprint": "80d46e6224f7a17f",
+    "pinned_fp32": [],
     "pinned_int8": [
       "features.8",
       "features.10",
@@ -49,14 +55,22 @@
     ],
     "searchable": [
       "features.0",
-      "features.1"
+      "classifier.1",
+      "features.1",
+      "features.18"
     ],
     "precision_vectors_full": 1048576,
-    "precision_vectors_reduced": 4,
+    "precision_vectors_reduced": 16,
+    "band": {
+      "fraction": 0.02,
+      "ms": 0.0308,
+      "source": "default",
+      "reference_ms": 1.5397
+    },
     "greedy_order": [
-      "classifier.1",
       "features.18",
       "features.0",
+      "classifier.1",
       "features.1",
       "features.8",
       "features.10",
@@ -77,10 +91,10 @@
     ]
   },
   "resnet18_cifar": {
+    "schema": "search-space/2",
     "model": "resnet18_cifar",
-    "pinned_fp32": [
-      "fc"
-    ],
+    "fingerprint": "a4646718378bad6e",
+    "pinned_fp32": [],
     "pinned_int8": [
       "layer2",
       "layer3",
@@ -90,10 +104,17 @@
     ],
     "searchable": [
       "conv1",
-      "layer1"
+      "layer1",
+      "fc"
     ],
     "precision_vectors_full": 256,
-    "precision_vectors_reduced": 4,
+    "precision_vectors_reduced": 8,
+    "band": {
+      "fraction": 0.02,
+      "ms": 0.0683,
+      "source": "default",
+      "reference_ms": 3.4143
+    },
     "greedy_order": [
       "fc",
       "conv1",

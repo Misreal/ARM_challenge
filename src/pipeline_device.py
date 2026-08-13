@@ -104,8 +104,17 @@ def make_executor(run: Run):
             return adopt_file(DEVICE_REPORT_DIR / "search_space.json", run, "search_space", key=model)
 
         if name == "study":
-            execute([sys.executable, "-m", "src.search.study", "--model", model,
-                     "--trials", str(run.trials), "--budget-pt", str(run.budget_pt)])
+            argv = [sys.executable, "-m", "src.search.study", "--model", model,
+                    "--budget-pt", str(run.budget_pt),
+                    "--population-size", str(run.population_size),
+                    # This run's own reduction, not the shared artifact: two runs
+                    # of one model may have been cut against different bands.
+                    "--space", str(run.paths.stage("search_space"))]
+            if run.trials is not None:
+                argv += ["--trials", str(run.trials)]
+            if run.max_rss_mb is not None:
+                argv += ["--max-rss-mb", str(run.max_rss_mb)]
+            execute(argv)
             return adopt_file(SEARCH_DIR / f"{run.study}.json", run, "study")
 
         if name == "sentinel":
@@ -116,9 +125,17 @@ def make_executor(run: Run):
                      "--no-cache", "--report", str(report)])
             return adopt_file(report, run, "sentinel")
 
+        if name == "finalists":
+            execute([sys.executable, "-m", "src.search.finalists", "--model", model,
+                     "--study", run.study, "--budget-pt", str(run.budget_pt)])
+            return adopt_file(DEVICE_REPORT_DIR / f"{model}_finalists.json", run, "finalists")
+
         if name == "final_test":
+            # --confirm is the module's own guard against an accidental second
+            # look at the sealed split. The pipeline reaching this stage is that
+            # confirmation: every front member is scored in one pass.
             execute([sys.executable, "-m", "src.search.final_test", "--model", model,
-                     "--study", run.study])
+                     "--study", run.study, "--budget-pt", str(run.budget_pt), "--confirm"])
             return adopt_file(DEVICE_REPORT_DIR / f"{model}_final_test.json", run, "final_test")
 
         if name == "dashboard":

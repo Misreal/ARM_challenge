@@ -37,9 +37,12 @@ STAGES: tuple[Stage, ...] = (
     Stage("sensitivity", ("baseline",), "per-group INT8 damage probes", device=True),
     Stage("group_cost", ("sensitivity",), "latency price of excluding each group", device=True),
     Stage("cost_benefit", ("sensitivity", "group_cost"), "join each group's benefit to its price"),
+    # Before the cut, not after it. The band this measures is what decides which
+    # group costs are real, and it never read the study in the first place.
+    Stage("sentinel", ("quant_baselines",), "repeat one config to measure the noise floor", device=True),
     Stage("search_space", ("cost_benefit",), "shrink the space and take a greedy reference"),
     Stage("study", ("quant_baselines", "search_space"), "the multi-objective campaign", device=True),
-    Stage("sentinel", ("study",), "repeat one config to measure the noise floor", device=True),
+    Stage("finalists", ("study",), "re-measure the shortlist and name the choices", device=True),
     Stage("final_test", ("study",), "score the front once on the sealed test set", device=True),
     Stage("dashboard", ("study",), "render this run's page"),
     Stage("index", ("dashboard",), "refresh the landing page that lists every run"),
@@ -98,7 +101,13 @@ def local_command(stage: str, run: Run) -> list[str] | None:
     if stage == "cost_benefit":
         return [sys.executable, "-m", "src.sensitivity.cost_benefit", "--model", model]
     if stage == "search_space":
-        return [sys.executable, "-m", "src.search.reduce", "--model", model]
+        argv = [sys.executable, "-m", "src.search.reduce", "--model", model]
+        # Absent on a simulator and on any run whose sentinel did not apply, and
+        # `reduce` then falls back to the documented default band and says so.
+        sentinel = run.paths.stage("sentinel")
+        if sentinel.exists():
+            argv += ["--sentinel", str(sentinel)]
+        return argv
     if stage == "dashboard":
         # The runs directory travels with the run: a campaign built under a
         # scratch tree must not write its page into the committed one.

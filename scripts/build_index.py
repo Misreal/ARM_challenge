@@ -206,13 +206,17 @@ def render(payload: dict[str, Any], template: Path) -> str:
     return text.replace(DATA_PLACEHOLDER, json.dumps(payload, indent=1))
 
 
-def main() -> None:
+def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--runs-dir", type=Path, default=RUNS_DIR)
     parser.add_argument("--template", type=Path, default=TEMPLATE)
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
     parser.add_argument("--include-mock", action="store_true", help="also list simulated runs")
-    args = parser.parse_args()
+    return parser.parse_args()
+
+
+def main() -> None:
+    args = parse_args()
 
     payload = build_payload(args.runs_dir, args.out, args.include_mock)
     if not payload["runs"]:

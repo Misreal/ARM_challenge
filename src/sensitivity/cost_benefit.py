@@ -75,13 +75,17 @@ def build_rows(model: str, cache_dir: Path, report_dir: Path) -> list[dict[str, 
     return sorted(rows, key=lambda row: (row["share_per_ms"] is None, -(row["share_per_ms"] or 0)))
 
 
-def main() -> None:
+def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--model", nargs="+", choices=EXPORTED_MODELS, default=list(EXPORTED_MODELS))
     parser.add_argument("--cache-dir", type=Path, default=DEFAULT_CACHE_DIR)
     parser.add_argument("--report-dir", type=Path, default=DEVICE_REPORT_DIR)
     parser.add_argument("--out", type=Path, default=DEVICE_REPORT_DIR / "cost_benefit.json")
-    args = parser.parse_args()
+    return parser.parse_args()
+
+
+def main() -> None:
+    args = parse_args()
 
     everything: dict[str, Any] = {}
     for model in args.model:

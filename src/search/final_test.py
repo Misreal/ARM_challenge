@@ -1,8 +1,8 @@
 """Score the measured Pareto front on the sealed CIFAR-100 test set, on the Pi.
 
-The front JSON stores only a label per member, so configs are rebuilt from the
-study's trial params through `suggest_config` and checked against the recorded
-quant hash -- a silent reconstruction error would move every headline number.
+Every front member plus any named choice not already on it, in one pass, so no
+candidate is ever selected using test-set signal. Configs are read back from the
+study report rather than replayed out of a gitignored sqlite file.
 
     python -m src.search.final_test --model resnet18_cifar --confirm
 """
@@ -15,17 +15,14 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-import optuna
-
 from src.bench.agent import BenchSpec
 from src.bench.remote import PiConnection, RemoteBenchmarker
 from src.data.export_test_bundle import DEFAULT_OUTPUT_DIR as TEST_BUNDLE_DIR, SPLIT_NAME
 from src.quant.baselines import BASELINE_CONFIGS
 from src.quant.config import DeploymentConfig, EXPORTED_MODELS
-from src.quant.groups import build_group_map, quantizable_groups
-from src.quant.quantize import DEFAULT_ONNX_DIR, ModelPaths
-from src.search.space import suggest_config
-from src.search.study import DEFAULT_STUDY_DIR, SEED_RUN, SPACE_VERSION
+from src.quant.quantize import DEFAULT_ONNX_DIR
+from src.search.study import DEFAULT_STUDY_DIR, SEED_RUN
+from src.search.version import study_name
 
 DEFAULT_REPORT_DIR = Path("artifacts/reports_pi")
 
@@ -35,49 +32,53 @@ DEFAULT_REPORT_DIR = Path("artifacts/reports_pi")
 FP32_LABEL = "fp32 (reference)"
 
 
-def load_front(study_path: Path) -> list[dict[str, Any]]:
-    return json.loads(study_path.read_text(encoding="utf-8"))["pareto"]
+def load_summary(study_path: Path) -> dict[str, Any]:
+    return json.loads(study_path.read_text(encoding="utf-8"))
 
 
-def rebuild_configs(
-    study_name: str, study_dir: Path, groups: tuple[str, ...], front: list[dict[str, Any]]
-) -> list[tuple[str, DeploymentConfig]]:
-    """Recover each front member's full config, keyed back by its quant hash."""
-    storage = f"sqlite:///{(study_dir / f'{study_name}.db').as_posix()}"
-    study = optuna.load_study(study_name=study_name, storage=storage)
+def label_for(member: dict[str, Any]) -> str:
+    return f"{member['describe']} | {member.get('describe_run', '')}"
 
-    by_hash: dict[str, DeploymentConfig] = {}
-    for trial in study.trials:
-        recorded = trial.user_attrs.get("quant_hash")
-        if recorded is None:
-            continue
-        config = suggest_config(optuna.trial.FixedTrial(trial.params), groups)
-        if config.quant.hash != recorded:
+
+def scored_candidates(summary: dict[str, Any]) -> list[tuple[str, DeploymentConfig]]:
+    """The front, plus any named choice not already on it.
+
+    A named choice that the front does not dominate into itself -- the lowest-RAM
+    pick under a ceiling, say -- still has to carry a test number, or the headline
+    table would quote a candidate nobody measured on the sealed split.
+    """
+    members = {member["config_hash"]: member for member in summary["pareto"]}
+    for member in summary.get("evaluated_configs", []):
+        if member["config_hash"] in set(summary.get("selections", {}).values()):
+            members.setdefault(member["config_hash"], member)
+
+    candidates: list[tuple[str, DeploymentConfig]] = []
+    for member in members.values():
+        stored = member.get("config")
+        if not stored:
             raise SystemExit(
-                f"Trial {trial.number} rebuilt to quant hash {config.quant.hash} but the study "
-                f"recorded {recorded}. The search space changed since the run; refusing to "
-                "attribute test numbers to configs that may not be the ones measured."
+                f"{label_for(member)} carries no config. This study predates study/2, whose "
+                "summaries store them in full; re-run the search rather than reconstructing it."
             )
-        by_hash[_identity(recorded, trial.user_attrs.get("describe_run", ""))] = config
-
-    rebuilt: list[tuple[str, DeploymentConfig]] = []
-    for member in front:
-        key = _identity(member["quant_hash"], member.get("describe_run", ""))
-        if key not in by_hash:
-            raise SystemExit(f"No trial in the study matches front member {key}")
-        rebuilt.append((f"{member['describe']} | {member.get('describe_run', '')}", by_hash[key]))
-    return rebuilt
-
-
-def _identity(quant_hash: str, describe_run: str) -> str:
-    """Front members share quant hashes across runtimes, so both halves are the key."""
-    return f"{quant_hash}@{describe_run}"
+        config = DeploymentConfig.from_dict(stored)
+        if config.quant.hash != member["quant_hash"]:
+            raise SystemExit(
+                f"{label_for(member)} reads back as quant hash {config.quant.hash} but the study "
+                f"recorded {member['quant_hash']}. Refusing to attribute test numbers to configs "
+                "that may not be the ones measured."
+            )
+        candidates.append((label_for(member), config))
+    return candidates
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--model", required=True, choices=EXPORTED_MODELS)
     parser.add_argument("--budget-pt", type=float, default=0.2)
+    # The pipeline knows the exact study it produced, including any population
+    # suffix. Rebuilding the name from --budget-pt alone silently scores a
+    # different campaign's front whenever the two disagree.
+    parser.add_argument("--study", default=None, help="study name; derived from --budget-pt if absent")
     parser.add_argument(
         "--confirm", action="store_true", help="required: this consumes the sealed test set"
     )
@@ -98,13 +99,9 @@ def main() -> None:
             "test set; every front member is scored in one pass so no selection happens here."
         )
 
-    study_name = f"{args.model}_budget{args.budget_pt:g}_{SPACE_VERSION}"
-    front = load_front(args.study_dir / f"{study_name}.json")
-
-    group_map = build_group_map(ModelPaths.resolve(args.model, args.onnx_dir).quant_ready, args.model)
-    groups = quantizable_groups(group_map)
-
-    candidates = rebuild_configs(study_name, args.study_dir, groups, front)
+    name = args.study or study_name(args.model, args.budget_pt)
+    summary = load_summary(args.study_dir / f"{name}.json")
+    candidates = scored_candidates(summary)
     # The reference runs under the runtime the seeded baselines used, so its test
     # number joins to the Phase 3-4 reports rather than to an arbitrary trial.
     candidates.append(
@@ -144,7 +141,7 @@ def main() -> None:
     report = {
         "schema": "final_test/1",
         "model": args.model,
-        "study": study_name,
+        "study": name,
         "eval_split": SPLIT_NAME,
         "limit": args.limit,
         "on_target": True,

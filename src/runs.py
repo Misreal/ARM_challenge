@@ -14,9 +14,16 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+from src.search.version import DEFAULT_POPULATION_SIZE
+
 RUNS_DIR = Path("runs")
-RUN_SCHEMA = "run/1"
+RUN_SCHEMA = "run/2"
 MANIFEST_SCHEMA = "manifest/1"
+
+# run/2 added the sampler population and the RAM ceiling. Older recipes still
+# load: the campaigns adopted from the pre-run-layout era are measured evidence,
+# and re-stamping them to satisfy a reader would edit history to fit the code.
+READABLE_RUN_SCHEMAS = ("run/1", "run/2")
 
 # Simulated device or the real Pi. The dashboard prints this, so a mock run can
 # never be mistaken for a measured one.
@@ -70,12 +77,19 @@ class Run:
     paths: RunPaths
     model: str
     budget_pt: float
-    trials: int
+    # None means "size it from the plan": five one-factor rounds over whatever
+    # the reduction left searchable. A fixed number over-buys on a small space
+    # and truncates a large one.
+    trials: int | None
     venue: str
     study: str
     source: str
     created_at_utc: str
     notes: str = ""
+    population_size: int = DEFAULT_POPULATION_SIZE
+    # No ceiling by default: a RAM limit that nobody asked for would silently
+    # drop candidates from the front rather than rank them.
+    max_rss_mb: float | None = None
 
     @property
     def run_id(self) -> str:
@@ -97,19 +111,23 @@ class Run:
             "source": self.source,
             "created_at_utc": self.created_at_utc,
             "notes": self.notes,
+            "population_size": self.population_size,
+            "max_rss_mb": self.max_rss_mb,
         }
 
 
 def create_run(
     model: str,
     budget_pt: float,
-    trials: int,
+    trials: int | None,
     venue: str,
     study: str,
     source: str = "pipeline",
     notes: str = "",
     run_id: str | None = None,
     runs_dir: Path = RUNS_DIR,
+    population_size: int = DEFAULT_POPULATION_SIZE,
+    max_rss_mb: float | None = None,
 ) -> Run:
     """Make the directory and write the recipe. Re-creating an existing run reuses it."""
     if venue not in VENUES:
@@ -137,6 +155,8 @@ def create_run(
         source=source,
         created_at_utc=datetime.now(UTC).isoformat(timespec="seconds"),
         notes=notes,
+        population_size=population_size,
+        max_rss_mb=max_rss_mb,
     )
     paths.stages_dir.mkdir(parents=True, exist_ok=True)
     paths.dashboard.parent.mkdir(parents=True, exist_ok=True)
@@ -150,19 +170,24 @@ def load_run(run_id: str, runs_dir: Path = RUNS_DIR) -> Run:
         raise FileNotFoundError(f"No run at {paths.root}. List them with: python -m src.app list")
 
     document = json.loads(paths.config.read_text(encoding="utf-8"))
-    if document.get("schema") != RUN_SCHEMA:
-        raise SystemExit(f"{paths.config} is schema {document.get('schema')!r}, expected {RUN_SCHEMA}")
+    if document.get("schema") not in READABLE_RUN_SCHEMAS:
+        raise SystemExit(
+            f"{paths.config} is schema {document.get('schema')!r}, "
+            f"expected one of {', '.join(READABLE_RUN_SCHEMAS)}"
+        )
 
     return Run(
         paths=paths,
         model=document["model"],
         budget_pt=document["budget_pt"],
-        trials=document["trials"],
+        trials=document.get("trials"),
         venue=document["venue"],
         study=document["study"],
         source=document["source"],
         created_at_utc=document["created_at_utc"],
         notes=document.get("notes", ""),
+        population_size=document.get("population_size") or DEFAULT_POPULATION_SIZE,
+        max_rss_mb=document.get("max_rss_mb"),
     )
 
 
