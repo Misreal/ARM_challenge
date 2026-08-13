@@ -83,7 +83,7 @@ in advance:
 
 ## How it works
 
-Ten stages, declared as data in [`src/pipeline.py`](src/pipeline.py):
+Eleven stages, declared as data in [`src/pipeline.py`](src/pipeline.py):
 
 | Stage | What it does |
 | --- | --- |
@@ -92,9 +92,10 @@ Ten stages, declared as data in [`src/pipeline.py`](src/pipeline.py):
 | `sensitivity` | Probe how much damage quantizing each block does |
 | `group_cost` | Measure what excluding each block costs in latency |
 | `cost_benefit` | Join each block's benefit to its price |
-| `search_space` | Pin the blocks not worth searching, keep the rest |
-| `study` | NSGA-II over quantization and runtime settings, measured on the device |
 | `sentinel` | Repeat one config to measure the device's own noise floor |
+| `search_space` | Pin the blocks whose price the noise floor cannot resolve, keep the rest |
+| `study` | Sensitivity-constrained hybrid search, measured on the device |
+| `finalists` | Re-measure the shortlist five times and name the deployment choices |
 | `final_test` | Score the front once on the sealed test set |
 | `dashboard` | Render that run's page |
 
@@ -102,6 +103,12 @@ Ten stages, declared as data in [`src/pipeline.py`](src/pipeline.py):
 quantization. Rather than quantizing everything or hand-picking the usual first and last layers, it
 measures which blocks actually suffer, prices each exclusion in milliseconds on the device, and
 searches only where the trade is real.
+
+**The search is hybrid, and usually exhaustive.** Once the reduction has pinned the blocks whose
+price is settled, what is left is small — 8 to 16 precision vectors on the bundled models. The
+planner enumerates that space exactly, one factor at a time off a canonical recipe, so each round
+reads as *what does this one knob buy*. Only a space too large to enumerate falls back to a
+constrained NSGA-II, which no model bundled here reaches.
 
 ### What "measured" means here
 
@@ -118,6 +125,11 @@ searches only where the trade is real.
 - **Differences smaller than the measurement's own noise are called ties.** Repeating one identical
   configuration eight times over half an hour gave a 2.55% spread, so the page refuses to rank two
   candidates apart on less than that, and shows which of your priorities actually broke the tie.
+  That band does more than format the page: it decides which block costs count as real, and a block
+  whose price cannot be told from zero is searched rather than pinned. Guessing wrong in the pinning
+  direction is silent and permanent; guessing wrong in the searching direction costs one more
+  candidate. The finalists are then measured five more times, interleaved, so the recommendation
+  does not rest on a single pass.
 
 ## Layout
 
@@ -128,7 +140,7 @@ src/runs.py          what a run is and where its files live
 src/import_onnx.py   bring your own model
 src/quant/           quantization, config hashing, node-to-block grouping
 src/sensitivity/     per-block damage probes and the cost-benefit join
-src/search/          the NSGA-II campaign and the sealed test evaluation
+src/search/          the reduction, the planner, the campaign and the sealed test
 src/bench/           the device agent and the SSH driver that feeds it
 src/portable/        torch-free code that also runs on the Pi
 runs/                one directory per campaign, each with its own page
