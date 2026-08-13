@@ -312,7 +312,7 @@ def mock_final_test(run: Run, runner: MockRunner) -> dict[str, Any]:
     return write(
         run.paths.stage("final_test"),
         {
-            "schema": "final-test/1",
+            "schema": "final_test/1",
             "model": run.model,
             "study": run.study,
             "eval_split": "test",

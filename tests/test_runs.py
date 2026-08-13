@@ -17,6 +17,7 @@ from src.runs import (
     record_stage,
     run_id_for,
 )
+from src.search.version import study_name
 
 
 def make(tmp_path, model="resnet18_cifar", venue="pi", budget_pt=0.2, run_id=None):
@@ -25,7 +26,7 @@ def make(tmp_path, model="resnet18_cifar", venue="pi", budget_pt=0.2, run_id=Non
         budget_pt=budget_pt,
         trials=40,
         venue=venue,
-        study=f"{model}_budget{budget_pt:g}_v2",
+        study=study_name(model, budget_pt, mock=venue == "mock"),
         run_id=run_id,
         runs_dir=tmp_path,
     )

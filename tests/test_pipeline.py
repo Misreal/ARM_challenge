@@ -8,6 +8,7 @@ import pytest
 
 from src.pipeline import BY_NAME, STAGE_NAMES, resolve_order, run_pipeline, summarize
 from src.runs import create_run
+from src.search.version import study_name
 
 
 def make(tmp_path, venue="mock"):
@@ -16,7 +17,7 @@ def make(tmp_path, venue="mock"):
         budget_pt=0.2,
         trials=4,
         venue=venue,
-        study="resnet18_cifar_budget0.2_v2_mock",
+        study=study_name("resnet18_cifar", 0.2, mock=venue == "mock"),
         runs_dir=tmp_path,
     )
 
