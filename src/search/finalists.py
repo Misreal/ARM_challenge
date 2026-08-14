@@ -18,7 +18,8 @@ from pathlib import Path
 from typing import Any
 
 from src.bench.agent import BenchSpec
-from src.quant.config import DeploymentConfig, EXPORTED_MODELS
+from src.model_index import known_models
+from src.quant.config import DeploymentConfig
 from src.search import select
 from src.search.evaluate import DeviceUnavailable
 from src.search.study import DEFAULT_STUDY_DIR
@@ -161,7 +162,7 @@ def ties_within_band(rows: list[dict[str, Any]], band_ms: float | None) -> list[
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--model", required=True, choices=EXPORTED_MODELS)
+    parser.add_argument("--model", required=True, choices=known_models())
     parser.add_argument("--study", default=None, help="study name; derived from --budget-pt if absent")
     parser.add_argument("--budget-pt", type=float, default=0.2)
     parser.add_argument("--mock", action="store_true")
@@ -193,8 +194,14 @@ def main() -> None:
     print(f"{name}: {len(report['finalists'])} finalists x {args.repeats} repeats")
     for row in report["finalists"]:
         repeated = row["repeated"]
+        # A finalist whose every repeat failed has no median, and crashing here
+        # would lose the report that records why it failed.
+        if repeated["median_ms"] is None:
+            timing = "     no successful repeat"
+        else:
+            timing = f"{repeated['median_ms']:8.4f} ms  MAD {repeated['mad_ms']:7.4f}"
         print(
-            f"  {repeated['median_ms']:8.4f} ms  MAD {repeated['mad_ms']:7.4f}  "
+            f"  {timing}  "
             f"{repeated['succeeded']}/{repeated['repeats']} ok  "
             f"[{row['describe']} | {row['describe_run']}]"
         )
