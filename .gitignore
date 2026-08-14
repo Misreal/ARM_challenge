@@ -82,3 +82,11 @@ runs/*_mock/
 
 # Simulated study summaries, same reasoning as the mock runs.
 artifacts/search/*_mock.json
+
+# Graphs handed to src.import_onnx: someone else's weights, tens of MB each, and
+# the baseline report already records the sha256 that identifies the one used.
+imports/
+
+# Scratch that landed at the repo root: a study dump and a five-line timm probe.
+convergence.json
+huggingface_model_test.py
