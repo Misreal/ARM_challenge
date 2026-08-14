@@ -14,27 +14,42 @@ import json
 from pathlib import Path
 from typing import Any
 
+from src.model_index import known_models
 from src.quant.candidates import PER_GROUP_PREFIX, per_group_configs
-from src.quant.config import EXPORTED_MODELS, QuantConfig
+from src.quant.config import EXPORTED_MODELS, QuantConfig, RunConfig
 from src.sensitivity.analyze import DEVICE_REPORT_DIR
 
 DEFAULT_CACHE_DIR = Path("artifacts/bench_cache")
 ANCHOR = QuantConfig(quant_type="static", per_channel=True)
 
 
-def latencies_by_hash(model: str, cache_dir: Path, threads: int = 4) -> dict[str, float]:
-    """Median latency of every admissible cached measurement, keyed by quant hash.
+# The runtime every cost is priced under. RunConfig's own defaults are the
+# canonical recipe: 4 threads, full graph optimization, arena on.
+REFERENCE_RUN = RunConfig()
 
-    Filtering on thread count is not optional: the Phase 3 sweep measured 1, 2
-    and 4 threads against byte-identical artifacts, so keying on the quant hash
-    alone silently returns whichever run happened to be read last.
+
+def latencies_by_hash(
+    model: str, cache_dir: Path, run: RunConfig = REFERENCE_RUN
+) -> dict[str, float]:
+    """Median latency of every admissible measurement taken under one runtime.
+
+    Matching the whole run config is not optional. Threads alone was enough only
+    while the runtime knobs were frozen; once the search could vary optimization
+    level and the arena, the cache held several measurements of one artifact --
+    the same bytes run with the optimizer off are several times slower -- under a
+    single quant hash, and the last file read silently became the anchor.
     """
+    wanted = run.as_dict()
+    # Measurements taken before the runtime knobs were searchable do not record
+    # them, and they ran at the defaults, so an absent knob reads as its default.
+    defaults = RunConfig().as_dict()
     found: dict[str, float] = {}
     for path in sorted((cache_dir / model).glob("*.json")):
         result = json.loads(path.read_text(encoding="utf-8"))
         if result.get("status") != "ok" or not result.get("admissible"):
             continue
-        if result["config"]["run"]["intra_op_num_threads"] != threads:
+        cached = result["config"]["run"]
+        if any(cached.get(key, defaults[key]) != value for key, value in wanted.items()):
             continue
         found[result["quant_hash"]] = result["latency"]["median_ms"]
     return found
@@ -77,7 +92,7 @@ def build_rows(model: str, cache_dir: Path, report_dir: Path) -> list[dict[str, 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--model", nargs="+", choices=EXPORTED_MODELS, default=list(EXPORTED_MODELS))
+    parser.add_argument("--model", nargs="+", choices=known_models(), default=list(EXPORTED_MODELS))
     parser.add_argument("--cache-dir", type=Path, default=DEFAULT_CACHE_DIR)
     parser.add_argument("--report-dir", type=Path, default=DEVICE_REPORT_DIR)
     parser.add_argument("--out", type=Path, default=DEVICE_REPORT_DIR / "cost_benefit.json")
