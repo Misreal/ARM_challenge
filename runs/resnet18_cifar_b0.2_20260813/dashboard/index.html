@@ -261,10 +261,9 @@ footer {
     <div id="venue-banner"></div>
     <p class="eyebrow">Hardware-in-the-loop deployment search</p>
     <p class="claim">
-      There is no single best way to deploy a model. This is the set of ways that
-      are <em>not beaten on every count</em> — each one measured on the device.
+      EdgeTuner doesn't chase one best configuration. These are the configs to pick
+      from based on what you need — speed, size, memory, or accuracy.
     </p>
-    <p class="note" id="header-note"></p>
     <div class="chips" id="header-chips"></div>
   </header>
 
@@ -280,11 +279,10 @@ footer {
     <details>
       <summary>How the ranking works</summary>
       <p class="note" style="margin-top:6px">
-        The table sorts by your first priority. Two rows count as tied when their numbers are very
-        close, because the Pi gives slightly different results each time you run it. Tied rows get
-        a ≈, and your second priority decides which one goes first. There is no single overall
-        score, because working one out would mean deciding how much each thing matters, and that
-        is your call to make.
+        The table sorts by whatever you put first. If two rows are close enough that the Pi's
+        normal run-to-run wobble could explain the gap, they're marked ≈ and count as tied — your
+        second priority breaks the tie. There's no single overall score, because how much each
+        thing matters is your call, not ours.
       </p>
     </details>
     <p class="eyebrow" style="margin-top:14px">Reading this table</p>
@@ -366,7 +364,7 @@ footer {
  "model_label": "ResNet-18",
  "venue": "pi",
  "study": "resnet18_cifar_budget0.2_v4",
- "built_at_utc": "2026-08-13T17:46:59+00:00",
+ "built_at_utc": "2026-08-14T21:24:25+00:00",
  "split": {
   "name": "optval",
   "samples": 3000,
@@ -6080,16 +6078,6 @@ function renderHeader() {
       "Raspberry Pi. It exists to prove the pipeline runs end to end without hardware.";
   }
 
-  document.getElementById("header-note").textContent =
-    `${D.model_label} on CIFAR-100, ONNX Runtime ${D.device.onnxruntime} on a ` +
-    `${D.venue === "mock" ? "simulated device" : "Raspberry Pi 5 CPU"} at ` +
-    `${D.device.threads} threads. A configuration is admitted only if it stays within ` +
-    `${b.budget_pt} points of the FP32 baseline's ${b.baseline_top1.toFixed(2)}% top-1, ` +
-    `i.e. at or above ${b.threshold_top1.toFixed(2)}% — a hard filter, not a soft objective. ` +
-    (D.venue === "mock"
-      ? `Latency, size and RAM come from the simulator; treat none of them as real.`
-      : `Latency, size and RAM are measured on the device; nothing here is estimated from FLOPs.`);
-
   const chips = document.getElementById("header-chips");
   const add = (label, value, cls) => {
     const chip = el("span", { class: "chip" + (cls ? " " + cls : "") });
@@ -6362,13 +6350,13 @@ function renderScatterNote() {
   const note = document.getElementById("scatter-note");
   clear(note);
   note.appendChild(document.createTextNode(
-    "Each point is one deployment configuration, measured on the device. Grey diamonds are the " +
-    "global baselines a standard quantization cookbook would hand you — the bar the search has to beat. "));
+    "Each dot is one way of setting up the model, measured on the real device. The grey diamonds " +
+    "are the standard settings you'd get without this search — the bar it has to beat. "));
   const twins = D.references.filter(r => r.same_as);
   twins.forEach(ref => {
     note.appendChild(el("b", {}, `${ref.same_as} is ${REF_LABELS[ref.name] || ref.name}`));
     note.appendChild(document.createTextNode(
-      " — the cookbook answer is on the front, and wins latency outright. What the search adds is the rest of the set. "));
+      " — the standard setup made the shortlist and is the fastest option. The rest of the list is what the search found beyond it. "));
   });
 }
 
@@ -6553,10 +6541,9 @@ function renderDetail() {
   const images = row.images_vs_baseline;
   const verb = images > 0 ? "above" : images < 0 ? "below" : "level with";
   note.appendChild(document.createTextNode(
-    `Top-1 is ${verb} the FP32 baseline by ${Math.abs(images)} ` +
-    `${Math.abs(images) === 1 ? "image" : "images"} out of ${D.split.samples.toLocaleString()} ` +
-    `on the ${D.split.name} split — a gap this size matches FP32, it does not beat it. ` +
-    `Screened first on 500 images at ${row.screen_top1.toFixed(1)}%, then measured on the full split.`));
+    `Accuracy is ${verb} the original, uncompressed model by ${Math.abs(images)} ` +
+    `${Math.abs(images) === 1 ? "image" : "images"} out of ${D.split.samples.toLocaleString()} — ` +
+    `close enough to call it the same. Checked on 500 images first, then confirmed on the full set.`));
 
   const kv = document.getElementById("detail-kv");
   clear(kv);
@@ -6575,10 +6562,10 @@ function renderDetail() {
 
   const deltas = document.getElementById("detail-deltas");
   clear(deltas);
-  const refs = D.references.filter(r => r.name === "fp32" || r.name === "static_per_channel");
+  const refs = D.references.filter(r => r.name === "fp32");
   refs.forEach(ref => {
     const card = el("div", { class: "delta-card" });
-    card.appendChild(el("h3", {}, ref.name === "fp32" ? "vs FP32 export" : "vs global INT8 (cookbook)"));
+    card.appendChild(el("h3", {}, "vs FP32 export"));
     OBJ.forEach(o => {
       const line = el("div", { class: "delta-row" });
       line.appendChild(el("span", {}, o.label));
@@ -6608,13 +6595,12 @@ function renderCostBenefit() {
   clear(note);
   const top = rows[0];
   note.appendChild(document.createTextNode(
-    "Blocks are ordered by how much quantization distortion sparing them removes — the sensitivity " +
-    "ranking. Read down the orange column and the ranking falls apart: "));
+    "Blocks are ranked by how much accuracy protecting them saves. But the top one, "));
   note.appendChild(el("b", {}, top.group));
   note.appendChild(document.createTextNode(
-    ` tops the distortion ranking but costs ${top.cost_ms.toFixed(2)} ms to spare, ` +
-    `so per millisecond paid it is only rank ${top.efficiency_rank}. Sensitivity alone picks worse ` +
-    "exclusions than the cookbook; that gap is the reason the search runs on the device instead of on a heuristic."));
+    `, costs ${top.cost_ms.toFixed(2)} ms to protect — expensive for what it buys, so once cost is ` +
+    `weighed in it only ranks ${top.efficiency_rank}. Accuracy alone would pick worse trade-offs than ` +
+    "actually timing it on the device, which is why the search does the latter."));
 
   const host = document.getElementById("cost-chart");
   clear(host);
@@ -6709,18 +6695,17 @@ function renderTrials() {
 
   if (!D.trials.length) {
     note.textContent =
-      `The study's ${D.trials_declared} trials live in a sqlite file that is not committed — it is ` +
-      "rewritten on every resume, and the summary JSON beside it carries the results. Rebuild with " +
-      "the study present to draw this panel.";
+      `This run tried ${D.trials_declared} setups, but the step-by-step log wasn't saved this time — ` +
+      "only the final results were. Rerun the search to see this chart.";
     return;
   }
 
   const rejected = D.trials.filter(t => t.status !== "ok");
   note.appendChild(document.createTextNode(
-    `Each dot is one candidate built, screened and measured on the device. ` +
-    `${rejected.length} of ${D.trials.length} cleared every earlier gate and still failed the accuracy ` +
-    `budget on the full split — the filter doing its job. Cheap gates run first: a 500-image screen ` +
-    "rejects before any latency measurement is spent."));
+    `Each dot is one setup that was built, checked and measured on the device. ` +
+    `${rejected.length} of ${D.trials.length} passed every early check but still missed the accuracy ` +
+    `bar on the full test — that's the filter working. Cheap checks run first, so a bad setup gets ` +
+    "thrown out before it wastes device time."));
 
   const W = 560, H = 190, M = { t: 12, r: 12, b: 30, l: 46 };
   const scored = D.trials.filter(t => t.top1 !== null);
@@ -6808,16 +6793,17 @@ function renderTest() {
   const note = document.getElementById("test-note");
   clear(note);
   note.appendChild(document.createTextNode(
-    "Each line is one Pareto member: on the left the split the search graded every trial on, on the " +
-    `right the sealed test set it was shown once. Every member scored lower there, by ` +
-    `${Math.min(...drops).toFixed(2)} to ${Math.max(...drops).toFixed(2)} points, and the order changed. `));
+    "Each line is one finalist: on the left, its score on the images used during the search; on the " +
+    `right, its score on a separate set it was only shown once, at the very end. Every one scored a ` +
+    `bit lower there — ${Math.min(...drops).toFixed(2)} to ${Math.max(...drops).toFixed(2)} points lower — ` +
+    "and the rankings shuffled a little. "));
   note.appendChild(el("b", {}, leader.id));
   note.appendChild(document.createTextNode(
-    ` led the search at ${leader.top1.toFixed(2)}% and placed ${testRank.get(leader.id)} of ${rows.length} ` +
-    `on the sealed split at ${leader.test_top1.toFixed(2)}%. ` +
+    ` led during the search at ${leader.top1.toFixed(2)}% and came ${testRank.get(leader.id)} of ${rows.length} ` +
+    `on the final check at ${leader.test_top1.toFixed(2)}%. ` +
     (fp32 === null ? "" :
-      `FP32 scores ${fp32.toFixed(2)}% on that same split, so nothing here meaningfully beats it on ` +
-      "accuracy — what the search bought is latency, size and RAM at the same accuracy.")));
+      `The original, uncompressed model scores ${fp32.toFixed(2)}% on that same final check, so nothing here ` +
+      "really beats it on accuracy — what the search gains is speed, size and memory at about the same accuracy.")));
 
   const host = document.getElementById("test-chart");
   clear(host);
@@ -6929,12 +6915,11 @@ function renderThermal() {
   const note = document.getElementById("thermal-note");
   clear(note);
   note.appendChild(document.createTextNode(
-    `Every latency on this page was taken with the governor pinned to performance. Across all ` +
-    `${T.count} cached measurements the core sat between ${T.min_c.toFixed(1)} and ${T.max_c.toFixed(1)} °C, ` +
-    `rising a median of ${T.median_rise_c.toFixed(2)} °C during a run, and the firmware's ` +
-    `${T.soft_limit_c.toFixed(0)} °C throttle never engaged: ${T.throttled} throttle events, ` +
-    `${T.unpinned} unpinned governors, ${T.unstable} runs that failed the drift check. ` +
-    "That is what makes two latencies here comparable rather than a reading of the room temperature."));
+    `Every timing on this page was taken with the device running flat-out, at its steady top speed. ` +
+    `Across ${T.count} measurements the chip stayed between ${T.min_c.toFixed(1)} and ${T.max_c.toFixed(1)} °C, ` +
+    `warming up about ${T.median_rise_c.toFixed(2)} °C per run — well short of the ${T.soft_limit_c.toFixed(0)} °C ` +
+    `point where it would slow itself down to cool off, which never happened (${T.throttled} times it ` +
+    "slowed down, out of all these measurements). That's what makes the timings on this page fair to compare."));
 
   const host = document.getElementById("thermal-chart");
   clear(host);
