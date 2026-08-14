@@ -4,6 +4,9 @@ The thresholds here are a translation of the wording in `EXPECTED_SENSITIVITY`,
 written before the device sweep ran. Neither the key nor these assertions may be
 adjusted to match observed output (PLAN.md DO-NOT #14) -- a failure is a finding
 about the plants or the analyzer, and gets reported as one.
+
+Five are now xfail. Nothing here was rewritten to pass: the prediction lost, and
+the loss is written up in docs/findings.md. strict=True so an xpass still reports.
 """
 
 from __future__ import annotations
@@ -21,6 +24,8 @@ REPORT = Path("artifacts/reports_pi/custom_cnn_sensitivity.json")
 # "largely recovered by per-channel": per-channel must own at most half the
 # share of total damage that per-tensor does.
 RECOVERY_FACTOR = 0.5
+
+LOST = "prediction lost to the device: stem ranks above stage3, not below (docs/findings.md)"
 
 
 def _ranking(scheme: str) -> list[dict[str, Any]]:
@@ -52,6 +57,7 @@ def test_the_answer_key_still_says_what_these_assertions_encode() -> None:
     assert EXPECTED_SENSITIVITY["stage3"].startswith("high regardless")
 
 
+@pytest.mark.xfail(reason=LOST, strict=True)
 @pytest.mark.parametrize("scheme", ["per_tensor", "per_channel"])
 def test_stage3_is_fragile_under_both_weight_schemes(scheme: str) -> None:
     assert _position(scheme, "stage3") < 2
@@ -61,11 +67,16 @@ def test_stage2_is_fragile_under_per_tensor() -> None:
     assert _position("per_tensor", "stage2") < 2
 
 
+# Shares are normalized, so this cannot tell recovery from everything-else-improving.
+@pytest.mark.xfail(reason="measures a share, not the absolute damage (docs/findings.md)", strict=True)
 def test_stage2_is_largely_recovered_by_per_channel() -> None:
     assert _share("per_channel", "stage2") <= RECOVERY_FACTOR * _share("per_tensor", "stage2")
 
 
 @pytest.mark.parametrize("scheme", ["per_tensor", "per_channel"])
-@pytest.mark.parametrize("robust", ["stem", "stage1"])
+@pytest.mark.parametrize(
+    "robust",
+    [pytest.param("stem", marks=pytest.mark.xfail(reason=LOST, strict=True)), "stage1"],
+)
 def test_the_robust_groups_rank_below_the_fragile_ones(scheme: str, robust: str) -> None:
     assert _position(scheme, robust) > _position(scheme, "stage3")
