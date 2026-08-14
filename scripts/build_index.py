@@ -188,10 +188,30 @@ def sort_key(entry: dict[str, Any]) -> tuple[Any, ...]:
     return (rank, entry["venue"] != "pi", entry.get("best_latency_ms", 0.0))
 
 
+def latest_per_model(runs: list[Run]) -> list[Run]:
+    """One card per model: the most recently created run that actually finished.
+
+    A run that died partway through (a stopped SSH session, a device timeout)
+    never reaches its own dashboard stage, so it has no page to link to and
+    would show as a broken card. A superseded earlier campaign has a page but
+    is not the story the landing page should tell once a newer one exists.
+    """
+    newest: dict[str, Run] = {}
+    for run in runs:
+        if not run.paths.dashboard.exists():
+            continue
+        current = newest.get(run.model)
+        if current is None or run.created_at_utc > current.created_at_utc:
+            newest[run.model] = run
+    return list(newest.values())
+
+
 def build_payload(runs_dir: Path, out: Path, include_mock: bool = False) -> dict[str, Any]:
     # The committed landing page lists measured runs only. A simulated card is
     # useful locally and misleading to a visitor who did not run it themselves.
     runs = [run for run in list_runs(runs_dir) if include_mock or run.is_measured]
+    if not include_mock:
+        runs = latest_per_model(runs)
     cards = sorted((card(run, out) for run in runs), key=sort_key)
     return {
         "built_at_utc": datetime.now(UTC).isoformat(timespec="seconds"),
