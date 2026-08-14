@@ -1,7 +1,7 @@
 {
   "host": "REPLACE_WITH_PI_IP_OR_HOSTNAME",
   "user": "REPLACE_WITH_PI_USERNAME",
-  "remote_root": "/home/REPLACE_WITH_PI_USERNAME/arm_challenge",
+  "remote_root": "/home/REPLACE_WITH_PI_USERNAME/ARM_challenge",
   "python": "/home/REPLACE_WITH_PI_USERNAME/armopt/bin/python",
   "port": 22,
   "identity_file": null,

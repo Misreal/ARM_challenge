@@ -57,49 +57,7 @@ your device.
 
 ## Section 1 — Power on and connect
 
-### 1.1 Get the network sorted first
-
-The Pi needs to be reachable from your laptop over IP. Two common setups:
-
-- **Shared WiFi network** (home router, etc.) — simplest, works if both devices can join the
-  same network and it doesn't isolate clients from each other.
-- **Phone personal hotspot** — a good fallback if your usual network is enterprise/campus WiFi
-  with **client isolation** (common on WPA2-Enterprise networks): even if both devices
-  associate to the same AP, the AP refuses to forward traffic between them, so laptop→Pi SSH
-  will not work there no matter how long you debug it. If you suspect this, switching both
-  devices to a personal hotspot is often faster than trying to get isolation disabled.
-
-Order of operations, if using a hotspot:
-
-1. Turn on the hotspot on your phone. Leave its settings screen open — you'll want the
-   connected-device list in a moment.
-2. Connect the laptop to the hotspot.
-3. Power on the Pi.
-
-### 1.2 The VPN trap
-
-If you run a VPN client on your laptop, be aware that by default a VPN can capture *all*
-traffic, including traffic to devices on your own local network — packets to `<PI_IP>` then
-vanish into the tunnel and SSH simply hangs.
-
-Before troubleshooting anything else:
-
-- Check your VPN client's settings for an option like "allow LAN traffic" / "invisible on
-  LAN" and make sure it's not blocking local traffic.
-- Prefer the raw IP `<PI_IP>` over `<PI_HOST>.local`. mDNS (the `.local` name resolution
-  protocol) uses multicast, which VPN clients routinely swallow. The IP is a plain unicast
-  route and survives.
-
-If SSH hangs with no output at all, disconnecting your VPN entirely is a legitimate two-second
-test to isolate the cause.
-
-### 1.3 Power on and wait
-
-Plug in the Pi. Give it **30–60 seconds** to boot. The Pi 5 has no "ready" beep; you just wait.
-The green activity LED flickering irregularly means the SD card is being read, which is normal
-during boot.
-
-### 1.4 SSH in
+### 1.1 SSH in
 
 ```powershell
 # Laptop (PowerShell). Connects to the Pi's shell over the network.
@@ -193,17 +151,7 @@ sudo apt update && sudo apt full-upgrade -y
 ```
 
 **Budget real time for this.** It is typically several hundred megabytes. Over a slow or
-metered connection this can be **20+ minutes**. Do not start it five minutes before you need
-the Pi.
-
-What the pieces mean:
-- `sudo` — run as the administrative user (`root`). You'll be asked for your password the
-  first time in a session.
-- `apt update` — download the current *list* of available packages. Downloads no software.
-- `apt full-upgrade` — install newer versions, and allow removing packages when needed to
-  resolve dependencies (plain `upgrade` refuses to remove anything and can therefore get stuck).
-- `-y` — answer "yes" to the confirmation prompt automatically.
-- `&&` — run the second command only if the first succeeded.
+metered connection this can be **20+ minutes**.
 
 Correct output ends with something like `0 upgraded, 0 newly installed, 0 to remove` on an
 already-current system, or a long list of `Setting up <package> ...` lines followed by the
@@ -220,8 +168,7 @@ prompt returning.
 sudo apt install -y python3-pip python3-venv git tmux
 ```
 
-`tmux` is worth installing now rather than mid-session later — you'll want it in Section 9 for
-the longer benchmark runs, and it's a one-line install best done while you're already here.
+`tmux` is installed just incase you'll use it for the longer benchmark runs.
 
 Verify:
 
@@ -236,16 +183,8 @@ Expect `venv OK`, a git version line, and a tmux version line.
 
 ## Section 3 — Create the Python virtual environment
 
-A **virtual environment** ("venv") is a private folder holding its own copy of Python's package
-directory, so packages you install for this project can't collide with — or be broken by — the
-system Python that Raspberry Pi OS itself depends on.
-
-This is not optional hygiene on recent Debian-based Raspberry Pi OS releases. The system Python
-is marked "externally managed", and a bare `pip install` outside a venv will refuse with an
-`error: externally-managed-environment` message. The venv is the supported path.
-
 ```bash
-# Pi. Creates the venv at ~/armopt, then activates it. ~10 seconds.
+# Pi. Creates the venv at ~/armopt, then activates it.
 python3 -m venv ~/armopt
 source ~/armopt/bin/activate
 ```
@@ -303,43 +242,15 @@ psutil>=5.9
 ```
 
 `onnx` and `onnxruntime` use `==` (exactly this version), not `>=` (this or newer). That is a
-**methodology requirement**, not fussiness.
+**methodology requirement**.
 
-ONNX Runtime is the thing actually executing the model. Between releases, ORT changes its
-kernels — the hand-optimized routines that implement convolution, matmul, and quantized
-arithmetic on a given CPU. A new release may fuse operators differently, pick a different
-quantized accumulation path, or add an ARM-specific kernel. Any of those changes **both the
-latency and the numerical output** of the same `.onnx` file.
+Updating ONNX Runtime versions modifies underlying kernel routines, changing both the speed and numerical output of the exact same .onnx model.
 
-Two consequences:
-
-1. **PC and Pi must match.** If your PC-side environment has `onnxruntime 1.27.0` and the Pi
-   ran a different version, an accuracy difference between them would be uninterpretable — you
-   could not tell whether it came from the hardware or from the runtime version. Check your PC
-   env's version and pin the Pi to match exactly.
-2. **Do not upgrade mid-campaign.** Every number collected before an upgrade becomes
-   incomparable with every number after it. A casual `pip install --upgrade onnxruntime` three
-   weeks in silently invalidates weeks of results, and nothing will warn you. Treat the pin as
-   frozen for the whole campaign.
-
-`onnx` itself is pinned too because the device entry points import `onnxruntime.quantization`
-and `src.quant.groups`, which import `onnx` directly — omit it and you get an ImportError at
-startup, not a subtle runtime issue.
 
 ### 4.2 NEVER install torch on this Pi
 
-**Do not run `pip install torch` or `pip install torchvision` on the Pi.** Ever.
+**Do not run `pip install torch` or `pip install torchvision` on the Pi.** 
 
-Reasons, in order of importance:
-- The deployment target is ONNX Runtime on CPU. That is what the project measures. A torch
-  installation invites accidental torch-vs-ORT comparisons that describe a runtime nobody is
-  deploying.
-- torch on aarch64 is a very large install and would eat both SD card space and a lot of
-  bandwidth if you're on a metered connection.
-- It pulls in its own numpy/protobuf constraints that can drag the pinned ORT stack sideways.
-
-`requirements-pi.txt` says this in its own header comment. It is a real invariant, not a
-suggestion.
 
 ### 4.3 Get the requirements file onto the Pi
 
@@ -376,16 +287,6 @@ Successfully installed numpy-1.26.x onnx-1.22.0 onnxruntime-1.27.0 protobuf-... 
 
 **`error: externally-managed-environment`** — you are not in the venv. The prompt is missing
 `(armopt)`. Run `source ~/armopt/bin/activate` and retry.
-
-**pip starts *building* onnxruntime from source** (you'll see `Building wheel for onnxruntime`
-and it grinds for a very long time). This means pip could not find a matching prebuilt wheel.
-Almost always one of: the OS is 32-bit (`uname -m` said `armv7l`), or the Python minor version
-doesn't have a published wheel yet. Cancel with `Ctrl+C` — a source build of ORT on a Pi is
-hours long and not the intended path. Recheck the architecture and Python version from
-Section 1.4.
-
-**Network timeouts / `Read timed out`** — connection flakiness. Just rerun the same
-`pip install` command; pip caches what it already fetched and resumes making progress.
 
 ## Section 5 — Verify the install
 
@@ -425,23 +326,8 @@ Read that output carefully — it answers two different questions.
 **The version must match the PC exactly.** If it doesn't, stop and fix it before collecting any
 data (Section 4.1 explains why).
 
-**An "execution provider" (EP)** is a backend ORT can dispatch operators to.
-
-- **`CPUExecutionProvider` — required.** This is the baseline backend and the one the whole
-  campaign's headline numbers are measured on. If it's absent, something is badly wrong with
-  the install.
-- **`AzureExecutionProvider`** — a stub ORT always registers, not a real backend. Ignore it if
-  present.
-- **`XnnpackExecutionProvider` — nice to have.** XNNPACK is an optimized neural-network kernel
-  library with strong ARM support. In this project it is deliberately **not** a search
-  dimension; it is a finalist-only ablation, i.e. something you try on the shortlisted models
-  at the end to see how much extra it buys. Whether it ships in the installed ORT wheel is
-  build-dependent, so **treat this as a check, not an assumption** — it may simply be absent
-  from a given wheel, which is a legitimate outcome, not a broken install.
-
-**Record the result either way.** Write down the exact provider list in your project notes with
-the date. "XNNPACK absent" is a perfectly good finding — it just means the finalist ablation is
-off the table and you should say so explicitly rather than quietly dropping it.
+**An "execution provider" (EP)** is a backend ORT can dispatch operators to. As long as `CPUExecutionProvider` is in the list, you're good — that's the only backend this project uses, and the one all headline numbers are measured on. Anything else in the list
+(`AzureExecutionProvider`, `XnnpackExecutionProvider`, etc.) is extra and can be ignored.
 
 Also verify the other imports actually load:
 
@@ -1109,20 +995,24 @@ silently ignores the file.
 
 ### 12.2 `pi_target.json` — where the laptop looks for the device
 
-Create this file in the project root on the **laptop**. It is gitignored, because a
-hostname and username are specific to one operator's setup.
+Copy the template in the project root on the **laptop** and fill in your own device:
 
-```json
-{
-  "host": "<PI_IP>",
-  "user": "<PI_USER>",
-  "remote_root": "/home/<PI_USER>/ARM_challenge",
-  "python": "/home/<PI_USER>/armopt/bin/python"
-}
+```powershell
+# Laptop (PowerShell). The copy is gitignored; the template is the only version in the repo.
+copy pi_target.example.json pi_target.json
 ```
 
-Note `python` points **inside the venv**. The driver does not run `source activate`; it
-invokes the venv interpreter directly, which is equivalent and cannot be forgotten.
+The template carries every field with a placeholder value, and the README's table says which
+ones are required. Two that are worth calling out here:
+
+- `remote_root` is the directory from Section 7.1, e.g. `/home/<PI_USER>/ARM_challenge`.
+- `python` points **inside the venv**, e.g. `/home/<PI_USER>/armopt/bin/python`. The driver
+  does not run `source activate`; it invokes the venv interpreter directly, which is
+  equivalent and cannot be forgotten. The system `python3` either lacks ONNX Runtime or
+  carries a different version, and a version mismatch silently compares two different things.
+
+`ARMOPT_PI_HOST`, `ARMOPT_PI_USER`, `ARMOPT_PI_ROOT`, `ARMOPT_PI_PYTHON` and `ARMOPT_PI_KEY`
+override the file from the environment if you would rather not write one.
 
 ### 12.3 `pi_prepare.sh` — run after every boot
 
