@@ -303,11 +303,9 @@ runs/                one directory per campaign, each with its own page
   bundles. That is a design job, not a configuration flag.
 - **Pruning is deliberately out of scope.** Zero-ing weights shrinks a parameter count without
   making ARM inference faster; real gains need structured pruning plus a graph rebuild.
-- **Accuracy screening does not work on this dev machine.** The host CPU has AVX2 but no VNNI, so
-  ONNX Runtime's INT8 path accumulates in 16 bits and saturates, which makes per-channel
-  quantization score *worse* than per-tensor -- impossible as a property of quantization, and a
-  measurement of the host rather than the model. All quantization accuracy is therefore measured on
-  the Pi, whose Cortex-A76 has the dot-product instructions that avoid it.
+- **One backend only.** The XNNPACK execution provider is absent from the Pi's ONNX Runtime 1.27.0
+  wheel, so the planned finalist ablation against it could not run and every number here is the
+  default CPU provider.
 - **The noise floor was measured on the FP32 configuration at 16.4 ms**, and the Pareto front sits
   near 3.4 ms. Applying the same percentage there assumes the spread scales with the work done. It
   probably mostly does, but it is an assumption, and the honest fix is a second sentinel near the

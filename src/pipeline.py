@@ -90,9 +90,6 @@ def missing_needs(stage: Stage, run: Run) -> list[str]:
     return blocked
 
 
-# --------------------------------------------------------------- local stages
-
-
 def local_command(stage: str, run: Run) -> list[str] | None:
     """The subprocess that produces this stage on the PC, if it is a local one."""
     model = run.model
@@ -132,9 +129,6 @@ def execute(argv: list[str], echo: bool = True) -> None:
     completed = subprocess.run(argv, check=False)
     if completed.returncode != 0:
         raise RuntimeError(f"exited {completed.returncode}")
-
-
-# ------------------------------------------------------------------ the loop
 
 
 def run_pipeline(

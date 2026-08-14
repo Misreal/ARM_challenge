@@ -1,21 +1,11 @@
 """Checkpoint I/O that binds weights to the exact split and recipe that made them.
 
-Mirrors the `src/data/splits.py` pattern: a self-describing document plus an
-integrity check on load. The check that matters is the **split fingerprint**.
-Stage 1 measures every candidate's accuracy on `optval` and compares it to a
-frozen baseline; if a checkpoint were ever trained under a different split,
-`optval` might contain images that model was trained on, and the accuracy
-constraint -- the one hard filter in the whole system -- would be measuring
-memorisation. Recording the fingerprint makes that failure loud instead of
-silent.
-
-Two files are written per checkpoint:
-
-    <name>.pt     weights + full metadata (needs torch to read)
-    <name>.json   the same metadata minus weights, plus the .pt's SHA-256
-
-The sidecar exists so Phase 2 can stamp a checkpoint hash into the ONNX
-metadata, and so training provenance stays greppable without loading torch.
+Writes `<name>.pt` (weights + metadata) and `<name>.json` (same metadata plus
+the .pt's SHA-256, no weights), so provenance stays greppable without torch.
+The split fingerprint in that metadata is the load-time check that matters:
+Stage 1 scores every candidate on `optval` against a frozen baseline, and a
+checkpoint trained under a different split could have `optval` images in its
+training set, turning the accuracy constraint into a silent memorisation check.
 """
 
 from __future__ import annotations

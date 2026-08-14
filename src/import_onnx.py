@@ -52,9 +52,6 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
-# ------------------------------------------------------------------- checking
-
-
 def tensor_shape(value: onnx.ValueInfoProto) -> tuple[Any, ...]:
     dims = []
     for dim in value.type.tensor_type.shape.dim:
@@ -128,9 +125,6 @@ def check_groups(quant_ready: Path, name: str) -> tuple[str, ...]:
     if largest == UNSCOPED_GROUP:
         raise ImportRejected(f"Most nodes fell into {UNSCOPED_GROUP!r}; this graph has no usable block names.")
     return groups
-
-
-# ------------------------------------------------------------------ importing
 
 
 def score(path: Path, split: str, bundle_dir: Path) -> dict[str, Any]:

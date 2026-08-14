@@ -1,31 +1,14 @@
 """Deployment configuration objects and their content hashes.
 
-Why the split into two objects
-------------------------------
-`QuantConfig` determines the *artifact* -- the bytes of the .onnx file.
-`RunConfig` determines the *execution* -- how ONNX Runtime is told to run it.
-
-Keeping them separate is what makes the search affordable. Thread count is a
-search dimension, so a single config object would re-quantize an identical file
-once per thread setting; with the split, the artifact cache keys on the quant
-hash alone and one quantization serves every runtime variant. Over ~60-100
-trials per model that is a large share of the campaign, and Percentile
-calibration in particular is not cheap.
-
-Why canonicalization matters
-----------------------------
-Irrelevant fields are dropped before hashing. A dynamic-quantization config
-carries a `calibration_method` value that nothing reads, and two trials that
-differ only there produce byte-identical artifacts. Hashing the raw field set
-would give them different hashes, so the artifact cache would miss and -- far
-worse -- the Pi would be asked to measure the same file twice under different
-names. `canonical_payload` projects each config down to the fields that
-actually affect its output.
-
-Enum values are stored as our own strings, never onnxruntime's `QuantType`
-members. An upgrade that renumbered those enums would silently invalidate every
-cached hash, and the mismatch would only surface as Pi results that no longer
-join to their configs.
+`QuantConfig` determines the artifact -- the bytes of the .onnx file.
+`RunConfig` determines the execution -- how ONNX Runtime is told to run it.
+Splitting them is what makes the search affordable: thread count is a search
+dimension, so one config object would re-quantize an identical file once per
+thread setting, whereas the artifact cache can key on the quant hash alone.
+`canonical_payload` drops fields that don't affect the artifact's bytes before
+hashing, so two configs that produce the same file also hash the same --
+otherwise the cache would miss and the Pi could measure one file twice under
+different names.
 """
 
 from __future__ import annotations

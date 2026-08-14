@@ -42,9 +42,6 @@ def sampled(reduced, trials: int = 60) -> list:
     return configs
 
 
-# ------------------------------------------------------------- the sampled path
-
-
 def test_every_sampled_candidate_spares_every_pinned_fp32_group() -> None:
     reduced = space()
     for config in sampled(reduced):
@@ -78,9 +75,6 @@ def test_a_space_with_nothing_searchable_still_samples_the_pins() -> None:
     reduced = space(searchable=(), pinned_fp32=("fc",))
     for config in sampled(reduced, trials=5):
         assert config.quant.excluded_groups == ("fc",)
-
-
-# --------------------------------------------------------- the enumerated path
 
 
 @pytest.mark.parametrize("round_", STRUCTURE_ROUNDS, ids=lambda r: r.label)

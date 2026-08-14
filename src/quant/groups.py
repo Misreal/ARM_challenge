@@ -1,29 +1,17 @@
 """Map ONNX nodes back to named PyTorch blocks.
 
-PLAN.md schedules this for Phase 5, but Phase 4 needs it first: mixed precision
-is implemented through `nodes_to_exclude`, and a config that excludes a *block*
-cannot be translated without this map. Phase 5 consumes it rather than
-introducing it.
-
-How the names survive
----------------------
-`torch.onnx.export` prefixes each node with its module path, so a node arrives
-as `/stage2/dw1/dw/conv/Conv` -- module path components, then the op type. The
-registry's stable-naming contract (`src/models/registry.py:15`) is what makes
-this reliable, and it was verified to hold for all three exported graphs: every
-node is named, nothing anonymous.
-
-Grouping depth is per-model on purpose
---------------------------------------
-ResNet-18 and custom_cnn group correctly at depth 1 (`layer1`, `stem`, ...).
-MobileNetV2 does not: 167 of its 170 nodes live under a single `features`
-container, so depth 1 yields one useless mega-group and its block structure is
-at depth 2 (`features.0`, `features.1`, ...). Three models is too few to be
-clever about inferring this, so it is declared. `MAX_GROUP_SHARE` catches the
-mistake if a new model is added without the corresponding entry.
-
-custom_cnn deliberately groups to exactly the keys in its `EXPECTED_SENSITIVITY`
-answer key, so Phase 5's validation compares them with no name translation.
+PLAN.md schedules this for Phase 5, but Phase 4 needs it first, since mixed
+precision is implemented through `nodes_to_exclude` and excluding a block
+can't be translated without this map. `torch.onnx.export` prefixes each node
+with its module path (e.g. `/stage2/dw1/dw/conv/Conv`), reliable because of
+the registry's stable-naming contract (`src/models/registry.py:15`), verified
+to hold for all three exported graphs. Grouping depth is per-model: ResNet-18
+and custom_cnn group correctly at depth 1 (`layer1`, `stem`, ...), but
+MobileNetV2 has 167 of its 170 nodes under one `features` container, so its
+block structure is at depth 2 (`features.0`, ...) -- declared rather than
+inferred, with `MAX_GROUP_SHARE` catching the mistake if a new model skips
+this entry. custom_cnn groups to exactly the keys in `EXPECTED_SENSITIVITY`
+so Phase 5's validation compares them with no name translation.
 """
 
 from __future__ import annotations

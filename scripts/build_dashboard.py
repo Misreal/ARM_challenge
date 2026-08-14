@@ -73,9 +73,6 @@ def read_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-# ---------------------------------------------------------------- where files are
-
-
 @dataclass(frozen=True)
 class Sources:
     """Every file one page is built from, named individually.
@@ -147,9 +144,6 @@ class Sources:
         )
 
 
-# ---------------------------------------------------------------- config text
-
-
 def configs_for(member: dict[str, Any]) -> tuple[QuantConfig, RunConfig]:
     """This front member's configs, read back rather than reconstructed.
 
@@ -203,9 +197,6 @@ def parse_run_describe(text: str) -> RunConfig:
         enable_cpu_mem_arena="no-arena" not in tokens,
         allow_intra_op_spinning="no-spin" not in tokens,
     )
-
-
-# ------------------------------------------------------------------ measured
 
 
 def measurements_by_config(model: str, cache_dir: Path) -> dict[str, dict[str, Any]]:
@@ -365,9 +356,6 @@ def noise_floor(sentinel: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-# ---------------------------------------------------------------- front rows
-
-
 def front_rows(summary: dict[str, Any], baseline_top1: float, samples: int) -> list[dict[str, Any]]:
     """One row per Pareto member, ordered by latency, with its config unpacked."""
     rows: list[dict[str, Any]] = []
@@ -406,9 +394,6 @@ def front_rows(summary: dict[str, Any], baseline_top1: float, samples: int) -> l
     for index, row in enumerate(rows):
         row["id"] = f"C{index + 1}"
     return rows
-
-
-# -------------------------------------------------------------- ranking rule
 
 
 def tie_groups(rows: list[dict[str, Any]], noise: dict[str, float]) -> dict[str, list[list[str]]]:
@@ -511,9 +496,6 @@ def unreachable_rows(resolved: dict[str, list[dict[str, Any]]], rows: list[dict[
     return [row["id"] for row in rows if row["id"] not in leaders]
 
 
-# ------------------------------------------------------- sensitivity vs cost
-
-
 def cost_benefit_rows(cost_benefit: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Per-group benefit and price, carrying both rankings so the gap is visible."""
     by_share = sorted(cost_benefit, key=lambda row: -row["recovery_share"])
@@ -532,9 +514,6 @@ def cost_benefit_rows(cost_benefit: list[dict[str, Any]]) -> list[dict[str, Any]
             }
         )
     return rows
-
-
-# ------------------------------------------------------------ trial history
 
 
 def attach_test_scores(front: list[dict[str, Any]], path: Path) -> dict[str, Any] | None:
@@ -620,9 +599,6 @@ def trial_rows(
             }
         )
     return rows
-
-
-# ------------------------------------------------------------------- payload
 
 
 def build_payload(sources: Sources) -> dict[str, Any]:

@@ -38,9 +38,6 @@ def row(group: str, share: float, cost: float) -> dict:
     }
 
 
-# ------------------------------------------------------------ the banded rule
-
-
 def test_a_cost_inside_the_band_that_buys_accuracy_is_searchable() -> None:
     # resnet18's `fc` measured -0.040 ms, well inside a 0.068 ms band. We cannot
     # tell that from zero, so the enumeration decides it rather than the pin.
@@ -71,9 +68,6 @@ def test_group_within_a_tenth_of_the_best_stays_searchable() -> None:
     assert classify(row("layer1", 0.433, 2.378), 1.45, RESNET_BAND_MS) == SEARCH
 
 
-# ---------------------------------------------------------------- the partition
-
-
 def test_reduce_space_partitions_every_group_exactly_once() -> None:
     rows = [
         row("conv1", 0.203, 0.140),
@@ -95,9 +89,6 @@ def test_greedy_puts_groups_inside_the_band_first_then_descending_ratio() -> Non
         row("fc", 0.028, -0.040),
     ]
     assert [r["group"] for r in greedy_order(rows, RESNET_BAND_MS)] == ["fc", "conv1", "layer1"]
-
-
-# ------------------------------------------------------------------- the band
 
 
 def test_the_band_defaults_to_the_documented_fraction_without_a_sentinel() -> None:
@@ -135,9 +126,6 @@ def test_the_measured_partition_is_the_same_at_two_and_three_percent(model: str,
     # The collapse was always coming from pinned INT8, not from pinned FP32.
     assert space.pinned_fp32 == ()
     assert len(space.pinned_int8) == len(rows) - len(expected)
-
-
-# -------------------------------------------------------------- the validation
 
 
 GROUPS = ("conv1", "fc", "layer2", "layer3")
@@ -193,9 +181,6 @@ def test_the_artifact_round_trips() -> None:
     space = complete_space(band=Band(0.02, "sentinel", 3.41))
     restored = ReducedSpace.from_dict(space.as_dict())
     assert restored == space
-
-
-# ---------------------------------------------------- the degenerate partitions
 
 
 def test_nothing_searchable_is_a_one_vector_enumeration_not_an_error() -> None:

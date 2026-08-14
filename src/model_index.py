@@ -98,9 +98,6 @@ def entry_for(model: str, path: Path = INDEX_PATH) -> ModelEntry:
     return entries[model]
 
 
-# ------------------------------------------------------------------- rebuild
-
-
 def describe_trained(model: str) -> ModelEntry:
     """Read one trained model's facts back out of its graph and baseline report."""
     from src.quant.groups import build_group_map, group_depth_for, quantizable_groups

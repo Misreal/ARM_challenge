@@ -1,24 +1,17 @@
 """Fixed, stratified four-way partition of the CIFAR-100 *training* set.
 
-Why this file exists
---------------------
-Stage 0 (training) and Stage 1 (the deployment optimizer) run in separate
-processes, often days apart. If each regenerated its own split, calibration or
-optimization-validation images would silently leak into model training and every
-downstream accuracy number would be unsound. So the split is computed once,
-persisted to disk, and re-validated on every load.
-
-The 10,000-image CIFAR-100 *test* set is never touched here. It is reserved for
-final evaluation only (see CLAUDE.md invariants).
-
-Partition (CIFAR-100 train has exactly 500 images per class x 100 classes):
+Computed once and persisted rather than regenerated per process: Stage 0
+(training) and Stage 1 (the optimizer) run separately, often days apart, and a
+fresh split each time would let calibration or optimization-validation images
+leak into training. The CIFAR-100 test set is never touched here -- reserved
+for final evaluation only.
 
     train     44,000   440/class   fit model weights
     trainval   2,000    20/class   epoch-level model selection during Stage 0
     optval     3,000    30/class   Stage 1 search signal / accuracy constraint
     calib      1,000    10/class   static INT8 quantization calibration
 
-`trainval` and `optval` are deliberately separate: reusing one set to both pick
+`trainval` and `optval` stay separate because reusing one set to both pick
 checkpoints and score the optimizer's candidates would bias the headline result.
 """
 

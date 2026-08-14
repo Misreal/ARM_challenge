@@ -198,9 +198,6 @@ def list_runs(runs_dir: Path = RUNS_DIR) -> list[Run]:
     return sorted(runs, key=lambda run: (run.model, run.created_at_utc))
 
 
-# ------------------------------------------------------------------ manifest
-
-
 def read_manifest(run: Run) -> dict[str, Any]:
     if not run.paths.manifest.exists():
         return {"schema": MANIFEST_SCHEMA, "stages": {}}

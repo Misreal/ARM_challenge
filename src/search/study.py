@@ -96,9 +96,6 @@ def report_line(counter: str, label: str, config: DeploymentConfig, result: Tria
     )
 
 
-# ---------------------------------------------------------------- enumeration
-
-
 def run_enumeration(runner: Any, plan: SearchPlan) -> list[dict[str, Any]]:
     """Measure every planned candidate in order, cheap gates first."""
     evaluated: list[dict[str, Any]] = []
@@ -117,9 +114,6 @@ def run_enumeration(runner: Any, plan: SearchPlan) -> list[dict[str, Any]]:
         evaluated.append(record_for(label, config, result))
 
     return evaluated
-
-
-# ------------------------------------------------------------------- NSGA-II
 
 
 def run_nsga2(runner: Any, plan: SearchPlan, name: str, study_dir: Path, seed: int) -> list[dict[str, Any]]:
@@ -173,9 +167,6 @@ def run_nsga2(runner: Any, plan: SearchPlan, name: str, study_dir: Path, seed: i
     return evaluated
 
 
-# ----------------------------------------------------------------- references
-
-
 def reference_configs(model: str, space) -> dict[str, QuantConfig]:
     """The comparators the method has to beat, whether or not the space allows them.
 
@@ -211,9 +202,6 @@ def measure_references(runner: Any, model: str, space, threshold: float) -> dict
         print(report_line("ref", name, config, result), flush=True)
         rows[name] = record_for("reference", config, result)
     return rows
-
-
-# ----------------------------------------------------------------------- main
 
 
 def parse_args() -> argparse.Namespace:

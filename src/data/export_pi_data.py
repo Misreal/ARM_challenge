@@ -1,29 +1,15 @@
 """Export CIFAR-100 evaluation data as .npy bundles for the Raspberry Pi agent.
 
-The Pi agent is torch-free (see requirements-pi.txt), so it cannot reuse
-`loaders.py`. That creates the project's most dangerous silent failure mode:
-preprocessing that differs between PC and Pi shows up as an unexplained
-accuracy drop that looks like quantization damage (PLAN.md DO-NOT #7).
+The Pi agent is torch-free (requirements-pi.txt), so it can't reuse
+`loaders.py` -- preprocessing drift between PC and Pi would show up as an
+unexplained accuracy drop indistinguishable from quantization damage (PLAN.md
+DO-NOT #7). Images ship as raw uint8, never pre-normalized floats, so
+normalization runs on-device via the torch-free `normalize_uint8_nchw` rather
+than baking one machine's arithmetic into the artifact; before writing
+anything, that numpy path is checked against the torchvision path
+image-by-image. The test split stays unexported and sealed until Phase 7
+(DO-NOT #3) rather than sitting queryable on the benchmark device.
 
-Two defences, both implemented here:
-
-1. Images ship as raw **uint8**, never as pre-normalized floats. Normalization
-   happens on device via `src.portable.preprocess.normalize_uint8_nchw`, which
-   is torch-free precisely so the Pi imports the same file rather than a copy.
-   Shipping floats would instead bake one machine's arithmetic into the
-   artifact and hide any divergence.
-2. Before writing anything, the numpy path is checked against the torchvision
-   path image-by-image. If they disagree, the export fails rather than handing
-   the Pi a subtly wrong dataset.
-
-CIFAR-100 is natively 32x32, so there is no resize step and therefore no
-PIL-vs-OpenCV interpolation divergence to worry about. Keep it that way.
-
-The test split is deliberately NOT exported. It stays sealed on the PC until
-Phase 7 (PLAN.md DO-NOT #3); putting it on the benchmark device would make it
-casually queryable during the search campaign.
-
-Example:
     python -m src.data.export_pi_data
 """
 

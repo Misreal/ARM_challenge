@@ -39,9 +39,6 @@ def space(searchable=("conv1", "fc", "layer1"), pinned_fp32=(), model="resnet18_
     )
 
 
-# ------------------------------------------------------------ precision vectors
-
-
 def test_every_precision_vector_appears_exactly_once() -> None:
     vectors = precision_vectors(space())
     assert len(vectors) == 8 == len(set(vectors))
@@ -63,9 +60,6 @@ def test_pinned_fp32_is_in_every_vector_and_pinned_int8_is_in_none() -> None:
 
 def test_a_space_with_nothing_searchable_is_one_vector() -> None:
     assert precision_vectors(space(searchable=())) == [()]
-
-
-# ------------------------------------------------------------------ enumeration
 
 
 def test_a_round_covers_every_vector_before_the_next_round_starts() -> None:
@@ -124,9 +118,6 @@ def test_calibration_rounds_never_repeat_the_canonical_setting() -> None:
                 CANONICAL_QUANT.calibration_method,
                 CANONICAL_QUANT.calibration_size,
             )
-
-
-# ----------------------------------------------------------------- the strategy
 
 
 def test_a_space_that_fits_the_budget_is_enumerated() -> None:
@@ -191,9 +182,6 @@ def test_the_plan_serializes_every_candidate_in_full() -> None:
     assert document["candidates"][0]["quant"]["calibration_method"] == "minmax"
     assert document["space"]["band"]["source"] == "sentinel"
     json.dumps(document)  # must survive the round trip to the report
-
-
-# --------------------------------------------------------------- loading a space
 
 
 def test_a_missing_space_is_refused_before_any_device_work(tmp_path) -> None:

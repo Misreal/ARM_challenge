@@ -1,19 +1,13 @@
 """Calibration data for static INT8 quantization.
 
 Calibration images come exclusively from the 1,000-image `calib` split, loaded
-through the Pi bundle. That is a structural guarantee rather than a rule someone
-has to remember: there is no code path here that can reach optval or test, so
-PLAN.md's "never calibrate on optval or test" cannot be violated by accident.
-
-Subset selection is stratified
-------------------------------
-`splits.py` stratifies calib 10-per-class, then sorts by dataset index, so a raw
-prefix of 128 images covers only ~79 of 100 classes. Calibration measures
-activation ranges, and classes absent from the sample contribute none of theirs;
-that is precisely the skew the split was stratified to avoid. `stratified_prefix`
-takes round-robin across classes instead, so every subset size stays balanced.
-The arrays on disk keep their faithful index order -- the selection lives here,
-where it is testable.
+through the Pi bundle -- a structural guarantee rather than a rule someone has
+to remember, since there is no code path here that can reach optval or test.
+`splits.py` stratifies calib 10-per-class then sorts by dataset index, so a
+raw prefix of 128 images covers only ~79 of 100 classes and skews the
+activation ranges calibration measures. `stratified_prefix` takes round-robin
+across classes instead so every subset size stays balanced, while the arrays
+on disk keep their faithful index order.
 """
 
 from __future__ import annotations

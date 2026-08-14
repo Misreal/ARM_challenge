@@ -1,44 +1,14 @@
 """Diagnose INT8 accumulator saturation on the host CPU.
 
-Why this exists
----------------
-Phase 4's first baseline run produced an impossible result: static per-channel
-INT8 scored *worse* than per-tensor on all three models (-5.37 / -2.37 /
--10.53 pt vs FP32, against -2.00 / -0.10 / -3.97 for per-tensor). Per-channel
-quantization is strictly finer-grained -- one scale per output channel instead
-of one for the whole tensor -- so it cannot genuinely lose accuracy to
-per-tensor. Something other than the models was being measured.
+Per-channel INT8 scored worse than per-tensor on all three models here, which
+is impossible as a property of quantization -- per-channel is strictly finer
+grained. This dev CPU (Ryzen 7 5800H, Zen 3) has AVX2 but no VNNI, so ONNX
+Runtime's U8S8 path accumulates in 16 bits and saturates, and per-channel
+makes that worse by using more of the int8 range per channel. reduce_range
+avoids the overflow but changes the weights, so it's not screening-only.
+Re-run this on the Pi (Cortex-A76 has ARMv8.2 dot-product, should not
+saturate) before trusting any PC accuracy screen.
 
-The mechanism
--------------
-ONNX Runtime's U8S8 path (uint8 activations, int8 weights) accumulates products
-in 16 bits on x86 CPUs without VNNI. Large products saturate. Per-channel makes
-this *more* likely, not less: rescaling every channel to use the full int8
-range raises typical magnitudes, whereas one coarse per-tensor scale leaves most
-channels using only part of the range. `reduce_range=True` quantizes weights to
-7 bits and avoids the overflow.
-
-The dev machine is an AMD Ryzen 7 5800H (Zen 3): AVX2, no VNNI. AMD gained VNNI
-with Zen 4.
-
-Why it matters to the campaign
-------------------------------
-The Pi 5's Cortex-A76 implements the ARMv8.2 dot-product instructions, so its
-MLAS kernels accumulate into int32 and should not saturate at all. If that
-holds, PC accuracy screening is biased by 3-5 pt *specifically against
-per-channel candidates* -- 30-50x the +/-0.1 pt PLAN.md budgets for x86-vs-ARM
-kernel differences, and enough to make Phase 6's hard accuracy constraint reject
-exactly the candidates most likely to win.
-
-Note `reduce_range` is not a screening-only workaround: it changes the weights,
-so a model screened with it is not the model deployed without it.
-
-**This must be re-run on the Pi before trusting any PC accuracy screen.** Same
-artifacts, same evaluation code (`src.portable.onnx_eval`), different machine.
-If the Pi shows a flat per-channel/per-tensor relationship, the effect is
-confirmed as host-specific and accuracy screening has to move on-device.
-
-Example:
     python -m src.quant.saturation_probe --model resnet18_cifar
 """
 

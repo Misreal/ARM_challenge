@@ -73,9 +73,6 @@ def test_run_describe_recovers_the_non_default_knobs() -> None:
     )
 
 
-# --------------------------------------------------- reading configs back
-
-
 def front_member(**overrides) -> dict:
     row = {
         "describe": "static per-channel act:uint8 minmax/512",
@@ -200,9 +197,6 @@ def test_the_sentinel_is_found_by_model_and_never_from_another_model(tmp_path) -
     assert find_sentinel(tmp_path, "mobilenetv2_cifar") is None
 
 
-# ------------------------------------------------------------------- grouping
-
-
 def test_values_that_print_the_same_share_a_tie_group() -> None:
     # Both round to 11.27 MB, so the page has shown nothing to rank them on.
     rows = rows_from(
@@ -232,9 +226,6 @@ def test_a_group_is_measured_from_its_leader_not_its_last_member() -> None:
     # Each neighbouring pair is inside the noise floor but the ends are not, so
     # chaining off the last member would swallow all three into one group.
     assert tie_groups(rows, LATENCY_NOISE)["latency_ms"] == [["C1", "C2"], ["C3"]]
-
-
-# -------------------------------------------------------------------- ranking
 
 
 def tied_on_latency() -> list[dict]:

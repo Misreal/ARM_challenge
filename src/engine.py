@@ -2,18 +2,11 @@
 
 Kept separate from `train.py` because Stage 0 is not their only caller --
 Phase 2's export-parity gate and Phase 7's final test-set evaluation both need
-`evaluate()` with byte-identical semantics. A second, subtly different eval
-implementation is one of the quieter ways to invalidate a results table.
-
-Two deliberate numerics decisions live here:
-
-  * **Training uses bf16 autocast, evaluation does not.** Autocast changes
-    accuracy in the third decimal place. That is irrelevant while training but
-    not while producing a baseline number that the entire Stage 1 accuracy
-    constraint is measured against, so `evaluate()` is always full FP32.
-  * **bf16, never fp16.** bf16 carries FP32's exponent range, so gradients
-    cannot underflow and no GradScaler is needed. fp16 would require loss
-    scaling and adds a failure mode for zero benefit on Ampere-class hardware.
+`evaluate()` with byte-identical semantics. `evaluate()` always runs full FP32
+even though training uses bf16 autocast, since it produces the baseline the
+Stage 1 accuracy constraint is measured against and autocast shifts accuracy
+in the third decimal place. bf16 rather than fp16 throughout: bf16 keeps
+FP32's exponent range so gradients can't underflow and no GradScaler is needed.
 """
 
 from __future__ import annotations

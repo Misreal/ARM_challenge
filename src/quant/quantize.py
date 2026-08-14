@@ -1,21 +1,15 @@
 """Turn a QuantConfig into a validated ONNX artifact.
 
-Source graph selection matters
-------------------------------
 Quantized variants are always built from `<model>_quant_ready.onnx`, the
-shape-inferred and fused graph. Quantizing the deployable export instead leaves
-unfused subgraphs to be wrapped in QDQ nodes -- slower *and* less accurate, and
-PLAN.md's DO-NOT #4. The FP32 baseline is the opposite: it uses the deployable
-export, because that is the file one would actually ship. Export verified the
-two are numerically identical (max logit delta 0), so the asymmetry costs
-nothing in comparability.
-
-Caching
--------
-Artifacts are keyed by `QuantConfig.hash` alone, not by the full deployment
-config: runtime settings do not change the bytes. A cache hit skips both the
-quantization and its gates, which is what makes a multi-hundred-trial search
-affordable.
+shape-inferred and fused graph -- quantizing the deployable export instead
+leaves unfused subgraphs wrapped in QDQ nodes, slower and less accurate
+(PLAN.md DO-NOT #4). The FP32 baseline uses the deployable export instead,
+since that's the file one would actually ship; export verified the two are
+numerically identical (max logit delta 0), so the asymmetry costs nothing in
+comparability. Artifacts are keyed by `QuantConfig.hash` alone, not the full
+deployment config, since runtime settings don't change the bytes -- a cache
+hit then skips both quantization and its gates, which is what makes a
+multi-hundred-trial search affordable.
 """
 
 from __future__ import annotations

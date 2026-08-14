@@ -30,9 +30,6 @@ def candidate(
     }
 
 
-# ------------------------------------------------------------------- dominance
-
-
 def test_a_candidate_better_everywhere_dominates() -> None:
     assert select.dominates(candidate("a", 3.0, 10, 90.0, 79.0), candidate("b", 4.0, 20, 100.0, 78.0))
 
@@ -57,9 +54,6 @@ def test_the_front_keeps_only_the_undominated() -> None:
     assert {row["config_hash"] for row in select.non_dominated(rows)} == {"best", "accurate"}
 
 
-# --------------------------------------------------------------------- filters
-
-
 def test_a_candidate_that_failed_a_gate_is_never_selected() -> None:
     rows = [candidate("broken", 1.0, status="build_failed"), candidate("ok", 5.0)]
     assert select.selections(rows)[select.FASTEST]["config_hash"] == "ok"
@@ -77,9 +71,6 @@ def test_recommended_skips_a_candidate_the_device_called_inadmissible() -> None:
     assert chosen[select.RECOMMENDED]["config_hash"] == "clean"
     # It is still the fastest thing measured, and the front should say so.
     assert chosen[select.FASTEST]["config_hash"] == "throttled"
-
-
-# ----------------------------------------------------------------------- ties
 
 
 def test_two_latencies_inside_the_band_are_a_tie_broken_by_size() -> None:
@@ -115,9 +106,6 @@ def test_tie_breaks_are_deterministic_all_the_way_down() -> None:
     assert select.selections(rows, BAND_MS)[select.FASTEST]["config_hash"] == "aaa"
 
 
-# ------------------------------------------------------------- the named five
-
-
 def test_every_named_choice_is_produced() -> None:
     rows = [candidate("a", 3.0, 30_000_000, 120.0, 78.0), candidate("b", 5.0, 10_000_000, 90.0, 79.0)]
     chosen = select.selections(rows, BAND_MS)
@@ -131,9 +119,6 @@ def test_every_named_choice_is_produced() -> None:
 def test_nothing_feasible_names_nothing_rather_than_guessing() -> None:
     chosen = select.selections([candidate("broken", 1.0, status="build_failed")], BAND_MS)
     assert all(value is None for value in chosen.values())
-
-
-# -------------------------------------------------------------- the shortlist
 
 
 def test_the_shortlist_is_the_fastest_three_plus_smallest_and_lowest_ram() -> None:
@@ -154,9 +139,6 @@ def test_a_candidate_winning_twice_does_not_spend_two_slots() -> None:
 
 def test_the_shortlist_is_empty_when_nothing_is_feasible() -> None:
     assert select.finalists([candidate("broken", 1.0, status="build_failed")]) == []
-
-
-# ------------------------------------------------------------- the aggregation
 
 
 def test_the_repeated_median_replaces_the_single_measurement_in_ranking() -> None:
@@ -181,9 +163,6 @@ def test_a_partial_finalist_failure_is_recorded_not_hidden() -> None:
 def test_the_deviation_is_zero_for_a_single_measurement_and_positive_for_spread() -> None:
     assert median_absolute_deviation([3.0]) == 0.0
     assert median_absolute_deviation([3.0, 3.1, 3.2]) == pytest.approx(0.1)
-
-
-# --------------------------------------------------------------- the whole stage
 
 
 class Repeater:

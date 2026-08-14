@@ -71,9 +71,6 @@ def group_weight(group: str) -> float:
     return 0.02 + (digest[0] / 255) ** SENSITIVITY_CONCENTRATION * 0.98
 
 
-# --------------------------------------------------------------------- stages
-
-
 def mock_baseline(run: Run) -> dict[str, Any]:
     """Adopt the real PC-side baseline report; nothing about it needs a device."""
     source = REPORT_DIR / f"{run.model}_baseline.json"
@@ -322,9 +319,6 @@ def mock_final_test(run: Run, runner: MockRunner) -> dict[str, Any]:
             "created_at_utc": now(),
         },
     )
-
-
-# ------------------------------------------------------------------ executor
 
 
 def make_executor(run: Run):
