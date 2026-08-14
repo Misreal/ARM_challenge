@@ -1,0 +1,10 @@
+{
+  "host": "REPLACE_WITH_PI_IP_OR_HOSTNAME",
+  "user": "REPLACE_WITH_PI_USERNAME",
+  "remote_root": "/home/REPLACE_WITH_PI_USERNAME/arm_challenge",
+  "python": "/home/REPLACE_WITH_PI_USERNAME/armopt/bin/python",
+  "port": 22,
+  "identity_file": null,
+  "connect_timeout_s": 15,
+  "command_timeout_s": 1800
+}

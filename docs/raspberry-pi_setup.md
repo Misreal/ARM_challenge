@@ -731,6 +731,19 @@ rsync -avz <PROJECT_ROOT>/artifacts/pi_data/ <PI_USER>@<PI_IP>:~/ARM_challenge/a
 
 If `rsync` isn't installed on Windows, plain `scp` is fine — just be selective.
 
+### 7.5 Copy the scripts directory
+
+`scripts/pi_prepare.sh` (Section 12.3, run after every boot) lives outside `src/`, so `scp -r src`
+in 7.2 does not bring it along. Copy it once, the same way:
+
+```powershell
+# Laptop (PowerShell). Copies scripts/, including pi_prepare.sh.
+scp -r <PROJECT_ROOT>\scripts <PI_USER>@<PI_IP>:~/ARM_challenge/
+```
+
+Skipping this step is what produces `bash: scripts/pi_prepare.sh: No such file or directory` the
+first time you try to run it.
+
 ### If this goes wrong
 
 **`scp: ... : No such file or directory`** — usually the *destination* directory doesn't exist

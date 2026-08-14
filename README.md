@@ -29,61 +29,169 @@ Three campaigns ship measured on a Pi 5. Their fastest members, against their ow
 Every figure on every page is extracted from the result JSONs at build time. The templates contain
 no numbers, so a page cannot drift from what was measured.
 
-## Run it yourself, without a Raspberry Pi
+## What you need before you start
+
+**The device.** A Raspberry Pi 5 running **64-bit Raspberry Pi OS Bookworm**, with the official
+27 W PSU and an active cooler. The PSU and cooler are not optional extras: an undervolted or
+throttling Pi measures its own thermal state rather than your model, and the harness refuses to
+record a run where that happened.
+
+**The host.** Any machine with Python 3.11 and an SSH client. It never needs a GPU unless you
+intend to train a model from scratch.
+
+**The model.** A **CIFAR-100 classifier**, exported to ONNX with:
+
+| Requirement | Why |
+| --- | --- |
+| Static `(1, 3, 32, 32)` input | Dynamic axes break static INT8 calibration and invalidate the latency method |
+| 100 output classes | The evaluation bundles are CIFAR-100 |
+| Exported by `torch.onnx.export` | Node names must carry module paths, or per-block sensitivity has nothing to group by |
+
+The importer checks all three and refuses with a reason rather than producing a meaningless
+ranking. **224x224 models are rejected** — the evaluation bundle is 32x32 uint8 pixels, and
+resizing at evaluation time in a way that differs from training is a well-known silent accuracy
+killer.
+
+## How to run it on a Raspberry Pi
+
+### 1. Set up the host — about 10 minutes
 
 ```bash
+git clone https://github.com/Misreal/ARM_challenge.git
+cd ARM_challenge
 pip install -r requirements.txt
-python -m src.app run --model resnet18_cifar --mock
+pytest
 ```
 
-That runs all ten stages against a simulated device and writes a new run with its own page. It
-takes about a minute. **Every number it produces is invented** -- the run is stamped `mock` and the
-page carries a banner saying so. It exists to prove the pipeline works end to end, not to tell you
-anything about performance.
+Five failures in `tests/test_sensitivity_answer_key.py` are expected. They are a recorded
+disagreement between a planted answer key and what the device actually measured, kept deliberately
+rather than edited away.
+
+### 2. Set up the Pi — about 30–45 minutes, once per device
+
+Follow [`docs/raspberry-pi_setup.md`](docs/raspberry-pi_setup.md), **Sections 1 through 5**:
+
+| Section | What it does |
+| --- | --- |
+| §1 | Network and first SSH login |
+| §2 | System update and base tools |
+| §3 | Create the `~/armopt` virtual environment |
+| §4 | Install `requirements-pi.txt` — pinned, and deliberately torch-free |
+| §5 | Verify ONNX Runtime imports and reports the right version |
+
+§6 covers benchmark hygiene. Read it. It is what separates a measurement from a number.
+
+The ONNX Runtime version on the Pi must match the host exactly. Different kernels shift both
+accuracy and latency, so a mismatch quietly compares two different things.
+
+### 3. Connect the two — about 5 minutes
+
+Set up SSH key authentication (§12), then copy the template and fill in **your own** device:
 
 ```bash
-python -m src.app list          # every run and whether it has a page
-python -m scripts.build_index   # rebuild the landing page
+cp pi_target.example.json pi_target.json
 ```
 
-## Run it for real
+Every value in the template is a placeholder that must be replaced:
 
-You need a Raspberry Pi 5 on 64-bit Bookworm with the official PSU and an active cooler. See
-[`docs/raspberry-pi_setup.md`](docs/raspberry-pi_setup.md), then write a `pi_target.json` with your
-host, user and key path.
+| Field | What to put | Required |
+| --- | --- | --- |
+| `host` | Your Pi's IP address or hostname | yes |
+| `user` | Your username **on the Pi**, not on your laptop | yes |
+| `remote_root` | Where this repo lives on the Pi, e.g. `/home/<you>/arm_challenge` | yes |
+| `python` | The **venv** interpreter from §3, e.g. `/home/<you>/armopt/bin/python` | recommended |
+| `port` | SSH port; leave `22` unless you changed it | no |
+| `identity_file` | Path to a specific private key, or `null` for your SSH default | no |
+
+`python` matters more than it looks. It must point at the `~/armopt` venv, **not** the Pi's system
+`python3` — §5 of the setup guide has you verify exactly this. The system interpreter either lacks
+ONNX Runtime entirely or carries a different version, and a version mismatch between host and
+device silently compares two different things.
+
+`pi_target.json` is gitignored, so it never arrives with a clone and your host details never get
+committed. The template is the only version in the repository. If you would rather not write a file
+at all, `ARMOPT_PI_HOST`, `ARMOPT_PI_USER`, `ARMOPT_PI_ROOT`, `ARMOPT_PI_PYTHON` and
+`ARMOPT_PI_KEY` override it from the environment.
+
+Confirm the link before spending device time on anything:
 
 ```bash
-sudo bash scripts/pi_prepare.sh            # on the Pi, after every boot
-python -m src.app run --model resnet18_cifar
+python -m src.bench.remote --push-code --check
 ```
 
-Stages are skipped if they are already done, so an interrupted overnight campaign resumes where it
-stopped rather than starting over. `--only <stage>` reruns one stage; `--force` redoes work.
+That reports the governor, clock, temperature and throttle mask. If it passes, the host can drive
+the Pi.
 
-## Bring your own model
+### 4. Build the evaluation bundles — about 5 minutes
+
+Required once, whichever model you bring. The bundles are gitignored because they are derived data.
+
+```bash
+python -m src.data.splits --create      # downloads CIFAR-100 and writes the split
+python -m src.data.export_pi_data       # optimization and calibration bundles
+python -m src.data.export_test_bundle   # the sealed test bundle
+```
+
+The split is three-way and strictly separated: the search never sees the test set, and calibration
+never sees the data the search is scored on.
+
+### 5. Bring in a model
+
+Trained checkpoints and ONNX graphs are build outputs, not source, so they are not in the
+repository. Pick whichever route suits you.
+
+**Option A — download the models these results were measured on.** The three FP32 exports are
+attached to the [v1.0 release](https://github.com/Misreal/ARM_challenge/releases/tag/v1.0):
+
+```bash
+curl -L -O https://github.com/Misreal/ARM_challenge/releases/download/v1.0/resnet18_cifar.onnx
+python -m src.import_onnx --onnx resnet18_cifar.onnx --name resnet18_repro --seal-test
+```
+
+| Asset | Size |
+| --- | --- |
+| `resnet18_cifar.onnx` | 42.8 MB |
+| `mobilenetv2_cifar.onnx` | 8.9 MB |
+| `custom_cnn.onnx` | 6.8 MB |
+
+Import under a **new name**, as above. The bundled reports already carry sealed test scores, and
+the importer refuses to overwrite one — that guard is what stops the sealed split from being
+scored twice.
+
+**Option B — bring your own model.** Same command, your graph:
 
 ```bash
 python -m src.import_onnx --onnx your_model.onnx --name your_model --seal-test
+```
+
+It must meet the three requirements above. The importer checks them and refuses with a reason.
+
+### 6. Run the campaign
+
+```bash
+sudo bash scripts/pi_prepare.sh        # on the Pi, after every boot
 python -m src.app run --model your_model
 ```
 
-The model must be a **CIFAR-100 classifier with a static `(1, 3, 32, 32)` input and 100 output
-classes**. The importer refuses anything else, and says why. Two refusals are worth knowing about
-in advance:
+`pi_prepare.sh` pins the CPU governor. It needs `sudo`, so it cannot be done for you from the host,
+and the harness refuses to measure a device whose governor is unpinned.
 
-- **224x224 models are rejected.** The evaluation bundle is 32x32 uint8 pixels. Accepting a larger
-  input would mean resizing, and a resize implemented differently from the one used at training
-  time is a well-known silent accuracy killer. CIFAR at its native size makes that impossible, and
-  the pipeline keeps it that way.
-- **Graphs whose nodes carry no module paths are rejected.** Per-layer sensitivity analysis groups
-  ONNX nodes back into blocks using the module path `torch.onnx.export` writes into each node name.
-  A graph exported some other way may arrive with names that carry no structure, and a sensitivity
-  ranking over one undifferentiated mega-group measures nothing. Exporting a PyTorch checkpoint
-  yourself is the reliable route.
+Stages are skipped if already done, so an interrupted overnight campaign resumes where it stopped.
+`--only <stage>` reruns one stage; `--force` redoes work.
+
+### 7. Read the results
+
+```bash
+python -m src.app list          # every run and whether it has a page
+```
+
+Open `runs/<run_id>/dashboard/index.html` for that campaign, or
+`artifacts/dashboard/index.html` for the landing page listing all of them. Both are rebuilt
+automatically at the end of a run.
 
 ## How it works
 
-Eleven stages, declared as data in [`src/pipeline.py`](src/pipeline.py):
+Twelve stages, declared as data in [`src/pipeline.py`](src/pipeline.py):
 
 | Stage | What it does |
 | --- | --- |
@@ -98,6 +206,7 @@ Eleven stages, declared as data in [`src/pipeline.py`](src/pipeline.py):
 | `finalists` | Re-measure the shortlist five times and name the deployment choices |
 | `final_test` | Score the front once on the sealed test set |
 | `dashboard` | Render that run's page |
+| `index` | Refresh the landing page that lists every run |
 
 **Sensitivity analysis before search** is the part that distinguishes this from running global INT8
 quantization. Rather than quantizing everything or hand-picking the usual first and last layers, it
@@ -135,7 +244,7 @@ constrained NSGA-II, which no model bundled here reaches.
 
 ```
 src/app.py           the entry point
-src/pipeline.py      the ten stages, as data
+src/pipeline.py      the twelve stages, as data
 src/runs.py          what a run is and where its files live
 src/import_onnx.py   bring your own model
 src/quant/           quantization, config hashing, node-to-block grouping
@@ -161,3 +270,22 @@ runs/                one directory per campaign, each with its own page
   near 3.4 ms. Applying the same percentage there assumes the spread scales with the work done. It
   probably mostly does, but it is an assumption, and the honest fix is a second sentinel near the
   front's latency.
+
+## Trying the pipeline without a Raspberry Pi
+
+If you have no device and only want to see the machinery work:
+
+```bash
+pip install -r requirements.txt
+python -m src.app run --model resnet18_cifar --mock
+```
+
+That walks every stage against a simulated device in about a minute and writes a run with its own
+page. **Every number it produces is invented.** The run is stamped `mock`, the page carries a
+banner saying so, and `.gitignore` keeps simulated runs out of the repository. It exists to prove
+the pipeline runs end to end — it tells you nothing about performance, and nothing it outputs
+belongs in a comparison.
+
+## Licence
+
+MIT — see [`LICENSE`](LICENSE).
