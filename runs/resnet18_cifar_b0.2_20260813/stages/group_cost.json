@@ -1,0 +1,5 @@
+{
+  "model": "resnet18_cifar",
+  "measured": "per-group exclusions",
+  "cache": "artifacts/bench_cache"
+}

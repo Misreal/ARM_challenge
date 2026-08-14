@@ -1,0 +1,3656 @@
+{
+  "schema": "study/2",
+  "study": "resnet18_cifar_budget0.2_v4",
+  "space_version": "v4",
+  "model": "resnet18_cifar",
+  "mock": false,
+  "baseline_top1": 78.5,
+  "accuracy_budget_pt": 0.2,
+  "threshold_top1": 78.3,
+  "groups": [
+    "conv1",
+    "relu",
+    "layer1",
+    "layer2",
+    "layer3",
+    "layer4",
+    "avgpool",
+    "fc"
+  ],
+  "search_plan": {
+    "schema": "search-plan/1",
+    "space_version": "v4",
+    "model": "resnet18_cifar",
+    "space": {
+      "schema": "search-space/2",
+      "model": "resnet18_cifar",
+      "fingerprint": "a4646718378bad6e",
+      "pinned_fp32": [],
+      "pinned_int8": [
+        "layer2",
+        "layer3",
+        "layer4",
+        "relu",
+        "avgpool"
+      ],
+      "searchable": [
+        "conv1",
+        "layer1",
+        "fc"
+      ],
+      "precision_vectors_full": 256,
+      "precision_vectors_reduced": 8,
+      "band": {
+        "fraction": 0.01124,
+        "ms": 0.0377,
+        "source": "sentinel",
+        "reference_ms": 3.3549
+      }
+    },
+    "strategy": "enumerate",
+    "strategy_reason": "8 precision vectors fit a budget of 40, so every one is measured under 5 complete one-factor round(s)",
+    "budget": 40,
+    "baseline_top1": 78.5,
+    "accuracy_budget_pt": 0.2,
+    "threshold_top1": 78.3,
+    "max_rss_mb": null,
+    "population_size": null,
+    "rounds_completed": [
+      "canonical",
+      "no-arena",
+      "per-tensor",
+      "act-int8",
+      "opt-extended"
+    ],
+    "round_truncated": null,
+    "candidates": [
+      {
+        "round": "canonical",
+        "config_hash": "6bd18ba89f010ad2",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "6c2712900e73dc56"
+      },
+      {
+        "round": "canonical",
+        "config_hash": "115b64b9cbec232b",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "846d58cd52bc8226"
+      },
+      {
+        "round": "canonical",
+        "config_hash": "d7ac0cc4fd6cb0f4",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "fc"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "e45488c8c4305b59"
+      },
+      {
+        "round": "canonical",
+        "config_hash": "e3559d2b4b82f13a",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "0670e91eb4510407"
+      },
+      {
+        "round": "canonical",
+        "config_hash": "4c7c16e8b460162c",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "fc"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "b3dce3dabb14a76d"
+      },
+      {
+        "round": "canonical",
+        "config_hash": "bf47d795bf912449",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "c6594a26c3b167fe"
+      },
+      {
+        "round": "canonical",
+        "config_hash": "b5fbbbf0f1990236",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "fc",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "801fdd6e7c25336d"
+      },
+      {
+        "round": "canonical",
+        "config_hash": "0c5e688915d26fd8",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "fc",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "ffbab7077894d416"
+      },
+      {
+        "round": "no-arena",
+        "config_hash": "e81e37a23c2007f2",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "6c2712900e73dc56"
+      },
+      {
+        "round": "no-arena",
+        "config_hash": "d4d6c72a5e6e7a58",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "846d58cd52bc8226"
+      },
+      {
+        "round": "no-arena",
+        "config_hash": "95dd271ef6dbf342",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "fc"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "e45488c8c4305b59"
+      },
+      {
+        "round": "no-arena",
+        "config_hash": "80513cb093023ef5",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "0670e91eb4510407"
+      },
+      {
+        "round": "no-arena",
+        "config_hash": "aa4734416874f213",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "fc"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "b3dce3dabb14a76d"
+      },
+      {
+        "round": "no-arena",
+        "config_hash": "414109a12a5ce251",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "c6594a26c3b167fe"
+      },
+      {
+        "round": "no-arena",
+        "config_hash": "3fda9a632ca73f1b",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "fc",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "801fdd6e7c25336d"
+      },
+      {
+        "round": "no-arena",
+        "config_hash": "ddef15cf6c848261",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "fc",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "ffbab7077894d416"
+      },
+      {
+        "round": "per-tensor",
+        "config_hash": "51010d7f9625be14",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "06e1b9094831a2a6"
+      },
+      {
+        "round": "per-tensor",
+        "config_hash": "f696452374b92697",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "6b91d5e8555c119a"
+      },
+      {
+        "round": "per-tensor",
+        "config_hash": "178bda104805fdab",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "fc"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "dacccf4144c84ac4"
+      },
+      {
+        "round": "per-tensor",
+        "config_hash": "5d6b3f492d5dd298",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "2c070700db48770f"
+      },
+      {
+        "round": "per-tensor",
+        "config_hash": "c1b728518aa680cf",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "fc"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "b076bcd53ba79f30"
+      },
+      {
+        "round": "per-tensor",
+        "config_hash": "027cd2b9c45d32af",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "f8fdaa37413c9992"
+      },
+      {
+        "round": "per-tensor",
+        "config_hash": "c3002857947790de",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "fc",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "f7ef7bbe0e8e2a3b"
+      },
+      {
+        "round": "per-tensor",
+        "config_hash": "93595cf5303b1d20",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "fc",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "997b50f023502eb0"
+      },
+      {
+        "round": "act-int8",
+        "config_hash": "4d677a5961e23433",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "bf34bfcd8dd317f7"
+      },
+      {
+        "round": "act-int8",
+        "config_hash": "cf5b3d4a79c3e56f",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "85a2333585dd9e61"
+      },
+      {
+        "round": "act-int8",
+        "config_hash": "a981ac08e9b027fb",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "fc"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "f9fc1b945367ab4a"
+      },
+      {
+        "round": "act-int8",
+        "config_hash": "04b1ba74f8ed7cae",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "2d6c14cecef30af5"
+      },
+      {
+        "round": "act-int8",
+        "config_hash": "c0f7fac0f205b715",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "fc"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "14bb4063d3644118"
+      },
+      {
+        "round": "act-int8",
+        "config_hash": "8ac81ac5c074b2a2",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "63088414f302fb46"
+      },
+      {
+        "round": "act-int8",
+        "config_hash": "2ba9448e80b8a5be",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "fc",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "7a52df0667659e3e"
+      },
+      {
+        "round": "act-int8",
+        "config_hash": "c53bb0814d1cdc1a",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "fc",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "b1009bbab3d00484"
+      },
+      {
+        "round": "opt-extended",
+        "config_hash": "9f1600d449d48a02",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "extended",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "6c2712900e73dc56"
+      },
+      {
+        "round": "opt-extended",
+        "config_hash": "a7c1cd46b78825d7",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "extended",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "846d58cd52bc8226"
+      },
+      {
+        "round": "opt-extended",
+        "config_hash": "0a5ddd2d36c61afd",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "fc"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "extended",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "e45488c8c4305b59"
+      },
+      {
+        "round": "opt-extended",
+        "config_hash": "19d1cf41d99e9dd6",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "extended",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "0670e91eb4510407"
+      },
+      {
+        "round": "opt-extended",
+        "config_hash": "11fb74bc272b1998",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "fc"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "extended",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "b3dce3dabb14a76d"
+      },
+      {
+        "round": "opt-extended",
+        "config_hash": "7b260e8de0142424",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "extended",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "c6594a26c3b167fe"
+      },
+      {
+        "round": "opt-extended",
+        "config_hash": "3f67ec340b26cebc",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "fc",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "extended",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "801fdd6e7c25336d"
+      },
+      {
+        "round": "opt-extended",
+        "config_hash": "07e63208cc4acdbf",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "fc",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "extended",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "ffbab7077894d416"
+      }
+    ]
+  },
+  "strategy": "enumerate",
+  "band": {
+    "fraction": 0.01124,
+    "ms": 0.0377,
+    "source": "sentinel",
+    "reference_ms": 3.3549
+  },
+  "trials": 40,
+  "references": {
+    "dynamic": {
+      "round": "reference",
+      "quant_hash": "9965282d98520e1e",
+      "config_hash": "6de1e09ec096399c",
+      "config": {
+        "quant": {
+          "quant_type": "dynamic",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "9965282d98520e1e",
+        "config_hash": "6de1e09ec096399c"
+      },
+      "describe": "dynamic",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 25.3817,
+        "size_bytes": 11272580,
+        "peak_rss_mb": 102.359375,
+        "top1": 78.33333333333333,
+        "screen_top1": 80.0,
+        "admissible": true,
+        "error": null
+      }
+    },
+    "fp32": {
+      "round": "reference",
+      "quant_hash": "621cee21bf4b25e3",
+      "config_hash": "f51ea28b71001e44",
+      "config": {
+        "quant": {
+          "quant_type": "none",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "621cee21bf4b25e3",
+        "config_hash": "f51ea28b71001e44"
+      },
+      "describe": "fp32",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 16.7898,
+        "size_bytes": 44870838,
+        "peak_rss_mb": 164.71875,
+        "top1": 78.5,
+        "screen_top1": 80.4,
+        "admissible": true,
+        "error": null
+      }
+    },
+    "greedy_prefix": {
+      "round": "reference",
+      "quant_hash": "ffbab7077894d416",
+      "config_hash": "0c5e688915d26fd8",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "fc",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "ffbab7077894d416",
+        "config_hash": "0c5e688915d26fd8"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:conv1+fc+layer1",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 5.5767,
+        "size_bytes": 11926015,
+        "peak_rss_mb": 107.328125,
+        "top1": 78.66666666666667,
+        "screen_top1": 80.4,
+        "admissible": true,
+        "error": null
+      }
+    },
+    "mixed_cookbook": {
+      "round": "reference",
+      "quant_hash": "b3dce3dabb14a76d",
+      "config_hash": "4c7c16e8b460162c",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "fc"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "b3dce3dabb14a76d",
+        "config_hash": "4c7c16e8b460162c"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:conv1+fc",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.5238,
+        "size_bytes": 11492754,
+        "peak_rss_mb": 105.9375,
+        "top1": 78.46666666666667,
+        "screen_top1": 80.4,
+        "admissible": true,
+        "error": null
+      }
+    },
+    "mixed_measured": {
+      "round": "reference",
+      "quant_hash": "c6594a26c3b167fe",
+      "config_hash": "bf47d795bf912449",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "c6594a26c3b167fe",
+        "config_hash": "bf47d795bf912449"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:conv1+layer1",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 5.5724,
+        "size_bytes": 11774974,
+        "peak_rss_mb": 107.25,
+        "top1": 78.6,
+        "screen_top1": 80.4,
+        "admissible": true,
+        "error": null
+      }
+    },
+    "static_per_channel": {
+      "round": "reference",
+      "quant_hash": "6c2712900e73dc56",
+      "config_hash": "6bd18ba89f010ad2",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "6c2712900e73dc56",
+        "config_hash": "6bd18ba89f010ad2"
+      },
+      "describe": "static per-channel act:uint8 minmax/512",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.3549,
+        "size_bytes": 11338184,
+        "peak_rss_mb": 105.390625,
+        "top1": 78.4,
+        "screen_top1": 80.2,
+        "admissible": true,
+        "error": null
+      }
+    },
+    "static_per_tensor": {
+      "round": "reference",
+      "quant_hash": "06e1b9094831a2a6",
+      "config_hash": "51010d7f9625be14",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "06e1b9094831a2a6",
+        "config_hash": "51010d7f9625be14"
+      },
+      "describe": "static per-tensor act:uint8 minmax/512",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "below_threshold",
+        "latency_ms": 3.3171,
+        "size_bytes": 11273804,
+        "peak_rss_mb": 109.828125,
+        "top1": 78.13333333333334,
+        "screen_top1": 79.8,
+        "admissible": true,
+        "error": null
+      }
+    }
+  },
+  "evaluated_configs": [
+    {
+      "round": "canonical",
+      "quant_hash": "6c2712900e73dc56",
+      "config_hash": "6bd18ba89f010ad2",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "6c2712900e73dc56",
+        "config_hash": "6bd18ba89f010ad2"
+      },
+      "describe": "static per-channel act:uint8 minmax/512",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.3549,
+        "size_bytes": 11338184,
+        "peak_rss_mb": 105.390625,
+        "top1": 78.4,
+        "screen_top1": 80.2,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "canonical",
+      "quant_hash": "846d58cd52bc8226",
+      "config_hash": "115b64b9cbec232b",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "846d58cd52bc8226",
+        "config_hash": "115b64b9cbec232b"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:conv1",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.5543,
+        "size_bytes": 11341713,
+        "peak_rss_mb": 105.71875,
+        "top1": 78.46666666666667,
+        "screen_top1": 80.4,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "canonical",
+      "quant_hash": "e45488c8c4305b59",
+      "config_hash": "d7ac0cc4fd6cb0f4",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "fc"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "e45488c8c4305b59",
+        "config_hash": "d7ac0cc4fd6cb0f4"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:fc",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.3746,
+        "size_bytes": 11489225,
+        "peak_rss_mb": 105.890625,
+        "top1": 78.33333333333333,
+        "screen_top1": 80.0,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "canonical",
+      "quant_hash": "0670e91eb4510407",
+      "config_hash": "e3559d2b4b82f13a",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "0670e91eb4510407",
+        "config_hash": "e3559d2b4b82f13a"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:layer1",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 5.792,
+        "size_bytes": 11771954,
+        "peak_rss_mb": 107.03125,
+        "top1": 78.53333333333333,
+        "screen_top1": 79.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "canonical",
+      "quant_hash": "b3dce3dabb14a76d",
+      "config_hash": "4c7c16e8b460162c",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "fc"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "b3dce3dabb14a76d",
+        "config_hash": "4c7c16e8b460162c"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:conv1+fc",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.5238,
+        "size_bytes": 11492754,
+        "peak_rss_mb": 105.9375,
+        "top1": 78.46666666666667,
+        "screen_top1": 80.4,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "canonical",
+      "quant_hash": "c6594a26c3b167fe",
+      "config_hash": "bf47d795bf912449",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "c6594a26c3b167fe",
+        "config_hash": "bf47d795bf912449"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:conv1+layer1",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 5.5724,
+        "size_bytes": 11774974,
+        "peak_rss_mb": 107.25,
+        "top1": 78.6,
+        "screen_top1": 80.4,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "canonical",
+      "quant_hash": "801fdd6e7c25336d",
+      "config_hash": "b5fbbbf0f1990236",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "fc",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "801fdd6e7c25336d",
+        "config_hash": "b5fbbbf0f1990236"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:fc+layer1",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 5.8427,
+        "size_bytes": 11922995,
+        "peak_rss_mb": 107.3125,
+        "top1": 78.5,
+        "screen_top1": 79.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "canonical",
+      "quant_hash": "ffbab7077894d416",
+      "config_hash": "0c5e688915d26fd8",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "fc",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "ffbab7077894d416",
+        "config_hash": "0c5e688915d26fd8"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:conv1+fc+layer1",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 5.5767,
+        "size_bytes": 11926015,
+        "peak_rss_mb": 107.328125,
+        "top1": 78.66666666666667,
+        "screen_top1": 80.4,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "no-arena",
+      "quant_hash": "6c2712900e73dc56",
+      "config_hash": "e81e37a23c2007f2",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "6c2712900e73dc56",
+        "config_hash": "e81e37a23c2007f2"
+      },
+      "describe": "static per-channel act:uint8 minmax/512",
+      "describe_run": "4t opt:all no-arena",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.3784,
+        "size_bytes": 11338184,
+        "peak_rss_mb": 97.4375,
+        "top1": 78.4,
+        "screen_top1": 80.2,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "no-arena",
+      "quant_hash": "846d58cd52bc8226",
+      "config_hash": "d4d6c72a5e6e7a58",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "846d58cd52bc8226",
+        "config_hash": "d4d6c72a5e6e7a58"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:conv1",
+      "describe_run": "4t opt:all no-arena",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.5673,
+        "size_bytes": 11341713,
+        "peak_rss_mb": 97.796875,
+        "top1": 78.46666666666667,
+        "screen_top1": 80.4,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "no-arena",
+      "quant_hash": "e45488c8c4305b59",
+      "config_hash": "95dd271ef6dbf342",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "fc"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "e45488c8c4305b59",
+        "config_hash": "95dd271ef6dbf342"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:fc",
+      "describe_run": "4t opt:all no-arena",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.4206,
+        "size_bytes": 11489225,
+        "peak_rss_mb": 97.921875,
+        "top1": 78.33333333333333,
+        "screen_top1": 80.0,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "no-arena",
+      "quant_hash": "0670e91eb4510407",
+      "config_hash": "80513cb093023ef5",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "0670e91eb4510407",
+        "config_hash": "80513cb093023ef5"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:layer1",
+      "describe_run": "4t opt:all no-arena",
+      "result": {
+        "status": "ok",
+        "latency_ms": 5.9952,
+        "size_bytes": 11771954,
+        "peak_rss_mb": 99.171875,
+        "top1": 78.53333333333333,
+        "screen_top1": 79.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "no-arena",
+      "quant_hash": "b3dce3dabb14a76d",
+      "config_hash": "aa4734416874f213",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "fc"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "b3dce3dabb14a76d",
+        "config_hash": "aa4734416874f213"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:conv1+fc",
+      "describe_run": "4t opt:all no-arena",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.5481,
+        "size_bytes": 11492754,
+        "peak_rss_mb": 99.90625,
+        "top1": 78.46666666666667,
+        "screen_top1": 80.4,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "no-arena",
+      "quant_hash": "c6594a26c3b167fe",
+      "config_hash": "414109a12a5ce251",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "c6594a26c3b167fe",
+        "config_hash": "414109a12a5ce251"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:conv1+layer1",
+      "describe_run": "4t opt:all no-arena",
+      "result": {
+        "status": "ok",
+        "latency_ms": 5.5656,
+        "size_bytes": 11774974,
+        "peak_rss_mb": 101.171875,
+        "top1": 78.6,
+        "screen_top1": 80.4,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "no-arena",
+      "quant_hash": "801fdd6e7c25336d",
+      "config_hash": "3fda9a632ca73f1b",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "fc",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "801fdd6e7c25336d",
+        "config_hash": "3fda9a632ca73f1b"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:fc+layer1",
+      "describe_run": "4t opt:all no-arena",
+      "result": {
+        "status": "ok",
+        "latency_ms": 5.9383,
+        "size_bytes": 11922995,
+        "peak_rss_mb": 98.8125,
+        "top1": 78.5,
+        "screen_top1": 79.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "no-arena",
+      "quant_hash": "ffbab7077894d416",
+      "config_hash": "ddef15cf6c848261",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "fc",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "ffbab7077894d416",
+        "config_hash": "ddef15cf6c848261"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:conv1+fc+layer1",
+      "describe_run": "4t opt:all no-arena",
+      "result": {
+        "status": "ok",
+        "latency_ms": 5.6092,
+        "size_bytes": 11926015,
+        "peak_rss_mb": 98.828125,
+        "top1": 78.66666666666667,
+        "screen_top1": 80.4,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "per-tensor",
+      "quant_hash": "06e1b9094831a2a6",
+      "config_hash": "51010d7f9625be14",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "06e1b9094831a2a6",
+        "config_hash": "51010d7f9625be14"
+      },
+      "describe": "static per-tensor act:uint8 minmax/512",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "below_threshold",
+        "latency_ms": 3.3171,
+        "size_bytes": 11273804,
+        "peak_rss_mb": 109.828125,
+        "top1": 78.13333333333334,
+        "screen_top1": 79.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "per-tensor",
+      "quant_hash": "6b91d5e8555c119a",
+      "config_hash": "f696452374b92697",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "6b91d5e8555c119a",
+        "config_hash": "f696452374b92697"
+      },
+      "describe": "static per-tensor act:uint8 minmax/512 fp32:conv1",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.5052,
+        "size_bytes": 11278193,
+        "peak_rss_mb": 110.21875,
+        "top1": 78.36666666666666,
+        "screen_top1": 80.6,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "per-tensor",
+      "quant_hash": "dacccf4144c84ac4",
+      "config_hash": "178bda104805fdab",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "fc"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "dacccf4144c84ac4",
+        "config_hash": "178bda104805fdab"
+      },
+      "describe": "static per-tensor act:uint8 minmax/512 fp32:fc",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "below_threshold",
+        "latency_ms": 3.3043,
+        "size_bytes": 11426175,
+        "peak_rss_mb": 110.359375,
+        "top1": 78.16666666666667,
+        "screen_top1": 80.0,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "per-tensor",
+      "quant_hash": "2c070700db48770f",
+      "config_hash": "5d6b3f492d5dd298",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "2c070700db48770f",
+        "config_hash": "5d6b3f492d5dd298"
+      },
+      "describe": "static per-tensor act:uint8 minmax/512 fp32:layer1",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 5.8106,
+        "size_bytes": 11711014,
+        "peak_rss_mb": 111.578125,
+        "top1": 78.4,
+        "screen_top1": 79.6,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "per-tensor",
+      "quant_hash": "b076bcd53ba79f30",
+      "config_hash": "c1b728518aa680cf",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "fc"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "b076bcd53ba79f30",
+        "config_hash": "c1b728518aa680cf"
+      },
+      "describe": "static per-tensor act:uint8 minmax/512 fp32:conv1+fc",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.5035,
+        "size_bytes": 11430564,
+        "peak_rss_mb": 110.34375,
+        "top1": 78.33333333333333,
+        "screen_top1": 80.4,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "per-tensor",
+      "quant_hash": "f8fdaa37413c9992",
+      "config_hash": "027cd2b9c45d32af",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "f8fdaa37413c9992",
+        "config_hash": "027cd2b9c45d32af"
+      },
+      "describe": "static per-tensor act:uint8 minmax/512 fp32:conv1+layer1",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 5.5773,
+        "size_bytes": 11714894,
+        "peak_rss_mb": 111.09375,
+        "top1": 78.46666666666667,
+        "screen_top1": 80.2,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "per-tensor",
+      "quant_hash": "f7ef7bbe0e8e2a3b",
+      "config_hash": "c3002857947790de",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "fc",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "f7ef7bbe0e8e2a3b",
+        "config_hash": "c3002857947790de"
+      },
+      "describe": "static per-tensor act:uint8 minmax/512 fp32:fc+layer1",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 5.7559,
+        "size_bytes": 11863385,
+        "peak_rss_mb": 110.546875,
+        "top1": 78.4,
+        "screen_top1": 79.6,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "per-tensor",
+      "quant_hash": "997b50f023502eb0",
+      "config_hash": "93595cf5303b1d20",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "fc",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "997b50f023502eb0",
+        "config_hash": "93595cf5303b1d20"
+      },
+      "describe": "static per-tensor act:uint8 minmax/512 fp32:conv1+fc+layer1",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 5.5243,
+        "size_bytes": 11867265,
+        "peak_rss_mb": 111.234375,
+        "top1": 78.5,
+        "screen_top1": 80.2,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "act-int8",
+      "quant_hash": "bf34bfcd8dd317f7",
+      "config_hash": "4d677a5961e23433",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "bf34bfcd8dd317f7",
+        "config_hash": "4d677a5961e23433"
+      },
+      "describe": "static per-channel act:int8 minmax/512",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.2251,
+        "size_bytes": 11338442,
+        "peak_rss_mb": 105.75,
+        "top1": 78.4,
+        "screen_top1": 80.2,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "act-int8",
+      "quant_hash": "85a2333585dd9e61",
+      "config_hash": "cf5b3d4a79c3e56f",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "85a2333585dd9e61",
+        "config_hash": "cf5b3d4a79c3e56f"
+      },
+      "describe": "static per-channel act:int8 minmax/512 fp32:conv1",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.3834,
+        "size_bytes": 11341962,
+        "peak_rss_mb": 106.234375,
+        "top1": 78.46666666666667,
+        "screen_top1": 80.4,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "act-int8",
+      "quant_hash": "f9fc1b945367ab4a",
+      "config_hash": "a981ac08e9b027fb",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "fc"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "f9fc1b945367ab4a",
+        "config_hash": "a981ac08e9b027fb"
+      },
+      "describe": "static per-channel act:int8 minmax/512 fp32:fc",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.2559,
+        "size_bytes": 11489465,
+        "peak_rss_mb": 105.453125,
+        "top1": 78.33333333333333,
+        "screen_top1": 80.0,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "act-int8",
+      "quant_hash": "2d6c14cecef30af5",
+      "config_hash": "04b1ba74f8ed7cae",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "2d6c14cecef30af5",
+        "config_hash": "04b1ba74f8ed7cae"
+      },
+      "describe": "static per-channel act:int8 minmax/512 fp32:layer1",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 5.7423,
+        "size_bytes": 11772187,
+        "peak_rss_mb": 107.109375,
+        "top1": 78.53333333333333,
+        "screen_top1": 79.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "act-int8",
+      "quant_hash": "14bb4063d3644118",
+      "config_hash": "c0f7fac0f205b715",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "fc"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "14bb4063d3644118",
+        "config_hash": "c0f7fac0f205b715"
+      },
+      "describe": "static per-channel act:int8 minmax/512 fp32:conv1+fc",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.4023,
+        "size_bytes": 11492985,
+        "peak_rss_mb": 106.40625,
+        "top1": 78.46666666666667,
+        "screen_top1": 80.4,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "act-int8",
+      "quant_hash": "63088414f302fb46",
+      "config_hash": "8ac81ac5c074b2a2",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "63088414f302fb46",
+        "config_hash": "8ac81ac5c074b2a2"
+      },
+      "describe": "static per-channel act:int8 minmax/512 fp32:conv1+layer1",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 5.4962,
+        "size_bytes": 11775189,
+        "peak_rss_mb": 107.125,
+        "top1": 78.6,
+        "screen_top1": 80.4,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "act-int8",
+      "quant_hash": "7a52df0667659e3e",
+      "config_hash": "2ba9448e80b8a5be",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "fc",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "7a52df0667659e3e",
+        "config_hash": "2ba9448e80b8a5be"
+      },
+      "describe": "static per-channel act:int8 minmax/512 fp32:fc+layer1",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 5.7189,
+        "size_bytes": 11923210,
+        "peak_rss_mb": 106.828125,
+        "top1": 78.5,
+        "screen_top1": 79.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "act-int8",
+      "quant_hash": "b1009bbab3d00484",
+      "config_hash": "c53bb0814d1cdc1a",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "fc",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "b1009bbab3d00484",
+        "config_hash": "c53bb0814d1cdc1a"
+      },
+      "describe": "static per-channel act:int8 minmax/512 fp32:conv1+fc+layer1",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 5.497,
+        "size_bytes": 11926212,
+        "peak_rss_mb": 107.3125,
+        "top1": 78.66666666666667,
+        "screen_top1": 80.4,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "opt-extended",
+      "quant_hash": "6c2712900e73dc56",
+      "config_hash": "9f1600d449d48a02",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "extended",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "6c2712900e73dc56",
+        "config_hash": "9f1600d449d48a02"
+      },
+      "describe": "static per-channel act:uint8 minmax/512",
+      "describe_run": "4t opt:extended",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.6105,
+        "size_bytes": 11338184,
+        "peak_rss_mb": 105.484375,
+        "top1": 78.4,
+        "screen_top1": 80.2,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "opt-extended",
+      "quant_hash": "846d58cd52bc8226",
+      "config_hash": "a7c1cd46b78825d7",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "extended",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "846d58cd52bc8226",
+        "config_hash": "a7c1cd46b78825d7"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:conv1",
+      "describe_run": "4t opt:extended",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.6938,
+        "size_bytes": 11341713,
+        "peak_rss_mb": 105.953125,
+        "top1": 78.46666666666667,
+        "screen_top1": 80.4,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "opt-extended",
+      "quant_hash": "e45488c8c4305b59",
+      "config_hash": "0a5ddd2d36c61afd",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "fc"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "extended",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "e45488c8c4305b59",
+        "config_hash": "0a5ddd2d36c61afd"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:fc",
+      "describe_run": "4t opt:extended",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.5975,
+        "size_bytes": 11489225,
+        "peak_rss_mb": 105.9375,
+        "top1": 78.33333333333333,
+        "screen_top1": 80.0,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "opt-extended",
+      "quant_hash": "0670e91eb4510407",
+      "config_hash": "19d1cf41d99e9dd6",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "extended",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "0670e91eb4510407",
+        "config_hash": "19d1cf41d99e9dd6"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:layer1",
+      "describe_run": "4t opt:extended",
+      "result": {
+        "status": "ok",
+        "latency_ms": 5.8744,
+        "size_bytes": 11771954,
+        "peak_rss_mb": 107.25,
+        "top1": 78.5,
+        "screen_top1": 79.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "opt-extended",
+      "quant_hash": "b3dce3dabb14a76d",
+      "config_hash": "11fb74bc272b1998",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "fc"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "extended",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "b3dce3dabb14a76d",
+        "config_hash": "11fb74bc272b1998"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:conv1+fc",
+      "describe_run": "4t opt:extended",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.6948,
+        "size_bytes": 11492754,
+        "peak_rss_mb": 105.90625,
+        "top1": 78.46666666666667,
+        "screen_top1": 80.4,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "opt-extended",
+      "quant_hash": "c6594a26c3b167fe",
+      "config_hash": "7b260e8de0142424",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "extended",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "c6594a26c3b167fe",
+        "config_hash": "7b260e8de0142424"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:conv1+layer1",
+      "describe_run": "4t opt:extended",
+      "result": {
+        "status": "ok",
+        "latency_ms": 5.8318,
+        "size_bytes": 11774974,
+        "peak_rss_mb": 107.25,
+        "top1": 78.63333333333334,
+        "screen_top1": 80.4,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "opt-extended",
+      "quant_hash": "801fdd6e7c25336d",
+      "config_hash": "3f67ec340b26cebc",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "fc",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "extended",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "801fdd6e7c25336d",
+        "config_hash": "3f67ec340b26cebc"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:fc+layer1",
+      "describe_run": "4t opt:extended",
+      "result": {
+        "status": "ok",
+        "latency_ms": 5.8808,
+        "size_bytes": 11922995,
+        "peak_rss_mb": 107.390625,
+        "top1": 78.46666666666667,
+        "screen_top1": 79.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "opt-extended",
+      "quant_hash": "ffbab7077894d416",
+      "config_hash": "07e63208cc4acdbf",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "fc",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "extended",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "ffbab7077894d416",
+        "config_hash": "07e63208cc4acdbf"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:conv1+fc+layer1",
+      "describe_run": "4t opt:extended",
+      "result": {
+        "status": "ok",
+        "latency_ms": 5.8264,
+        "size_bytes": 11926015,
+        "peak_rss_mb": 107.421875,
+        "top1": 78.66666666666667,
+        "screen_top1": 80.4,
+        "admissible": true,
+        "error": null
+      }
+    }
+  ],
+  "pareto": [
+    {
+      "round": "canonical",
+      "quant_hash": "6c2712900e73dc56",
+      "config_hash": "6bd18ba89f010ad2",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "6c2712900e73dc56",
+        "config_hash": "6bd18ba89f010ad2"
+      },
+      "describe": "static per-channel act:uint8 minmax/512",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.3549,
+        "size_bytes": 11338184,
+        "peak_rss_mb": 105.390625,
+        "top1": 78.4,
+        "screen_top1": 80.2,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "canonical",
+      "quant_hash": "846d58cd52bc8226",
+      "config_hash": "115b64b9cbec232b",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "846d58cd52bc8226",
+        "config_hash": "115b64b9cbec232b"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:conv1",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.5543,
+        "size_bytes": 11341713,
+        "peak_rss_mb": 105.71875,
+        "top1": 78.46666666666667,
+        "screen_top1": 80.4,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "canonical",
+      "quant_hash": "0670e91eb4510407",
+      "config_hash": "e3559d2b4b82f13a",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "0670e91eb4510407",
+        "config_hash": "e3559d2b4b82f13a"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:layer1",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 5.792,
+        "size_bytes": 11771954,
+        "peak_rss_mb": 107.03125,
+        "top1": 78.53333333333333,
+        "screen_top1": 79.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "canonical",
+      "quant_hash": "b3dce3dabb14a76d",
+      "config_hash": "4c7c16e8b460162c",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "fc"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "b3dce3dabb14a76d",
+        "config_hash": "4c7c16e8b460162c"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:conv1+fc",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.5238,
+        "size_bytes": 11492754,
+        "peak_rss_mb": 105.9375,
+        "top1": 78.46666666666667,
+        "screen_top1": 80.4,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "canonical",
+      "quant_hash": "ffbab7077894d416",
+      "config_hash": "0c5e688915d26fd8",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "fc",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "ffbab7077894d416",
+        "config_hash": "0c5e688915d26fd8"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:conv1+fc+layer1",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 5.5767,
+        "size_bytes": 11926015,
+        "peak_rss_mb": 107.328125,
+        "top1": 78.66666666666667,
+        "screen_top1": 80.4,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "no-arena",
+      "quant_hash": "6c2712900e73dc56",
+      "config_hash": "e81e37a23c2007f2",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "6c2712900e73dc56",
+        "config_hash": "e81e37a23c2007f2"
+      },
+      "describe": "static per-channel act:uint8 minmax/512",
+      "describe_run": "4t opt:all no-arena",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.3784,
+        "size_bytes": 11338184,
+        "peak_rss_mb": 97.4375,
+        "top1": 78.4,
+        "screen_top1": 80.2,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "no-arena",
+      "quant_hash": "846d58cd52bc8226",
+      "config_hash": "d4d6c72a5e6e7a58",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "846d58cd52bc8226",
+        "config_hash": "d4d6c72a5e6e7a58"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:conv1",
+      "describe_run": "4t opt:all no-arena",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.5673,
+        "size_bytes": 11341713,
+        "peak_rss_mb": 97.796875,
+        "top1": 78.46666666666667,
+        "screen_top1": 80.4,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "no-arena",
+      "quant_hash": "0670e91eb4510407",
+      "config_hash": "80513cb093023ef5",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "0670e91eb4510407",
+        "config_hash": "80513cb093023ef5"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:layer1",
+      "describe_run": "4t opt:all no-arena",
+      "result": {
+        "status": "ok",
+        "latency_ms": 5.9952,
+        "size_bytes": 11771954,
+        "peak_rss_mb": 99.171875,
+        "top1": 78.53333333333333,
+        "screen_top1": 79.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "no-arena",
+      "quant_hash": "b3dce3dabb14a76d",
+      "config_hash": "aa4734416874f213",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "fc"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "b3dce3dabb14a76d",
+        "config_hash": "aa4734416874f213"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:conv1+fc",
+      "describe_run": "4t opt:all no-arena",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.5481,
+        "size_bytes": 11492754,
+        "peak_rss_mb": 99.90625,
+        "top1": 78.46666666666667,
+        "screen_top1": 80.4,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "no-arena",
+      "quant_hash": "c6594a26c3b167fe",
+      "config_hash": "414109a12a5ce251",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "c6594a26c3b167fe",
+        "config_hash": "414109a12a5ce251"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:conv1+layer1",
+      "describe_run": "4t opt:all no-arena",
+      "result": {
+        "status": "ok",
+        "latency_ms": 5.5656,
+        "size_bytes": 11774974,
+        "peak_rss_mb": 101.171875,
+        "top1": 78.6,
+        "screen_top1": 80.4,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "no-arena",
+      "quant_hash": "801fdd6e7c25336d",
+      "config_hash": "3fda9a632ca73f1b",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "fc",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "801fdd6e7c25336d",
+        "config_hash": "3fda9a632ca73f1b"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:fc+layer1",
+      "describe_run": "4t opt:all no-arena",
+      "result": {
+        "status": "ok",
+        "latency_ms": 5.9383,
+        "size_bytes": 11922995,
+        "peak_rss_mb": 98.8125,
+        "top1": 78.5,
+        "screen_top1": 79.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "no-arena",
+      "quant_hash": "ffbab7077894d416",
+      "config_hash": "ddef15cf6c848261",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "fc",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "ffbab7077894d416",
+        "config_hash": "ddef15cf6c848261"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:conv1+fc+layer1",
+      "describe_run": "4t opt:all no-arena",
+      "result": {
+        "status": "ok",
+        "latency_ms": 5.6092,
+        "size_bytes": 11926015,
+        "peak_rss_mb": 98.828125,
+        "top1": 78.66666666666667,
+        "screen_top1": 80.4,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "per-tensor",
+      "quant_hash": "6b91d5e8555c119a",
+      "config_hash": "f696452374b92697",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "6b91d5e8555c119a",
+        "config_hash": "f696452374b92697"
+      },
+      "describe": "static per-tensor act:uint8 minmax/512 fp32:conv1",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.5052,
+        "size_bytes": 11278193,
+        "peak_rss_mb": 110.21875,
+        "top1": 78.36666666666666,
+        "screen_top1": 80.6,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "act-int8",
+      "quant_hash": "bf34bfcd8dd317f7",
+      "config_hash": "4d677a5961e23433",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "bf34bfcd8dd317f7",
+        "config_hash": "4d677a5961e23433"
+      },
+      "describe": "static per-channel act:int8 minmax/512",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.2251,
+        "size_bytes": 11338442,
+        "peak_rss_mb": 105.75,
+        "top1": 78.4,
+        "screen_top1": 80.2,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "act-int8",
+      "quant_hash": "85a2333585dd9e61",
+      "config_hash": "cf5b3d4a79c3e56f",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "85a2333585dd9e61",
+        "config_hash": "cf5b3d4a79c3e56f"
+      },
+      "describe": "static per-channel act:int8 minmax/512 fp32:conv1",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.3834,
+        "size_bytes": 11341962,
+        "peak_rss_mb": 106.234375,
+        "top1": 78.46666666666667,
+        "screen_top1": 80.4,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "act-int8",
+      "quant_hash": "f9fc1b945367ab4a",
+      "config_hash": "a981ac08e9b027fb",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "fc"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "f9fc1b945367ab4a",
+        "config_hash": "a981ac08e9b027fb"
+      },
+      "describe": "static per-channel act:int8 minmax/512 fp32:fc",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.2559,
+        "size_bytes": 11489465,
+        "peak_rss_mb": 105.453125,
+        "top1": 78.33333333333333,
+        "screen_top1": 80.0,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "act-int8",
+      "quant_hash": "2d6c14cecef30af5",
+      "config_hash": "04b1ba74f8ed7cae",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "2d6c14cecef30af5",
+        "config_hash": "04b1ba74f8ed7cae"
+      },
+      "describe": "static per-channel act:int8 minmax/512 fp32:layer1",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 5.7423,
+        "size_bytes": 11772187,
+        "peak_rss_mb": 107.109375,
+        "top1": 78.53333333333333,
+        "screen_top1": 79.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "act-int8",
+      "quant_hash": "63088414f302fb46",
+      "config_hash": "8ac81ac5c074b2a2",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "63088414f302fb46",
+        "config_hash": "8ac81ac5c074b2a2"
+      },
+      "describe": "static per-channel act:int8 minmax/512 fp32:conv1+layer1",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 5.4962,
+        "size_bytes": 11775189,
+        "peak_rss_mb": 107.125,
+        "top1": 78.6,
+        "screen_top1": 80.4,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "act-int8",
+      "quant_hash": "b1009bbab3d00484",
+      "config_hash": "c53bb0814d1cdc1a",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "fc",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "b1009bbab3d00484",
+        "config_hash": "c53bb0814d1cdc1a"
+      },
+      "describe": "static per-channel act:int8 minmax/512 fp32:conv1+fc+layer1",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 5.497,
+        "size_bytes": 11926212,
+        "peak_rss_mb": 107.3125,
+        "top1": 78.66666666666667,
+        "screen_top1": 80.4,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "opt-extended",
+      "quant_hash": "c6594a26c3b167fe",
+      "config_hash": "7b260e8de0142424",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "conv1",
+            "layer1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "extended",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "c6594a26c3b167fe",
+        "config_hash": "7b260e8de0142424"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:conv1+layer1",
+      "describe_run": "4t opt:extended",
+      "result": {
+        "status": "ok",
+        "latency_ms": 5.8318,
+        "size_bytes": 11774974,
+        "peak_rss_mb": 107.25,
+        "top1": 78.63333333333334,
+        "screen_top1": 80.4,
+        "admissible": true,
+        "error": null
+      }
+    }
+  ],
+  "selections": {
+    "fastest_valid": "4d677a5961e23433",
+    "smallest_valid": "f696452374b92697",
+    "lowest_ram": "e81e37a23c2007f2",
+    "most_accurate": "07e63208cc4acdbf",
+    "recommended": "4d677a5961e23433"
+  },
+  "created_at_utc": "2026-08-13T17:25:07.525297+00:00"
+}

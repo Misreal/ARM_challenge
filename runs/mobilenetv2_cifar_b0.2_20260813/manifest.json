@@ -1,0 +1,22 @@
+{
+  "schema": "manifest/1",
+  "stages": {
+    "baseline": {
+      "status": "ok",
+      "seconds": 0.0,
+      "completed_at_utc": "2026-08-13T18:39:30+00:00",
+      "from": "artifacts/reports/mobilenetv2_cifar_baseline.json"
+    },
+    "quant_baselines": {
+      "status": "failed",
+      "seconds": 53.34,
+      "completed_at_utc": "2026-08-13T18:40:23+00:00",
+      "error": "src.quant.baselines on the device: \u001b[0;93m2026-08-14 02:39:29.783849592 [W:onnxruntime:Default, device_discovery.cc:283 GetGpuDevices] Failed to detect devices under \"/sys/class/drm/card1\": device_discovery.cc:93 ReadFileContents Failed to open file: \"/sys/class/drm/card1/device/vendor\"\u001b[m\n\u001b[0;93m2026-08-14 02:39:29.783900517 [W:onnxruntime:Default, device_discovery.cc:283 GetGpuDevices] Failed to detect devices under \"/sys/class/d"
+    }
+  },
+  "host": {
+    "platform": "Windows-10-10.0.26200-SP0",
+    "machine": "AMD64"
+  },
+  "updated_at_utc": "2026-08-13T18:40:23+00:00"
+}

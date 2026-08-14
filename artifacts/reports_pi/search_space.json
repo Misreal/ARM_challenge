@@ -1,95 +1,4 @@
 {
-  "custom_cnn": {
-    "schema": "search-space/2",
-    "model": "custom_cnn",
-    "fingerprint": "84618aa148f93323",
-    "pinned_fp32": [],
-    "pinned_int8": [
-      "stage3",
-      "stage1",
-      "pool"
-    ],
-    "searchable": [
-      "stem",
-      "stage2",
-      "classifier"
-    ],
-    "precision_vectors_full": 64,
-    "precision_vectors_reduced": 8,
-    "band": {
-      "fraction": 0.02,
-      "ms": 0.0359,
-      "source": "default",
-      "reference_ms": 1.7966
-    },
-    "greedy_order": [
-      "classifier",
-      "stem",
-      "stage2",
-      "stage3",
-      "stage1"
-    ]
-  },
-  "mobilenetv2_cifar": {
-    "schema": "search-space/2",
-    "model": "mobilenetv2_cifar",
-    "fingerprint": "80d46e6224f7a17f",
-    "pinned_fp32": [],
-    "pinned_int8": [
-      "features.8",
-      "features.10",
-      "features.5",
-      "features.16",
-      "features.11",
-      "features.6",
-      "features.14",
-      "features.4",
-      "features.2",
-      "features.7",
-      "features.12",
-      "features.15",
-      "features.3",
-      "features.17",
-      "features.9",
-      "features.13"
-    ],
-    "searchable": [
-      "features.0",
-      "classifier.1",
-      "features.1",
-      "features.18"
-    ],
-    "precision_vectors_full": 1048576,
-    "precision_vectors_reduced": 16,
-    "band": {
-      "fraction": 0.02,
-      "ms": 0.0308,
-      "source": "default",
-      "reference_ms": 1.5397
-    },
-    "greedy_order": [
-      "features.18",
-      "features.0",
-      "classifier.1",
-      "features.1",
-      "features.8",
-      "features.10",
-      "features.5",
-      "features.16",
-      "features.11",
-      "features.6",
-      "features.14",
-      "features.4",
-      "features.2",
-      "features.7",
-      "features.12",
-      "features.15",
-      "features.3",
-      "features.17",
-      "features.9",
-      "features.13"
-    ]
-  },
   "resnet18_cifar": {
     "schema": "search-space/2",
     "model": "resnet18_cifar",
@@ -110,10 +19,10 @@
     "precision_vectors_full": 256,
     "precision_vectors_reduced": 8,
     "band": {
-      "fraction": 0.02,
-      "ms": 0.0683,
-      "source": "default",
-      "reference_ms": 3.4143
+      "fraction": 0.01124,
+      "ms": 0.0377,
+      "source": "sentinel",
+      "reference_ms": 3.3549
     },
     "greedy_order": [
       "fc",

@@ -1,0 +1,84 @@
+{
+  "schema": "manifest/1",
+  "stages": {
+    "baseline": {
+      "status": "ok",
+      "seconds": 0.0,
+      "completed_at_utc": "2026-08-13T15:32:34+00:00",
+      "from": "artifacts/reports/resnet18_cifar_baseline.json"
+    },
+    "quant_baselines": {
+      "status": "ok",
+      "seconds": 149.04,
+      "completed_at_utc": "2026-08-13T15:38:51+00:00",
+      "from": "artifacts/reports_pi/resnet18_cifar_quant_baselines.json"
+    },
+    "sensitivity": {
+      "status": "ok",
+      "seconds": 51.57,
+      "completed_at_utc": "2026-08-13T15:39:43+00:00",
+      "from": "artifacts/reports_pi/resnet18_cifar_sensitivity.json"
+    },
+    "group_cost": {
+      "status": "ok",
+      "seconds": 0.71,
+      "completed_at_utc": "2026-08-13T16:38:09+00:00",
+      "model": "resnet18_cifar",
+      "measured": "per-group exclusions",
+      "cache": "artifacts/bench_cache"
+    },
+    "sentinel": {
+      "status": "ok",
+      "seconds": 1706.57,
+      "completed_at_utc": "2026-08-13T16:36:33+00:00",
+      "from": "artifacts/reports_pi/sentinel_resnet18_cifar_20260813.json"
+    },
+    "cost_benefit": {
+      "status": "ok",
+      "seconds": 0.65,
+      "completed_at_utc": "2026-08-13T17:02:04+00:00",
+      "from": "artifacts/reports_pi/cost_benefit.json"
+    },
+    "search_space": {
+      "status": "ok",
+      "seconds": 0.6,
+      "completed_at_utc": "2026-08-13T17:02:05+00:00",
+      "from": "artifacts/reports_pi/search_space.json"
+    },
+    "study": {
+      "status": "ok",
+      "seconds": 1357.19,
+      "completed_at_utc": "2026-08-13T17:25:07+00:00",
+      "from": "artifacts/search/resnet18_cifar_budget0.2_v4.json"
+    },
+    "finalists": {
+      "status": "ok",
+      "seconds": 81.76,
+      "completed_at_utc": "2026-08-13T17:26:29+00:00",
+      "from": "artifacts/reports_pi/resnet18_cifar_finalists.json"
+    },
+    "final_test": {
+      "status": "ok",
+      "seconds": 1229.62,
+      "completed_at_utc": "2026-08-13T17:46:59+00:00",
+      "from": "artifacts/reports_pi/resnet18_cifar_final_test.json"
+    },
+    "dashboard": {
+      "status": "ok",
+      "seconds": 1.14,
+      "completed_at_utc": "2026-08-13T17:47:00+00:00",
+      "page": "runs/resnet18_cifar_b0.2_20260813/dashboard/index.html"
+    },
+    "index": {
+      "status": "ok",
+      "seconds": 2.79,
+      "completed_at_utc": "2026-08-13T17:47:02+00:00",
+      "index": "artifacts/dashboard/index.html"
+    }
+  },
+  "host": {
+    "platform": "Windows-10-10.0.26200-SP0",
+    "machine": "AMD64"
+  },
+  "updated_at_utc": "2026-08-13T17:47:02+00:00"
+}

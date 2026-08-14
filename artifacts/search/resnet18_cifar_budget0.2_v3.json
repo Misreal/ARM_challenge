@@ -1,0 +1,142 @@
+{
+  "study": "resnet18_cifar_budget0.2_v3",
+  "model": "resnet18_cifar",
+  "mock": false,
+  "baseline_top1": 78.5,
+  "accuracy_budget_pt": 0.2,
+  "threshold_top1": 78.3,
+  "groups": [
+    "conv1",
+    "relu",
+    "layer1",
+    "layer2",
+    "layer3",
+    "layer4",
+    "avgpool",
+    "fc"
+  ],
+  "trials": 61,
+  "pareto": [
+    {
+      "values": [
+        3.3376,
+        11338184.0,
+        105.359375,
+        78.4
+      ],
+      "constraints": [
+        -0.10000000000000853
+      ],
+      "describe": "static per-channel act:uint8 minmax/512",
+      "describe_run": "4t opt:all",
+      "quant_hash": "6c2712900e73dc56",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.3376,
+        "size_bytes": 11338184,
+        "peak_rss_mb": 105.359375,
+        "top1": 78.4,
+        "screen_top1": 80.2,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "values": [
+        3.5238,
+        11492754.0,
+        105.9375,
+        78.46666666666667
+      ],
+      "constraints": [
+        -0.1666666666666714
+      ],
+      "describe": "static per-channel act:uint8 minmax/512 fp32:conv1+fc",
+      "describe_run": "4t opt:all",
+      "quant_hash": "b3dce3dabb14a76d",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.5238,
+        "size_bytes": 11492754,
+        "peak_rss_mb": 105.9375,
+        "top1": 78.46666666666667,
+        "screen_top1": 80.4,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "values": [
+        3.7219,
+        11338751.0,
+        97.796875,
+        78.8
+      ],
+      "constraints": [
+        -0.5
+      ],
+      "describe": "static per-channel act:uint8 percentile/128 fp32:relu",
+      "describe_run": "4t opt:extended no-arena",
+      "quant_hash": "1c1bbe3f71bbad23",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.7219,
+        "size_bytes": 11338751,
+        "peak_rss_mb": 97.796875,
+        "top1": 78.8,
+        "screen_top1": 80.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "values": [
+        3.7219,
+        11338751.0,
+        97.796875,
+        78.8
+      ],
+      "constraints": [
+        -0.5
+      ],
+      "describe": "static per-channel act:uint8 percentile/128 fp32:relu",
+      "describe_run": "4t opt:extended no-arena",
+      "quant_hash": "1c1bbe3f71bbad23",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.7219,
+        "size_bytes": 11338751,
+        "peak_rss_mb": 97.796875,
+        "top1": 78.8,
+        "screen_top1": 80.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "values": [
+        3.6069,
+        11492967.0,
+        104.65625,
+        78.53333333333333
+      ],
+      "constraints": [
+        -0.23333333333333428
+      ],
+      "describe": "static per-channel act:int8 entropy/256 fp32:conv1+fc",
+      "describe_run": "4t opt:extended",
+      "quant_hash": "176e1058917f36ae",
+      "result": {
+        "status": "ok",
+        "latency_ms": 3.6069,
+        "size_bytes": 11492967,
+        "peak_rss_mb": 104.65625,
+        "top1": 78.53333333333333,
+        "screen_top1": 80.8,
+        "admissible": true,
+        "error": null
+      }
+    }
+  ],
+  "created_at_utc": "2026-08-12T18:15:47.440750+00:00"
+}

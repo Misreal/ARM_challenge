@@ -1,0 +1,212 @@
+{
+  "study": "custom_cnn_budget0.2_v3",
+  "model": "custom_cnn",
+  "mock": false,
+  "baseline_top1": 70.53333333333333,
+  "accuracy_budget_pt": 0.2,
+  "threshold_top1": 70.33333333333333,
+  "groups": [
+    "stem",
+    "stage1",
+    "stage2",
+    "stage3",
+    "pool",
+    "classifier"
+  ],
+  "trials": 60,
+  "pareto": [
+    {
+      "values": [
+        1.7858,
+        1811932.0,
+        84.796875,
+        70.43333333333334
+      ],
+      "constraints": [
+        -0.10000000000000853
+      ],
+      "describe": "static per-tensor act:uint8 minmax/512",
+      "describe_run": "4t opt:all",
+      "quant_hash": "06e1b9094831a2a6",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.7858,
+        "size_bytes": 1811932,
+        "peak_rss_mb": 84.796875,
+        "top1": 70.43333333333334,
+        "screen_top1": 71.2,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "values": [
+        1.7966,
+        1839387.0,
+        84.84375,
+        70.5
+      ],
+      "constraints": [
+        -0.1666666666666714
+      ],
+      "describe": "static per-channel act:uint8 minmax/512",
+      "describe_run": "4t opt:all",
+      "quant_hash": "6c2712900e73dc56",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.7966,
+        "size_bytes": 1839387,
+        "peak_rss_mb": 84.84375,
+        "top1": 70.5,
+        "screen_top1": 71.2,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "values": [
+        4.2425,
+        6248660.0,
+        94.234375,
+        71.03333333333333
+      ],
+      "constraints": [
+        -0.7000000000000028
+      ],
+      "describe": "static per-channel act:int8 percentile/256 fp32:pool+stage3+stem",
+      "describe_run": "4t opt:extended",
+      "quant_hash": "27984ab1ea3b4561",
+      "result": {
+        "status": "ok",
+        "latency_ms": 4.2425,
+        "size_bytes": 6248660,
+        "peak_rss_mb": 94.234375,
+        "top1": 71.03333333333333,
+        "screen_top1": 71.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "values": [
+        1.7685,
+        1872692.0,
+        85.359375,
+        70.86666666666666
+      ],
+      "constraints": [
+        -0.5333333333333314
+      ],
+      "describe": "static per-tensor act:int8 entropy/256 fp32:classifier+stem",
+      "describe_run": "4t opt:all",
+      "quant_hash": "f10ce195e7ced1f2",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.7685,
+        "size_bytes": 1872692,
+        "peak_rss_mb": 85.359375,
+        "top1": 70.86666666666666,
+        "screen_top1": 71.4,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "values": [
+        2.6135,
+        1816336.0,
+        84.84375,
+        70.8
+      ],
+      "constraints": [
+        -0.46666666666666856
+      ],
+      "describe": "static per-tensor act:uint8 percentile/128 fp32:stem",
+      "describe_run": "4t opt:extended",
+      "quant_hash": "e1922590159187a6",
+      "result": {
+        "status": "ok",
+        "latency_ms": 2.6135,
+        "size_bytes": 1816336,
+        "peak_rss_mb": 84.84375,
+        "top1": 70.8,
+        "screen_top1": 71.0,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "values": [
+        1.7854,
+        1872052.0,
+        84.859375,
+        70.96666666666667
+      ],
+      "constraints": [
+        -0.63333333333334
+      ],
+      "describe": "static per-tensor act:int8 minmax/1000 fp32:classifier+pool+stem",
+      "describe_run": "4t opt:all",
+      "quant_hash": "3fb40991a9b38d1c",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.7854,
+        "size_bytes": 1872052,
+        "peak_rss_mb": 84.859375,
+        "top1": 70.96666666666667,
+        "screen_top1": 72.2,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "values": [
+        2.2363,
+        2018909.0,
+        84.046875,
+        70.73333333333333
+      ],
+      "constraints": [
+        -0.4000000000000057
+      ],
+      "describe": "static per-channel act:int8 percentile/512 fp32:stage2",
+      "describe_run": "4t opt:all no-arena",
+      "quant_hash": "9c55d5b6e7650667",
+      "result": {
+        "status": "ok",
+        "latency_ms": 2.2363,
+        "size_bytes": 2018909,
+        "peak_rss_mb": 84.046875,
+        "top1": 70.73333333333333,
+        "screen_top1": 71.0,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "values": [
+        7.1259,
+        6896761.0,
+        93.84375,
+        71.03333333333333
+      ],
+      "constraints": [
+        -0.7000000000000028
+      ],
+      "describe": "static per-tensor act:uint8 percentile/512 fp32:stage1+stage3+stem",
+      "describe_run": "4t opt:all",
+      "quant_hash": "c64434dcf6721a9c",
+      "result": {
+        "status": "ok",
+        "latency_ms": 7.1259,
+        "size_bytes": 6896761,
+        "peak_rss_mb": 93.84375,
+        "top1": 71.03333333333333,
+        "screen_top1": 71.8,
+        "admissible": true,
+        "error": null
+      }
+    }
+  ],
+  "created_at_utc": "2026-08-12T17:24:49.672676+00:00"
+}

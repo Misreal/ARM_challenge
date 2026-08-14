@@ -1,0 +1,34 @@
+{
+  "schema": "search-space/2",
+  "model": "resnet18_cifar",
+  "fingerprint": "a4646718378bad6e",
+  "pinned_fp32": [],
+  "pinned_int8": [
+    "layer2",
+    "layer3",
+    "layer4",
+    "relu",
+    "avgpool"
+  ],
+  "searchable": [
+    "conv1",
+    "layer1",
+    "fc"
+  ],
+  "precision_vectors_full": 256,
+  "precision_vectors_reduced": 8,
+  "band": {
+    "fraction": 0.01124,
+    "ms": 0.0377,
+    "source": "sentinel",
+    "reference_ms": 3.3549
+  },
+  "greedy_order": [
+    "fc",
+    "conv1",
+    "layer1",
+    "layer2",
+    "layer3",
+    "layer4"
+  ]
+}

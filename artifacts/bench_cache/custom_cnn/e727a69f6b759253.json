@@ -1,0 +1,137 @@
+{
+  "schema": "bench_result/1",
+  "status": "ok",
+  "model": "custom_cnn",
+  "config": {
+    "quant": {
+      "quant_type": "static",
+      "per_channel": false,
+      "activation_type": "int8",
+      "weight_type": "int8",
+      "calibration_method": "percentile",
+      "calibration_size": 256,
+      "excluded_groups": [
+        "stage1",
+        "classifier"
+      ],
+      "reduce_range": false
+    },
+    "run": {
+      "intra_op_num_threads": 4,
+      "graph_optimization_level": "all",
+      "enable_cpu_mem_arena": true,
+      "allow_intra_op_spinning": true
+    },
+    "quant_hash": "7a10648c67f08999",
+    "config_hash": "fec785162d9c1179"
+  },
+  "quant_hash": "7a10648c67f08999",
+  "config_hash": "fec785162d9c1179",
+  "onnxruntime": "1.27.0",
+  "created_at_utc": "2026-08-12T18:36:04.841264+00:00",
+  "readiness": {
+    "enforced": true,
+    "violations": [],
+    "note": "device guards enforced",
+    "cooldown": {
+      "requested_c": 60.0,
+      "temperature_c": 54.55,
+      "waited_s": 0.0,
+      "reached": true,
+      "reason": "at or below threshold"
+    },
+    "device": {
+      "platform": "Linux-6.12.96+rpt-rpi-2712-aarch64-with-glibc2.36",
+      "machine": "aarch64",
+      "is_target": true,
+      "governors": [
+        "performance",
+        "performance",
+        "performance",
+        "performance"
+      ],
+      "governor": "performance",
+      "governor_is_pinned": true,
+      "clock_mhz": 2400.0,
+      "temperature_c": 54.55,
+      "throttle": {
+        "raw": 0,
+        "hex": "0x0",
+        "live": [],
+        "sticky": [],
+        "available": true
+      }
+    }
+  },
+  "admissible": true,
+  "admissibility_reason": "aarch64 target, no throttling, timings stable",
+  "bytes": 2529776,
+  "sha256": "22a31ed87e84221bdc4dbad15eaaa25121c8eb5e15e54967522220addd7fd03c",
+  "int8_op_count": 44,
+  "latency": {
+    "iterations": 100,
+    "warmup": 20,
+    "batch_size": 1,
+    "mean_ms": 5.4793,
+    "median_ms": 5.4788,
+    "p90_ms": 5.5135,
+    "p95_ms": 5.5155,
+    "p99_ms": 5.5482,
+    "min_ms": 5.4321,
+    "max_ms": 5.5868,
+    "stdev_ms": 0.0259,
+    "throughput_ips": 182.51,
+    "drift_ratio": 0.9993,
+    "stable": true
+  },
+  "session_load_seconds": 0.0156,
+  "peak_rss_mb": 87.15625,
+  "rss_attributable": true,
+  "rss_note": "peak RSS covers session creation and inference only",
+  "cpu_cores_busy": 3.99,
+  "throttle_events": [],
+  "device_before": {
+    "platform": "Linux-6.12.96+rpt-rpi-2712-aarch64-with-glibc2.36",
+    "machine": "aarch64",
+    "is_target": true,
+    "governors": [
+      "performance",
+      "performance",
+      "performance",
+      "performance"
+    ],
+    "governor": "performance",
+    "governor_is_pinned": true,
+    "clock_mhz": 2400.0,
+    "temperature_c": 56.2,
+    "throttle": {
+      "raw": 0,
+      "hex": "0x0",
+      "live": [],
+      "sticky": [],
+      "available": true
+    }
+  },
+  "device_after": {
+    "platform": "Linux-6.12.96+rpt-rpi-2712-aarch64-with-glibc2.36",
+    "machine": "aarch64",
+    "is_target": true,
+    "governors": [
+      "performance",
+      "performance",
+      "performance",
+      "performance"
+    ],
+    "governor": "performance",
+    "governor_is_pinned": true,
+    "clock_mhz": 2400.0,
+    "temperature_c": 61.7,
+    "throttle": {
+      "raw": 0,
+      "hex": "0x0",
+      "live": [],
+      "sticky": [],
+      "available": true
+    }
+  }
+}
