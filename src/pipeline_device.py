@@ -16,11 +16,13 @@ from typing import Any
 
 from src.bench.remote import PiConnection, RemoteBenchmarker
 from src.pipeline import Stage, execute, index_out, local_command
+from src.quant.config import EXPORTED_MODELS
 from src.runs import Run
 
 REPORT_DIR = Path("artifacts/reports")
 DEVICE_REPORT_DIR = Path("artifacts/reports_pi")
 SEARCH_DIR = Path("artifacts/search")
+ONNX_DIR = Path("artifacts/onnx")
 
 SENTINEL_REPEATS = 8
 SENTINEL_SPACING_S = 240.0
@@ -39,6 +41,23 @@ def adopt_file(source: Path, run: Run, stage: str, key: str | None = None) -> di
     return {"from": source.as_posix()}
 
 
+def already_exported(model: str) -> bool:
+    """A graph on disk that must not, or cannot, be exported again.
+
+    Re-exporting a sealed baseline destroys the test score `write_report` refuses
+    to overwrite, and an imported model has no checkpoint to export from at all.
+    Either way the graph must be present: a fresh clone ships the report but not
+    the graph, and adopting then would leave later stages nothing to quantize.
+    """
+    report = REPORT_DIR / f"{model}_baseline.json"
+    if not (ONNX_DIR / f"{model}.onnx").exists() or not report.exists():
+        return False
+    if model not in EXPORTED_MODELS:
+        return True  # imported: src.export_onnx cannot rebuild it
+    document = json.loads(report.read_text(encoding="utf-8"))
+    return "test_top1_sealed" in document.get("metrics", {})
+
+
 def on_device(connection: PiConnection, module: str, arguments: str, produces: str, local: Path) -> None:
     """Run one module on the Pi and bring its report back.
 
@@ -48,10 +67,19 @@ def on_device(connection: PiConnection, module: str, arguments: str, produces: s
     from src.bench.remote import SshTransport
 
     transport = SshTransport(connection)
-    command = f"cd {connection.remote_root} && python3 -m {module} {arguments}"
+    # The venv interpreter, not the system python3: only the venv has a pinned
+    # onnxruntime, and a version that differs from the host silently compares two
+    # different things.
+    command = f"cd {connection.remote_root} && {connection.python} -m {module} {arguments}"
     result = transport.run(command, timeout=7200)
     if not result.ok:
-        raise RuntimeError(f"{module} on the device: {result.stderr.strip()[:400]}")
+        # A headless Pi has no GPU, so ORT opens with pages of device-probe
+        # warnings; the traceback is at the end, which is why this reports the
+        # tail rather than the head.
+        detail = "\n".join(
+            line for line in result.stderr.splitlines() if "W:onnxruntime" not in line
+        )
+        raise RuntimeError(f"{module} on the device: {detail.strip()[-800:]}")
 
     local.parent.mkdir(parents=True, exist_ok=True)
     fetched = transport.fetch(f"{connection.remote_root}/{produces}", local)
@@ -73,18 +101,25 @@ def make_executor(run: Run):
         name = stage.name
 
         if name == "baseline":
-            execute(local_command("baseline", run))
+            if already_exported(model):
+                print("    graph already exported and its test score is sealed; adopting it")
+            else:
+                execute(local_command("baseline", run))
             return adopt_file(REPORT_DIR / f"{model}_baseline.json", run, "baseline")
 
+        # --report-dir is passed rather than trusting each module's default: only
+        # some of them switch destination when they detect they are on target.
         if name == "quant_baselines":
             local = DEVICE_REPORT_DIR / f"{model}_quant_baselines.json"
-            on_device(connection, "src.quant.baselines", f"--model {model}",
+            on_device(connection, "src.quant.baselines",
+                      f"--model {model} --report-dir {DEVICE_REPORT_DIR.as_posix()}",
                       f"artifacts/reports_pi/{model}_quant_baselines.json", local)
             return adopt_file(local, run, "quant_baselines")
 
         if name == "sensitivity":
             local = DEVICE_REPORT_DIR / f"{model}_sensitivity.json"
-            on_device(connection, "src.sensitivity.analyze", f"--model {model}",
+            on_device(connection, "src.sensitivity.analyze",
+                      f"--model {model} --report-dir {DEVICE_REPORT_DIR.as_posix()}",
                       f"artifacts/reports_pi/{model}_sensitivity.json", local)
             return adopt_file(local, run, "sensitivity")
 
@@ -93,7 +128,18 @@ def make_executor(run: Run):
             # each cached by config hash so a resumed run pays for none of them.
             execute([sys.executable, "-m", "src.bench.remote", "--model", model,
                      "--exclude-each", "--threads", "4"])
-            return {"measured": "per-group exclusions, cached under artifacts/bench_cache"}
+            # The measurements themselves live in the global cache, but the stage
+            # still has to leave a file: dependencies are satisfied by output on
+            # disk, so without one every later stage blocks on a stage that ran.
+            record = {
+                "model": model,
+                "measured": "per-group exclusions",
+                "cache": "artifacts/bench_cache",
+            }
+            target = run.paths.stage("group_cost")
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(json.dumps(record, indent=2), encoding="utf-8")
+            return record
 
         if name == "cost_benefit":
             execute(local_command("cost_benefit", run))
