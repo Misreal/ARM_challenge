@@ -1,0 +1,44 @@
+[
+  {
+    "group": "stem",
+    "recovery_share": 0.18611786227623153,
+    "latency_ms": 1.8789,
+    "cost_ms": 0.08230000000000004,
+    "share_per_ms": 2.2614564067585836
+  },
+  {
+    "group": "stage2",
+    "recovery_share": 0.31151388860233686,
+    "latency_ms": 2.3313,
+    "cost_ms": 0.5347000000000002,
+    "share_per_ms": 0.5825956398023878
+  },
+  {
+    "group": "stage3",
+    "recovery_share": 0.13023664610369515,
+    "latency_ms": 3.763,
+    "cost_ms": 1.9664,
+    "share_per_ms": 0.06623100391766433
+  },
+  {
+    "group": "stage1",
+    "recovery_share": 0.05080333133893141,
+    "latency_ms": 5.4332,
+    "cost_ms": 3.6366000000000005,
+    "share_per_ms": 0.013970008067681736
+  },
+  {
+    "group": "pool",
+    "recovery_share": 0.0,
+    "latency_ms": 1.8259,
+    "cost_ms": 0.029300000000000104,
+    "share_per_ms": 0.0
+  },
+  {
+    "group": "classifier",
+    "recovery_share": 0.052081949287173246,
+    "latency_ms": 1.7852,
+    "cost_ms": -0.011400000000000077,
+    "share_per_ms": null
+  }
+]

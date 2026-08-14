@@ -1,0 +1,280 @@
+{
+  "schema": "final_test/1",
+  "model": "mobilenetv2_cifar",
+  "study": "mobilenetv2_cifar_budget0.2_v4",
+  "eval_split": "test",
+  "limit": null,
+  "on_target": true,
+  "note": "First and only use of the sealed test set. Every Pareto member is scored, so no candidate was selected using test-set signal.",
+  "results": [
+    {
+      "label": "static per-channel act:uint8 minmax/512 | 4t opt:all",
+      "status": "ok",
+      "quant_hash": "6c2712900e73dc56",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "6c2712900e73dc56",
+        "config_hash": "6bd18ba89f010ad2"
+      },
+      "test": {
+        "samples": 10000,
+        "top1": 77.24,
+        "top5": 93.35
+      },
+      "seconds": 17.59
+    },
+    {
+      "label": "static per-channel act:uint8 minmax/512 fp32:features.1 | 4t opt:all",
+      "status": "ok",
+      "quant_hash": "b67f4372a7ad85f1",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "features.1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "b67f4372a7ad85f1",
+        "config_hash": "9c647e199cebf3c5"
+      },
+      "test": {
+        "samples": 10000,
+        "top1": 77.32,
+        "top5": 93.38
+      },
+      "seconds": 18.95
+    },
+    {
+      "label": "static per-channel act:uint8 minmax/512 fp32:features.18 | 4t opt:all",
+      "status": "ok",
+      "quant_hash": "76a3528abaa31083",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "features.18"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "76a3528abaa31083",
+        "config_hash": "bafc51aea512bbc3"
+      },
+      "test": {
+        "samples": 10000,
+        "top1": 77.26,
+        "top5": 93.42
+      },
+      "seconds": 17.8
+    },
+    {
+      "label": "static per-channel act:uint8 minmax/512 fp32:features.0+features.1 | 4t opt:all",
+      "status": "ok",
+      "quant_hash": "84878afb894c784c",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "features.0",
+            "features.1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "84878afb894c784c",
+        "config_hash": "daa92898470b42c6"
+      },
+      "test": {
+        "samples": 10000,
+        "top1": 77.24,
+        "top5": 93.38
+      },
+      "seconds": 18.74
+    },
+    {
+      "label": "static per-channel act:uint8 minmax/512 fp32:classifier.1+features.0+features.1 | 4t opt:all",
+      "status": "ok",
+      "quant_hash": "5f339d6ece711a79",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier.1",
+            "features.0",
+            "features.1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "5f339d6ece711a79",
+        "config_hash": "bcb006d8fff3c67e"
+      },
+      "test": {
+        "samples": 10000,
+        "top1": 77.21,
+        "top5": 93.38
+      },
+      "seconds": 19.22
+    },
+    {
+      "label": "static per-channel act:uint8 minmax/512 fp32:features.0+features.1+features.18 | 4t opt:all",
+      "status": "ok",
+      "quant_hash": "9241ca02431ba4e6",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "features.0",
+            "features.1",
+            "features.18"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "9241ca02431ba4e6",
+        "config_hash": "c2bec6954469a9cb"
+      },
+      "test": {
+        "samples": 10000,
+        "top1": 77.22,
+        "top5": 93.35
+      },
+      "seconds": 18.79
+    },
+    {
+      "label": "static per-channel act:uint8 minmax/512 fp32:classifier.1+features.0+features.1+features.18 | 4t opt:all",
+      "status": "ok",
+      "quant_hash": "0a77e57006778ac8",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier.1",
+            "features.0",
+            "features.1",
+            "features.18"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "0a77e57006778ac8",
+        "config_hash": "bb909df2ab60f354"
+      },
+      "test": {
+        "samples": 10000,
+        "top1": 77.2,
+        "top5": 93.37
+      },
+      "seconds": 19.49
+    },
+    {
+      "label": "fp32 (reference)",
+      "status": "ok",
+      "quant_hash": "621cee21bf4b25e3",
+      "config": {
+        "quant": {
+          "quant_type": "none",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "621cee21bf4b25e3",
+        "config_hash": "f51ea28b71001e44"
+      },
+      "test": {
+        "samples": 10000,
+        "top1": 77.11,
+        "top5": 93.43
+      },
+      "seconds": 38.28
+    }
+  ],
+  "created_at_utc": "2026-08-14T15:36:03.617491+00:00"
+}

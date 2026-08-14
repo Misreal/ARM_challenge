@@ -15,7 +15,9 @@
     },
     "run": {
       "intra_op_num_threads": 4,
-      "graph_optimization_level": "all"
+      "graph_optimization_level": "all",
+      "enable_cpu_mem_arena": true,
+      "allow_intra_op_spinning": true
     },
     "quant_hash": "6c2712900e73dc56",
     "config_hash": "6bd18ba89f010ad2"
@@ -23,14 +25,14 @@
   "quant_hash": "6c2712900e73dc56",
   "config_hash": "6bd18ba89f010ad2",
   "onnxruntime": "1.27.0",
-  "created_at_utc": "2026-08-07T17:46:02.711109+00:00",
+  "created_at_utc": "2026-08-14T14:05:07.770966+00:00",
   "readiness": {
     "enforced": true,
     "violations": [],
     "note": "device guards enforced",
     "cooldown": {
       "requested_c": 60.0,
-      "temperature_c": 49.05,
+      "temperature_c": 44.65,
       "waited_s": 0.0,
       "reached": true,
       "reason": "at or below threshold"
@@ -48,7 +50,7 @@
       "governor": "performance",
       "governor_is_pinned": true,
       "clock_mhz": 2400.0,
-      "temperature_c": 49.05,
+      "temperature_c": 44.65,
       "throttle": {
         "raw": 0,
         "hex": "0x0",
@@ -67,20 +69,20 @@
     "iterations": 100,
     "warmup": 20,
     "batch_size": 1,
-    "mean_ms": 1.8037,
-    "median_ms": 1.7966,
-    "p90_ms": 1.8316,
-    "p95_ms": 1.8377,
-    "p99_ms": 1.8574,
-    "min_ms": 1.7722,
-    "max_ms": 1.8917,
-    "stdev_ms": 0.0232,
-    "throughput_ips": 554.43,
+    "mean_ms": 1.7997,
+    "median_ms": 1.7916,
+    "p90_ms": 1.8245,
+    "p95_ms": 1.8318,
+    "p99_ms": 1.9042,
+    "min_ms": 1.7679,
+    "max_ms": 1.9525,
+    "stdev_ms": 0.027,
+    "throughput_ips": 555.65,
     "drift_ratio": 0.9971,
     "stable": true
   },
-  "session_load_seconds": 0.0149,
-  "peak_rss_mb": 84.84375,
+  "session_load_seconds": 0.0151,
+  "peak_rss_mb": 84.875,
   "rss_attributable": true,
   "rss_note": "peak RSS covers session creation and inference only",
   "cpu_cores_busy": 3.99,
@@ -98,7 +100,7 @@
     "governor": "performance",
     "governor_is_pinned": true,
     "clock_mhz": 2400.0,
-    "temperature_c": 50.15,
+    "temperature_c": 44.65,
     "throttle": {
       "raw": 0,
       "hex": "0x0",
@@ -120,7 +122,7 @@
     "governor": "performance",
     "governor_is_pinned": true,
     "clock_mhz": 2400.0,
-    "temperature_c": 52.35,
+    "temperature_c": 48.5,
     "throttle": {
       "raw": 0,
       "hex": "0x0",

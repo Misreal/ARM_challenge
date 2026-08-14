@@ -4,42 +4,42 @@
       "group": "stem",
       "recovery_share": 0.18611786227623153,
       "latency_ms": 1.8789,
-      "cost_ms": 0.08230000000000004,
-      "share_per_ms": 2.2614564067585836
+      "cost_ms": 0.08729999999999993,
+      "share_per_ms": 2.1319342757873043
     },
     {
       "group": "stage2",
       "recovery_share": 0.31151388860233686,
       "latency_ms": 2.3313,
-      "cost_ms": 0.5347000000000002,
-      "share_per_ms": 0.5825956398023878
+      "cost_ms": 0.5397000000000001,
+      "share_per_ms": 0.5771982371731273
     },
     {
       "group": "stage3",
       "recovery_share": 0.13023664610369515,
       "latency_ms": 3.763,
-      "cost_ms": 1.9664,
-      "share_per_ms": 0.06623100391766433
+      "cost_ms": 1.9713999999999998,
+      "share_per_ms": 0.06606302429932796
     },
     {
       "group": "stage1",
       "recovery_share": 0.05080333133893141,
       "latency_ms": 5.4332,
-      "cost_ms": 3.6366000000000005,
-      "share_per_ms": 0.013970008067681736
+      "cost_ms": 3.6416000000000004,
+      "share_per_ms": 0.013950826927430637
     },
     {
       "group": "pool",
       "recovery_share": 0.0,
       "latency_ms": 1.8259,
-      "cost_ms": 0.029300000000000104,
+      "cost_ms": 0.0343,
       "share_per_ms": 0.0
     },
     {
       "group": "classifier",
       "recovery_share": 0.052081949287173246,
-      "latency_ms": 1.7852,
-      "cost_ms": -0.011400000000000077,
+      "latency_ms": 1.8005,
+      "cost_ms": 0.008899999999999908,
       "share_per_ms": null
     }
   ],
@@ -48,140 +48,140 @@
       "group": "features.0",
       "recovery_share": 0.17533149010907956,
       "latency_ms": 1.6009,
-      "cost_ms": 0.06119999999999992,
-      "share_per_ms": 2.86489362923333
+      "cost_ms": 0.0625,
+      "share_per_ms": 2.805303841745273
     },
     {
       "group": "classifier.1",
       "recovery_share": 0.035625711995296294,
-      "latency_ms": 1.586,
-      "cost_ms": 0.04630000000000001,
-      "share_per_ms": 0.7694538227925765
+      "latency_ms": 1.5881,
+      "cost_ms": 0.04970000000000008,
+      "share_per_ms": 0.7168151306900652
     },
     {
       "group": "features.1",
       "recovery_share": 0.05542607547313119,
-      "latency_ms": 1.6412,
-      "cost_ms": 0.10149999999999992,
-      "share_per_ms": 0.546069709094889
+      "latency_ms": 1.6319,
+      "cost_ms": 0.09349999999999992,
+      "share_per_ms": 0.592792251049532
     },
     {
       "group": "features.8",
       "recovery_share": 0.05180143799637888,
       "latency_ms": 1.7301,
-      "cost_ms": 0.1903999999999999,
-      "share_per_ms": 0.2720663760314018
+      "cost_ms": 0.19169999999999998,
+      "share_per_ms": 0.2702213771329102
     },
     {
       "group": "features.10",
       "recovery_share": 0.044305677760539446,
       "latency_ms": 1.7157,
-      "cost_ms": 0.17599999999999993,
-      "share_per_ms": 0.25173680545761057
+      "cost_ms": 0.1773,
+      "share_per_ms": 0.24989101951798895
     },
     {
       "group": "features.5",
       "recovery_share": 0.0524661825193507,
       "latency_ms": 1.7537,
-      "cost_ms": 0.21399999999999997,
-      "share_per_ms": 0.2451690771932276
+      "cost_ms": 0.21530000000000005,
+      "share_per_ms": 0.2436887251247129
     },
     {
       "group": "features.16",
       "recovery_share": 0.05432703257486163,
       "latency_ms": 1.7843,
-      "cost_ms": 0.24459999999999993,
-      "share_per_ms": 0.2221056115080198
+      "cost_ms": 0.2459,
+      "share_per_ms": 0.2209314053471396
     },
     {
       "group": "features.11",
       "recovery_share": 0.039174603365134626,
       "latency_ms": 1.7265,
-      "cost_ms": 0.18679999999999986,
-      "share_per_ms": 0.20971415077695213
+      "cost_ms": 0.18809999999999993,
+      "share_per_ms": 0.20826477068120489
     },
     {
       "group": "features.6",
       "recovery_share": 0.03648923830977322,
       "latency_ms": 1.7406,
-      "cost_ms": 0.20089999999999986,
-      "share_per_ms": 0.18162886167134518
+      "cost_ms": 0.20219999999999994,
+      "share_per_ms": 0.18046111923725636
     },
     {
       "group": "features.14",
       "recovery_share": 0.034291876861251035,
       "latency_ms": 1.7449,
-      "cost_ms": 0.20519999999999983,
-      "share_per_ms": 0.16711440965521962
+      "cost_ms": 0.2064999999999999,
+      "share_per_ms": 0.16606235768160316
     },
     {
       "group": "features.4",
       "recovery_share": 0.048730823274295176,
       "latency_ms": 1.8965,
-      "cost_ms": 0.3568,
-      "share_per_ms": 0.1365774194907376
+      "cost_ms": 0.3581000000000001,
+      "share_per_ms": 0.1360816064627064
     },
     {
       "group": "features.2",
       "recovery_share": 0.04374927500524376,
       "latency_ms": 1.8737,
-      "cost_ms": 0.33399999999999985,
-      "share_per_ms": 0.1309858533091131
+      "cost_ms": 0.33529999999999993,
+      "share_per_ms": 0.13047800478748514
     },
     {
       "group": "features.7",
       "recovery_share": 0.01981464348159737,
       "latency_ms": 1.7036,
-      "cost_ms": 0.16389999999999993,
-      "share_per_ms": 0.12089471312750077
+      "cost_ms": 0.1652,
+      "share_per_ms": 0.11994336247940296
     },
     {
       "group": "features.12",
       "recovery_share": 0.028887102393732197,
       "latency_ms": 1.8409,
-      "cost_ms": 0.3011999999999999,
-      "share_per_ms": 0.09590671445462219
+      "cost_ms": 0.3025,
+      "share_per_ms": 0.09549455336770975
     },
     {
       "group": "features.15",
       "recovery_share": 0.021174244709387953,
       "latency_ms": 1.8002,
-      "cost_ms": 0.26049999999999995,
-      "share_per_ms": 0.08128308909553918
+      "cost_ms": 0.26180000000000003,
+      "share_per_ms": 0.08087946795029775
     },
     {
       "group": "features.3",
       "recovery_share": 0.04611406432396652,
       "latency_ms": 2.1708,
-      "cost_ms": 0.6310999999999998,
-      "share_per_ms": 0.07306934610040648
+      "cost_ms": 0.6323999999999999,
+      "share_per_ms": 0.07291914029722728
     },
     {
       "group": "features.17",
       "recovery_share": 0.02310990956721965,
       "latency_ms": 1.8565,
-      "cost_ms": 0.31679999999999997,
-      "share_per_ms": 0.07294794686622365
+      "cost_ms": 0.31810000000000005,
+      "share_per_ms": 0.07264982573788006
     },
     {
       "group": "features.9",
       "recovery_share": 0.010487938415517687,
       "latency_ms": 1.7345,
-      "cost_ms": 0.19479999999999986,
-      "share_per_ms": 0.05383951958684648
+      "cost_ms": 0.19609999999999994,
+      "share_per_ms": 0.05348260283282861
     },
     {
       "group": "features.13",
       "recovery_share": 0.01930511639082632,
       "latency_ms": 1.933,
-      "cost_ms": 0.3933,
-      "share_per_ms": 0.049084964126179305
+      "cost_ms": 0.39460000000000006,
+      "share_per_ms": 0.04892325491846507
     },
     {
       "group": "features.18",
       "recovery_share": 0.001988956176220627,
-      "latency_ms": 1.5419,
-      "cost_ms": 0.0021999999999999797,
+      "latency_ms": 1.5436,
+      "cost_ms": 0.0052000000000000934,
       "share_per_ms": null
     }
   ],

@@ -1,0 +1,5 @@
+{
+  "model": "custom_cnn",
+  "measured": "per-group exclusions",
+  "cache": "artifacts/bench_cache"
+}

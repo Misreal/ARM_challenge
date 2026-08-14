@@ -15,7 +15,9 @@
     },
     "run": {
       "intra_op_num_threads": 4,
-      "graph_optimization_level": "all"
+      "graph_optimization_level": "all",
+      "enable_cpu_mem_arena": true,
+      "allow_intra_op_spinning": true
     },
     "quant_hash": "6c2712900e73dc56",
     "config_hash": "6bd18ba89f010ad2"
@@ -23,14 +25,14 @@
   "quant_hash": "6c2712900e73dc56",
   "config_hash": "6bd18ba89f010ad2",
   "onnxruntime": "1.27.0",
-  "created_at_utc": "2026-08-07T17:45:04.134962+00:00",
+  "created_at_utc": "2026-08-14T15:32:29.837301+00:00",
   "readiness": {
     "enforced": true,
     "violations": [],
     "note": "device guards enforced",
     "cooldown": {
       "requested_c": 60.0,
-      "temperature_c": 51.8,
+      "temperature_c": 46.3,
       "waited_s": 0.0,
       "reached": true,
       "reason": "at or below threshold"
@@ -48,7 +50,7 @@
       "governor": "performance",
       "governor_is_pinned": true,
       "clock_mhz": 2400.0,
-      "temperature_c": 51.8,
+      "temperature_c": 46.3,
       "throttle": {
         "raw": 0,
         "hex": "0x0",
@@ -67,23 +69,23 @@
     "iterations": 100,
     "warmup": 20,
     "batch_size": 1,
-    "mean_ms": 1.5522,
-    "median_ms": 1.5397,
-    "p90_ms": 1.5841,
-    "p95_ms": 1.5891,
-    "p99_ms": 1.5943,
-    "min_ms": 1.5213,
-    "max_ms": 1.5973,
-    "stdev_ms": 0.0239,
-    "throughput_ips": 644.27,
-    "drift_ratio": 1.0049,
+    "mean_ms": 1.5499,
+    "median_ms": 1.5384,
+    "p90_ms": 1.5805,
+    "p95_ms": 1.5865,
+    "p99_ms": 1.6063,
+    "min_ms": 1.516,
+    "max_ms": 1.6453,
+    "stdev_ms": 0.0246,
+    "throughput_ips": 645.21,
+    "drift_ratio": 0.9961,
     "stable": true
   },
-  "session_load_seconds": 0.0395,
-  "peak_rss_mb": 86.828125,
+  "session_load_seconds": 0.0398,
+  "peak_rss_mb": 87.296875,
   "rss_attributable": true,
   "rss_note": "peak RSS covers session creation and inference only",
-  "cpu_cores_busy": 3.74,
+  "cpu_cores_busy": 3.73,
   "throttle_events": [],
   "device_before": {
     "platform": "Linux-6.12.96+rpt-rpi-2712-aarch64-with-glibc2.36",
@@ -98,7 +100,7 @@
     "governor": "performance",
     "governor_is_pinned": true,
     "clock_mhz": 2400.0,
-    "temperature_c": 49.6,
+    "temperature_c": 46.85,
     "throttle": {
       "raw": 0,
       "hex": "0x0",
@@ -120,7 +122,7 @@
     "governor": "performance",
     "governor_is_pinned": true,
     "clock_mhz": 2400.0,
-    "temperature_c": 52.35,
+    "temperature_c": 50.7,
     "throttle": {
       "raw": 0,
       "hex": "0x0",

@@ -1,0 +1,84 @@
+{
+  "schema": "manifest/1",
+  "stages": {
+    "baseline": {
+      "status": "ok",
+      "seconds": 0.0,
+      "completed_at_utc": "2026-08-14T13:34:55+00:00",
+      "from": "artifacts/reports/custom_cnn_baseline.json"
+    },
+    "quant_baselines": {
+      "status": "ok",
+      "seconds": 84.1,
+      "completed_at_utc": "2026-08-14T13:36:19+00:00",
+      "from": "artifacts/reports_pi/custom_cnn_quant_baselines.json"
+    },
+    "sensitivity": {
+      "status": "ok",
+      "seconds": 22.3,
+      "completed_at_utc": "2026-08-14T13:36:41+00:00",
+      "from": "artifacts/reports_pi/custom_cnn_sensitivity.json"
+    },
+    "group_cost": {
+      "status": "ok",
+      "seconds": 0.59,
+      "completed_at_utc": "2026-08-14T13:36:42+00:00",
+      "model": "custom_cnn",
+      "measured": "per-group exclusions",
+      "cache": "artifacts/bench_cache"
+    },
+    "cost_benefit": {
+      "status": "ok",
+      "seconds": 0.64,
+      "completed_at_utc": "2026-08-14T13:36:43+00:00",
+      "from": "artifacts/reports_pi/cost_benefit.json"
+    },
+    "sentinel": {
+      "status": "ok",
+      "seconds": 1705.35,
+      "completed_at_utc": "2026-08-14T14:05:08+00:00",
+      "from": "artifacts/reports_pi/sentinel_custom_cnn_20260814.json"
+    },
+    "search_space": {
+      "status": "ok",
+      "seconds": 0.67,
+      "completed_at_utc": "2026-08-14T14:05:09+00:00",
+      "from": "artifacts/reports_pi/search_space.json"
+    },
+    "study": {
+      "status": "ok",
+      "seconds": 802.27,
+      "completed_at_utc": "2026-08-14T14:18:31+00:00",
+      "from": "artifacts/search/custom_cnn_budget0.2_v4.json"
+    },
+    "finalists": {
+      "status": "ok",
+      "seconds": 72.32,
+      "completed_at_utc": "2026-08-14T14:19:43+00:00",
+      "from": "artifacts/reports_pi/custom_cnn_finalists.json"
+    },
+    "final_test": {
+      "status": "ok",
+      "seconds": 336.31,
+      "completed_at_utc": "2026-08-14T14:25:20+00:00",
+      "from": "artifacts/reports_pi/custom_cnn_final_test.json"
+    },
+    "dashboard": {
+      "status": "ok",
+      "seconds": 1.26,
+      "completed_at_utc": "2026-08-14T14:25:21+00:00",
+      "page": "runs/custom_cnn_b0.2_20260814/dashboard/index.html"
+    },
+    "index": {
+      "status": "ok",
+      "seconds": 0.96,
+      "completed_at_utc": "2026-08-14T14:25:22+00:00",
+      "index": "artifacts/dashboard/index.html"
+    }
+  },
+  "host": {
+    "platform": "Windows-10-10.0.26200-SP0",
+    "machine": "AMD64"
+  },
+  "updated_at_utc": "2026-08-14T14:25:22+00:00"
+}

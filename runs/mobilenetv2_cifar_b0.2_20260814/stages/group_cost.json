@@ -1,0 +1,5 @@
+{
+  "model": "mobilenetv2_cifar",
+  "measured": "per-group exclusions",
+  "cache": "artifacts/bench_cache"
+}

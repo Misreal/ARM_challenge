@@ -1,0 +1,435 @@
+{
+  "schema": "finalists/1",
+  "model": "mobilenetv2_cifar",
+  "study": "mobilenetv2_cifar_budget0.2_v4",
+  "band": {
+    "fraction": 0.02151,
+    "ms": 0.0331,
+    "source": "sentinel",
+    "reference_ms": 1.5397
+  },
+  "repeats": 5,
+  "max_rss_mb": null,
+  "selections": {
+    "fastest_valid": "6bd18ba89f010ad2",
+    "smallest_valid": "6bd18ba89f010ad2",
+    "lowest_ram": "9c647e199cebf3c5",
+    "most_accurate": "bb909df2ab60f354",
+    "recommended": "6bd18ba89f010ad2"
+  },
+  "ties": [
+    [
+      "bafc51aea512bbc3",
+      "6bd18ba89f010ad2"
+    ]
+  ],
+  "finalists": [
+    {
+      "round": "canonical",
+      "quant_hash": "76a3528abaa31083",
+      "config_hash": "bafc51aea512bbc3",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "features.18"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "76a3528abaa31083",
+        "config_hash": "bafc51aea512bbc3"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:features.18",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.5419,
+        "size_bytes": 3940319,
+        "peak_rss_mb": 89.859375,
+        "top1": 77.36666666666666,
+        "screen_top1": 78.2,
+        "admissible": true,
+        "error": null
+      },
+      "repeated": {
+        "repeats": 5,
+        "succeeded": 5,
+        "failed": 0,
+        "median_ms": 1.5469,
+        "mad_ms": 0.0033,
+        "min_ms": 1.5345,
+        "max_ms": 1.5536,
+        "peak_rss_mb": 89.9,
+        "admissible": true,
+        "throttled": false,
+        "temperature_c": {
+          "min": 46.85,
+          "max": 47.95
+        },
+        "measurements": [
+          {
+            "round": 0,
+            "status": "ok",
+            "latency_ms": 1.5536,
+            "peak_rss_mb": 89.890625,
+            "admissible": true,
+            "temperature_c": 46.85,
+            "throttled": null
+          },
+          {
+            "round": 1,
+            "status": "ok",
+            "latency_ms": 1.5489,
+            "peak_rss_mb": 89.921875,
+            "admissible": true,
+            "temperature_c": 46.85,
+            "throttled": null
+          },
+          {
+            "round": 2,
+            "status": "ok",
+            "latency_ms": 1.5469,
+            "peak_rss_mb": 89.90625,
+            "admissible": true,
+            "temperature_c": 47.4,
+            "throttled": null
+          },
+          {
+            "round": 3,
+            "status": "ok",
+            "latency_ms": 1.5345,
+            "peak_rss_mb": 89.90625,
+            "admissible": true,
+            "temperature_c": 47.95,
+            "throttled": null
+          },
+          {
+            "round": 4,
+            "status": "ok",
+            "latency_ms": 1.5436,
+            "peak_rss_mb": 89.921875,
+            "admissible": true,
+            "temperature_c": 47.4,
+            "throttled": null
+          }
+        ]
+      }
+    },
+    {
+      "round": "canonical",
+      "quant_hash": "6c2712900e73dc56",
+      "config_hash": "6bd18ba89f010ad2",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "6c2712900e73dc56",
+        "config_hash": "6bd18ba89f010ad2"
+      },
+      "describe": "static per-channel act:uint8 minmax/512",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.5621,
+        "size_bytes": 2728300,
+        "peak_rss_mb": 87.3125,
+        "top1": 77.4,
+        "screen_top1": 78.2,
+        "admissible": true,
+        "error": null
+      },
+      "repeated": {
+        "repeats": 5,
+        "succeeded": 5,
+        "failed": 0,
+        "median_ms": 1.5515,
+        "mad_ms": 0.0123,
+        "min_ms": 1.5372,
+        "max_ms": 1.5638,
+        "peak_rss_mb": 87.3,
+        "admissible": true,
+        "throttled": false,
+        "temperature_c": {
+          "min": 46.3,
+          "max": 47.95
+        },
+        "measurements": [
+          {
+            "round": 0,
+            "status": "ok",
+            "latency_ms": 1.5638,
+            "peak_rss_mb": 87.296875,
+            "admissible": true,
+            "temperature_c": 47.95,
+            "throttled": null
+          },
+          {
+            "round": 1,
+            "status": "ok",
+            "latency_ms": 1.5515,
+            "peak_rss_mb": 87.3125,
+            "admissible": true,
+            "temperature_c": 46.85,
+            "throttled": null
+          },
+          {
+            "round": 2,
+            "status": "ok",
+            "latency_ms": 1.5372,
+            "peak_rss_mb": 87.296875,
+            "admissible": true,
+            "temperature_c": 46.85,
+            "throttled": null
+          },
+          {
+            "round": 3,
+            "status": "ok",
+            "latency_ms": 1.5522,
+            "peak_rss_mb": 87.28125,
+            "admissible": true,
+            "temperature_c": 47.4,
+            "throttled": null
+          },
+          {
+            "round": 4,
+            "status": "ok",
+            "latency_ms": 1.5384,
+            "peak_rss_mb": 87.296875,
+            "admissible": true,
+            "temperature_c": 46.3,
+            "throttled": null
+          }
+        ]
+      }
+    },
+    {
+      "round": "canonical",
+      "quant_hash": "d8230904d7e2d227",
+      "config_hash": "d7e2099d4a81b5ac",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier.1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "d8230904d7e2d227",
+        "config_hash": "d7e2099d4a81b5ac"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:classifier.1",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.586,
+        "size_bytes": 3109602,
+        "peak_rss_mb": 88.078125,
+        "top1": 77.36666666666666,
+        "screen_top1": 78.0,
+        "admissible": true,
+        "error": null
+      },
+      "repeated": {
+        "repeats": 5,
+        "succeeded": 5,
+        "failed": 0,
+        "median_ms": 1.585,
+        "mad_ms": 0.0031,
+        "min_ms": 1.5751,
+        "max_ms": 1.5923,
+        "peak_rss_mb": 88.2,
+        "admissible": true,
+        "throttled": false,
+        "temperature_c": {
+          "min": 46.3,
+          "max": 47.4
+        },
+        "measurements": [
+          {
+            "round": 0,
+            "status": "ok",
+            "latency_ms": 1.585,
+            "peak_rss_mb": 88.15625,
+            "admissible": true,
+            "temperature_c": 46.3,
+            "throttled": null
+          },
+          {
+            "round": 1,
+            "status": "ok",
+            "latency_ms": 1.5826,
+            "peak_rss_mb": 88.15625,
+            "admissible": true,
+            "temperature_c": 46.85,
+            "throttled": null
+          },
+          {
+            "round": 2,
+            "status": "ok",
+            "latency_ms": 1.5923,
+            "peak_rss_mb": 88.15625,
+            "admissible": true,
+            "temperature_c": 46.85,
+            "throttled": null
+          },
+          {
+            "round": 3,
+            "status": "ok",
+            "latency_ms": 1.5751,
+            "peak_rss_mb": 88.171875,
+            "admissible": true,
+            "temperature_c": 47.4,
+            "throttled": null
+          },
+          {
+            "round": 4,
+            "status": "ok",
+            "latency_ms": 1.5881,
+            "peak_rss_mb": 88.15625,
+            "admissible": true,
+            "temperature_c": 47.4,
+            "throttled": null
+          }
+        ]
+      }
+    },
+    {
+      "round": "canonical",
+      "quant_hash": "b67f4372a7ad85f1",
+      "config_hash": "9c647e199cebf3c5",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "features.1"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "b67f4372a7ad85f1",
+        "config_hash": "9c647e199cebf3c5"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:features.1",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.6412,
+        "size_bytes": 2728489,
+        "peak_rss_mb": 87.234375,
+        "top1": 77.33333333333333,
+        "screen_top1": 78.2,
+        "admissible": true,
+        "error": null
+      },
+      "repeated": {
+        "repeats": 5,
+        "succeeded": 5,
+        "failed": 0,
+        "median_ms": 1.6341,
+        "mad_ms": 0.0022,
+        "min_ms": 1.6308,
+        "max_ms": 1.6438,
+        "peak_rss_mb": 88.3,
+        "admissible": true,
+        "throttled": false,
+        "temperature_c": {
+          "min": 45.75,
+          "max": 48.5
+        },
+        "measurements": [
+          {
+            "round": 0,
+            "status": "ok",
+            "latency_ms": 1.6308,
+            "peak_rss_mb": 88.25,
+            "admissible": true,
+            "temperature_c": 47.4,
+            "throttled": null
+          },
+          {
+            "round": 1,
+            "status": "ok",
+            "latency_ms": 1.6341,
+            "peak_rss_mb": 88.265625,
+            "admissible": true,
+            "temperature_c": 45.75,
+            "throttled": null
+          },
+          {
+            "round": 2,
+            "status": "ok",
+            "latency_ms": 1.6353,
+            "peak_rss_mb": 88.28125,
+            "admissible": true,
+            "temperature_c": 48.5,
+            "throttled": null
+          },
+          {
+            "round": 3,
+            "status": "ok",
+            "latency_ms": 1.6438,
+            "peak_rss_mb": 88.25,
+            "admissible": true,
+            "temperature_c": 46.85,
+            "throttled": null
+          },
+          {
+            "round": 4,
+            "status": "ok",
+            "latency_ms": 1.6319,
+            "peak_rss_mb": 88.28125,
+            "admissible": true,
+            "temperature_c": 47.95,
+            "throttled": null
+          }
+        ]
+      }
+    }
+  ],
+  "created_at_utc": "2026-08-14T15:32:36.137895+00:00"
+}

@@ -1,0 +1,401 @@
+{
+  "schema": "final_test/1",
+  "model": "custom_cnn",
+  "study": "custom_cnn_budget0.2_v4",
+  "eval_split": "test",
+  "limit": null,
+  "on_target": true,
+  "note": "First and only use of the sealed test set. Every Pareto member is scored, so no candidate was selected using test-set signal.",
+  "results": [
+    {
+      "label": "static per-channel act:uint8 minmax/512 | 4t opt:all",
+      "status": "ok",
+      "quant_hash": "6c2712900e73dc56",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "6c2712900e73dc56",
+        "config_hash": "6bd18ba89f010ad2"
+      },
+      "test": {
+        "samples": 10000,
+        "top1": 70.42,
+        "top5": 88.74
+      },
+      "seconds": 19.63
+    },
+    {
+      "label": "static per-channel act:uint8 minmax/512 fp32:classifier | 4t opt:all",
+      "status": "ok",
+      "quant_hash": "511ee19b0540f6e7",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "511ee19b0540f6e7",
+        "config_hash": "10ab80078c86d9ab"
+      },
+      "test": {
+        "samples": 10000,
+        "top1": 70.46,
+        "top5": 88.72
+      },
+      "seconds": 19.67
+    },
+    {
+      "label": "static per-channel act:uint8 minmax/512 fp32:stem | 4t opt:all",
+      "status": "ok",
+      "quant_hash": "8326e6e880bba208",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "8326e6e880bba208",
+        "config_hash": "a7026d6f6faa2bb3"
+      },
+      "test": {
+        "samples": 10000,
+        "top1": 70.56,
+        "top5": 88.8
+      },
+      "seconds": 20.43
+    },
+    {
+      "label": "static per-channel act:uint8 minmax/512 fp32:stage2 | 4t opt:all no-arena",
+      "status": "ok",
+      "quant_hash": "6276efddb94c9d17",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stage2"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "6276efddb94c9d17",
+        "config_hash": "23c8dd7bc600b036"
+      },
+      "test": {
+        "samples": 10000,
+        "top1": 70.35,
+        "top5": 88.75
+      },
+      "seconds": 25.57
+    },
+    {
+      "label": "static per-tensor act:uint8 minmax/512 | 4t opt:all",
+      "status": "ok",
+      "quant_hash": "06e1b9094831a2a6",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "06e1b9094831a2a6",
+        "config_hash": "51010d7f9625be14"
+      },
+      "test": {
+        "samples": 10000,
+        "top1": 70.27,
+        "top5": 88.59
+      },
+      "seconds": 19.48
+    },
+    {
+      "label": "static per-tensor act:uint8 minmax/512 fp32:classifier | 4t opt:all",
+      "status": "ok",
+      "quant_hash": "6cc3faa0ba826652",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "6cc3faa0ba826652",
+        "config_hash": "c361636498f175ae"
+      },
+      "test": {
+        "samples": 10000,
+        "top1": 70.28,
+        "top5": 88.62
+      },
+      "seconds": 19.49
+    },
+    {
+      "label": "static per-tensor act:uint8 minmax/512 fp32:stem | 4t opt:all",
+      "status": "ok",
+      "quant_hash": "8fc7685fd72cc1ec",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "8fc7685fd72cc1ec",
+        "config_hash": "6282924178293948"
+      },
+      "test": {
+        "samples": 10000,
+        "top1": 70.24,
+        "top5": 88.63
+      },
+      "seconds": 20.5
+    },
+    {
+      "label": "static per-tensor act:uint8 minmax/512 fp32:classifier+stem | 4t opt:all",
+      "status": "ok",
+      "quant_hash": "392ec615527a1a33",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier",
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "392ec615527a1a33",
+        "config_hash": "b41ddb80f55992bf"
+      },
+      "test": {
+        "samples": 10000,
+        "top1": 70.25,
+        "top5": 88.75
+      },
+      "seconds": 20.54
+    },
+    {
+      "label": "static per-channel act:int8 minmax/512 | 4t opt:all",
+      "status": "ok",
+      "quant_hash": "bf34bfcd8dd317f7",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "bf34bfcd8dd317f7",
+        "config_hash": "4d677a5961e23433"
+      },
+      "test": {
+        "samples": 10000,
+        "top1": 70.42,
+        "top5": 88.74
+      },
+      "seconds": 18.61
+    },
+    {
+      "label": "static per-channel act:int8 minmax/512 fp32:classifier | 4t opt:all",
+      "status": "ok",
+      "quant_hash": "10cbd1e18f830fd2",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "10cbd1e18f830fd2",
+        "config_hash": "f251f00d9a17ff92"
+      },
+      "test": {
+        "samples": 10000,
+        "top1": 70.46,
+        "top5": 88.72
+      },
+      "seconds": 18.71
+    },
+    {
+      "label": "static per-channel act:int8 minmax/512 fp32:stem | 4t opt:all",
+      "status": "ok",
+      "quant_hash": "c68fa4c356b03a39",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "c68fa4c356b03a39",
+        "config_hash": "71012a0ecf26e86d"
+      },
+      "test": {
+        "samples": 10000,
+        "top1": 70.56,
+        "top5": 88.8
+      },
+      "seconds": 19.61
+    },
+    {
+      "label": "fp32 (reference)",
+      "status": "ok",
+      "quant_hash": "621cee21bf4b25e3",
+      "config": {
+        "quant": {
+          "quant_type": "none",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "621cee21bf4b25e3",
+        "config_hash": "f51ea28b71001e44"
+      },
+      "test": {
+        "samples": 10000,
+        "top1": 70.45,
+        "top5": 88.83
+      },
+      "seconds": 69.65
+    }
+  ],
+  "created_at_utc": "2026-08-14T14:25:18.995019+00:00"
+}

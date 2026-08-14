@@ -1,0 +1,3290 @@
+{
+  "schema": "study/2",
+  "study": "custom_cnn_budget0.2_v4",
+  "space_version": "v4",
+  "model": "custom_cnn",
+  "mock": false,
+  "baseline_top1": 70.53333333333333,
+  "accuracy_budget_pt": 0.2,
+  "threshold_top1": 70.33333333333333,
+  "groups": [
+    "stem",
+    "stage1",
+    "stage2",
+    "stage3",
+    "pool",
+    "classifier"
+  ],
+  "search_plan": {
+    "schema": "search-plan/1",
+    "space_version": "v4",
+    "model": "custom_cnn",
+    "space": {
+      "schema": "search-space/2",
+      "model": "custom_cnn",
+      "fingerprint": "84618aa148f93323",
+      "pinned_fp32": [],
+      "pinned_int8": [
+        "stage3",
+        "stage1",
+        "pool"
+      ],
+      "searchable": [
+        "stem",
+        "stage2",
+        "classifier"
+      ],
+      "precision_vectors_full": 64,
+      "precision_vectors_reduced": 8,
+      "band": {
+        "fraction": 0.01515,
+        "ms": 0.0272,
+        "source": "sentinel",
+        "reference_ms": 1.7966
+      }
+    },
+    "strategy": "enumerate",
+    "strategy_reason": "8 precision vectors fit a budget of 40, so every one is measured under 5 complete one-factor round(s)",
+    "budget": 40,
+    "baseline_top1": 70.53333333333333,
+    "accuracy_budget_pt": 0.2,
+    "threshold_top1": 70.3333,
+    "max_rss_mb": null,
+    "population_size": null,
+    "rounds_completed": [
+      "canonical",
+      "no-arena",
+      "per-tensor",
+      "act-int8",
+      "opt-extended"
+    ],
+    "round_truncated": null,
+    "candidates": [
+      {
+        "round": "canonical",
+        "config_hash": "6bd18ba89f010ad2",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "6c2712900e73dc56"
+      },
+      {
+        "round": "canonical",
+        "config_hash": "10ab80078c86d9ab",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "511ee19b0540f6e7"
+      },
+      {
+        "round": "canonical",
+        "config_hash": "b56789bde926a7e1",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stage2"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "6276efddb94c9d17"
+      },
+      {
+        "round": "canonical",
+        "config_hash": "a7026d6f6faa2bb3",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "8326e6e880bba208"
+      },
+      {
+        "round": "canonical",
+        "config_hash": "adfed88ec58fce2e",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier",
+            "stage2"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "efc47cb114ce3eaf"
+      },
+      {
+        "round": "canonical",
+        "config_hash": "649b1b39738f664a",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier",
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "fab849212574592b"
+      },
+      {
+        "round": "canonical",
+        "config_hash": "46b2a7cf659faef7",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stage2",
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "7388796f80ade43f"
+      },
+      {
+        "round": "canonical",
+        "config_hash": "5ac136a86dc06b20",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier",
+            "stage2",
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "c007b5622b018a1f"
+      },
+      {
+        "round": "no-arena",
+        "config_hash": "e81e37a23c2007f2",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "6c2712900e73dc56"
+      },
+      {
+        "round": "no-arena",
+        "config_hash": "30b9c44e44b470cc",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "511ee19b0540f6e7"
+      },
+      {
+        "round": "no-arena",
+        "config_hash": "23c8dd7bc600b036",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stage2"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "6276efddb94c9d17"
+      },
+      {
+        "round": "no-arena",
+        "config_hash": "ce553af6a67071eb",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "8326e6e880bba208"
+      },
+      {
+        "round": "no-arena",
+        "config_hash": "f79a359b2fe0b629",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier",
+            "stage2"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "efc47cb114ce3eaf"
+      },
+      {
+        "round": "no-arena",
+        "config_hash": "6d5ea9989f6b4f82",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier",
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "fab849212574592b"
+      },
+      {
+        "round": "no-arena",
+        "config_hash": "1cf7a3514d68e6c3",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stage2",
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "7388796f80ade43f"
+      },
+      {
+        "round": "no-arena",
+        "config_hash": "c0d78acf34909695",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier",
+            "stage2",
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "c007b5622b018a1f"
+      },
+      {
+        "round": "per-tensor",
+        "config_hash": "51010d7f9625be14",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "06e1b9094831a2a6"
+      },
+      {
+        "round": "per-tensor",
+        "config_hash": "c361636498f175ae",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "6cc3faa0ba826652"
+      },
+      {
+        "round": "per-tensor",
+        "config_hash": "94ecaa85d80d9046",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stage2"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "1cdbf6095a148117"
+      },
+      {
+        "round": "per-tensor",
+        "config_hash": "6282924178293948",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "8fc7685fd72cc1ec"
+      },
+      {
+        "round": "per-tensor",
+        "config_hash": "5c97f934a6fc52dc",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier",
+            "stage2"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "b4fbd57e30eb2bd8"
+      },
+      {
+        "round": "per-tensor",
+        "config_hash": "b41ddb80f55992bf",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier",
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "392ec615527a1a33"
+      },
+      {
+        "round": "per-tensor",
+        "config_hash": "3e7d4f5ca99a2830",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stage2",
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "1124412685084c0a"
+      },
+      {
+        "round": "per-tensor",
+        "config_hash": "fc7961c6355b34e2",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier",
+            "stage2",
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "e0fdc397dc70cff5"
+      },
+      {
+        "round": "act-int8",
+        "config_hash": "4d677a5961e23433",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "bf34bfcd8dd317f7"
+      },
+      {
+        "round": "act-int8",
+        "config_hash": "f251f00d9a17ff92",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "10cbd1e18f830fd2"
+      },
+      {
+        "round": "act-int8",
+        "config_hash": "4dee2b40d63c4eec",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stage2"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "11784a2794578437"
+      },
+      {
+        "round": "act-int8",
+        "config_hash": "71012a0ecf26e86d",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "c68fa4c356b03a39"
+      },
+      {
+        "round": "act-int8",
+        "config_hash": "1c874b3b3813eec8",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier",
+            "stage2"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "9859d84b2b808ea7"
+      },
+      {
+        "round": "act-int8",
+        "config_hash": "78c8aca02e8f01eb",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier",
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "fc26ad9da7b56625"
+      },
+      {
+        "round": "act-int8",
+        "config_hash": "2df185ec551c2965",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stage2",
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "9aba17d96d10371e"
+      },
+      {
+        "round": "act-int8",
+        "config_hash": "406e97aa6138d428",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier",
+            "stage2",
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "c6da977e268cb089"
+      },
+      {
+        "round": "opt-extended",
+        "config_hash": "9f1600d449d48a02",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "extended",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "6c2712900e73dc56"
+      },
+      {
+        "round": "opt-extended",
+        "config_hash": "65e645485961dd43",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "extended",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "511ee19b0540f6e7"
+      },
+      {
+        "round": "opt-extended",
+        "config_hash": "25af5baf4f6e939d",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stage2"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "extended",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "6276efddb94c9d17"
+      },
+      {
+        "round": "opt-extended",
+        "config_hash": "21ec3382e51434e0",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "extended",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "8326e6e880bba208"
+      },
+      {
+        "round": "opt-extended",
+        "config_hash": "8e61b80ee521218f",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier",
+            "stage2"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "extended",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "efc47cb114ce3eaf"
+      },
+      {
+        "round": "opt-extended",
+        "config_hash": "b85cf5e0a4a0f055",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier",
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "extended",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "fab849212574592b"
+      },
+      {
+        "round": "opt-extended",
+        "config_hash": "c1059ff610cecf3d",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stage2",
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "extended",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "7388796f80ade43f"
+      },
+      {
+        "round": "opt-extended",
+        "config_hash": "85c0f58b79eafa15",
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier",
+            "stage2",
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "extended",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "c007b5622b018a1f"
+      }
+    ]
+  },
+  "strategy": "enumerate",
+  "band": {
+    "fraction": 0.01515,
+    "ms": 0.0272,
+    "source": "sentinel",
+    "reference_ms": 1.7966
+  },
+  "trials": 40,
+  "references": {
+    "dynamic": {
+      "round": "reference",
+      "quant_hash": "9965282d98520e1e",
+      "config_hash": "6de1e09ec096399c",
+      "config": {
+        "quant": {
+          "quant_type": "dynamic",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "9965282d98520e1e",
+        "config_hash": "6de1e09ec096399c"
+      },
+      "describe": "dynamic",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 16.3153,
+        "size_bytes": 1811350,
+        "peak_rss_mb": 87.3125,
+        "top1": 70.5,
+        "screen_top1": 70.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    "fp32": {
+      "round": "reference",
+      "quant_hash": "621cee21bf4b25e3",
+      "config_hash": "f51ea28b71001e44",
+      "config": {
+        "quant": {
+          "quant_type": "none",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "621cee21bf4b25e3",
+        "config_hash": "f51ea28b71001e44"
+      },
+      "describe": "fp32",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 6.8971,
+        "size_bytes": 7137449,
+        "peak_rss_mb": 93.9375,
+        "top1": 70.53333333333333,
+        "screen_top1": 71.2,
+        "admissible": true,
+        "error": null
+      }
+    },
+    "greedy_prefix": {
+      "round": "reference",
+      "quant_hash": "c007b5622b018a1f",
+      "config_hash": "5ac136a86dc06b20",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier",
+            "stage2",
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "c007b5622b018a1f",
+        "config_hash": "5ac136a86dc06b20"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:classifier+stage2+stem",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 2.4121,
+        "size_bytes": 2077291,
+        "peak_rss_mb": 85.453125,
+        "top1": 70.56666666666666,
+        "screen_top1": 70.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    "mixed_cookbook": {
+      "round": "reference",
+      "quant_hash": "fab849212574592b",
+      "config_hash": "649b1b39738f664a",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier",
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "fab849212574592b",
+        "config_hash": "649b1b39738f664a"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:classifier+stem",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.8878,
+        "size_bytes": 1897859,
+        "peak_rss_mb": 85.40625,
+        "top1": 70.56666666666666,
+        "screen_top1": 70.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    "mixed_measured": {
+      "round": "reference",
+      "quant_hash": "7388796f80ade43f",
+      "config_hash": "46b2a7cf659faef7",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stage2",
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "7388796f80ade43f",
+        "config_hash": "46b2a7cf659faef7"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:stage2+stem",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 2.4076,
+        "size_bytes": 2022361,
+        "peak_rss_mb": 85.5,
+        "top1": 70.66666666666667,
+        "screen_top1": 71.0,
+        "admissible": true,
+        "error": null
+      }
+    },
+    "static_per_channel": {
+      "round": "reference",
+      "quant_hash": "6c2712900e73dc56",
+      "config_hash": "6bd18ba89f010ad2",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "6c2712900e73dc56",
+        "config_hash": "6bd18ba89f010ad2"
+      },
+      "describe": "static per-channel act:uint8 minmax/512",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.7916,
+        "size_bytes": 1839387,
+        "peak_rss_mb": 84.875,
+        "top1": 70.5,
+        "screen_top1": 71.2,
+        "admissible": true,
+        "error": null
+      }
+    },
+    "static_per_tensor": {
+      "round": "reference",
+      "quant_hash": "06e1b9094831a2a6",
+      "config_hash": "51010d7f9625be14",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "06e1b9094831a2a6",
+        "config_hash": "51010d7f9625be14"
+      },
+      "describe": "static per-tensor act:uint8 minmax/512",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.7858,
+        "size_bytes": 1811932,
+        "peak_rss_mb": 84.796875,
+        "top1": 70.43333333333334,
+        "screen_top1": 71.2,
+        "admissible": true,
+        "error": null
+      }
+    }
+  },
+  "evaluated_configs": [
+    {
+      "round": "canonical",
+      "quant_hash": "6c2712900e73dc56",
+      "config_hash": "6bd18ba89f010ad2",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "6c2712900e73dc56",
+        "config_hash": "6bd18ba89f010ad2"
+      },
+      "describe": "static per-channel act:uint8 minmax/512",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.7916,
+        "size_bytes": 1839387,
+        "peak_rss_mb": 84.875,
+        "top1": 70.5,
+        "screen_top1": 71.2,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "canonical",
+      "quant_hash": "511ee19b0540f6e7",
+      "config_hash": "10ab80078c86d9ab",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "511ee19b0540f6e7",
+        "config_hash": "10ab80078c86d9ab"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:classifier",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.7852,
+        "size_bytes": 1894317,
+        "peak_rss_mb": 84.90625,
+        "top1": 70.56666666666666,
+        "screen_top1": 71.0,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "canonical",
+      "quant_hash": "6276efddb94c9d17",
+      "config_hash": "b56789bde926a7e1",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stage2"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "6276efddb94c9d17",
+        "config_hash": "b56789bde926a7e1"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:stage2",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 2.3313,
+        "size_bytes": 2018819,
+        "peak_rss_mb": 85.5,
+        "top1": 70.66666666666667,
+        "screen_top1": 71.0,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "canonical",
+      "quant_hash": "8326e6e880bba208",
+      "config_hash": "a7026d6f6faa2bb3",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "8326e6e880bba208",
+        "config_hash": "a7026d6f6faa2bb3"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:stem",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.8789,
+        "size_bytes": 1842929,
+        "peak_rss_mb": 84.84375,
+        "top1": 70.63333333333334,
+        "screen_top1": 70.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "canonical",
+      "quant_hash": "efc47cb114ce3eaf",
+      "config_hash": "adfed88ec58fce2e",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier",
+            "stage2"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "efc47cb114ce3eaf",
+        "config_hash": "adfed88ec58fce2e"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:classifier+stage2",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 2.3393,
+        "size_bytes": 2073749,
+        "peak_rss_mb": 85.484375,
+        "top1": 70.6,
+        "screen_top1": 70.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "canonical",
+      "quant_hash": "fab849212574592b",
+      "config_hash": "649b1b39738f664a",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier",
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "fab849212574592b",
+        "config_hash": "649b1b39738f664a"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:classifier+stem",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.8878,
+        "size_bytes": 1897859,
+        "peak_rss_mb": 85.40625,
+        "top1": 70.56666666666666,
+        "screen_top1": 70.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "canonical",
+      "quant_hash": "7388796f80ade43f",
+      "config_hash": "46b2a7cf659faef7",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stage2",
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "7388796f80ade43f",
+        "config_hash": "46b2a7cf659faef7"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:stage2+stem",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 2.4076,
+        "size_bytes": 2022361,
+        "peak_rss_mb": 85.5,
+        "top1": 70.66666666666667,
+        "screen_top1": 71.0,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "canonical",
+      "quant_hash": "c007b5622b018a1f",
+      "config_hash": "5ac136a86dc06b20",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier",
+            "stage2",
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "c007b5622b018a1f",
+        "config_hash": "5ac136a86dc06b20"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:classifier+stage2+stem",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 2.4121,
+        "size_bytes": 2077291,
+        "peak_rss_mb": 85.453125,
+        "top1": 70.56666666666666,
+        "screen_top1": 70.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "no-arena",
+      "quant_hash": "6c2712900e73dc56",
+      "config_hash": "e81e37a23c2007f2",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "6c2712900e73dc56",
+        "config_hash": "e81e37a23c2007f2"
+      },
+      "describe": "static per-channel act:uint8 minmax/512",
+      "describe_run": "4t opt:all no-arena",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.8316,
+        "size_bytes": 1839387,
+        "peak_rss_mb": 85.3125,
+        "top1": 70.5,
+        "screen_top1": 71.2,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "no-arena",
+      "quant_hash": "511ee19b0540f6e7",
+      "config_hash": "30b9c44e44b470cc",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "511ee19b0540f6e7",
+        "config_hash": "30b9c44e44b470cc"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:classifier",
+      "describe_run": "4t opt:all no-arena",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.8411,
+        "size_bytes": 1894317,
+        "peak_rss_mb": 85.359375,
+        "top1": 70.56666666666666,
+        "screen_top1": 71.0,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "no-arena",
+      "quant_hash": "6276efddb94c9d17",
+      "config_hash": "23c8dd7bc600b036",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stage2"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "6276efddb94c9d17",
+        "config_hash": "23c8dd7bc600b036"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:stage2",
+      "describe_run": "4t opt:all no-arena",
+      "result": {
+        "status": "ok",
+        "latency_ms": 2.3776,
+        "size_bytes": 2018819,
+        "peak_rss_mb": 83.921875,
+        "top1": 70.66666666666667,
+        "screen_top1": 71.0,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "no-arena",
+      "quant_hash": "8326e6e880bba208",
+      "config_hash": "ce553af6a67071eb",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "8326e6e880bba208",
+        "config_hash": "ce553af6a67071eb"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:stem",
+      "describe_run": "4t opt:all no-arena",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.927,
+        "size_bytes": 1842929,
+        "peak_rss_mb": 85.28125,
+        "top1": 70.63333333333334,
+        "screen_top1": 70.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "no-arena",
+      "quant_hash": "efc47cb114ce3eaf",
+      "config_hash": "f79a359b2fe0b629",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier",
+            "stage2"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "efc47cb114ce3eaf",
+        "config_hash": "f79a359b2fe0b629"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:classifier+stage2",
+      "describe_run": "4t opt:all no-arena",
+      "result": {
+        "status": "ok",
+        "latency_ms": 2.3647,
+        "size_bytes": 2073749,
+        "peak_rss_mb": 85.484375,
+        "top1": 70.6,
+        "screen_top1": 70.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "no-arena",
+      "quant_hash": "fab849212574592b",
+      "config_hash": "6d5ea9989f6b4f82",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier",
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "fab849212574592b",
+        "config_hash": "6d5ea9989f6b4f82"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:classifier+stem",
+      "describe_run": "4t opt:all no-arena",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.9324,
+        "size_bytes": 1897859,
+        "peak_rss_mb": 85.328125,
+        "top1": 70.56666666666666,
+        "screen_top1": 70.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "no-arena",
+      "quant_hash": "7388796f80ade43f",
+      "config_hash": "1cf7a3514d68e6c3",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stage2",
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "7388796f80ade43f",
+        "config_hash": "1cf7a3514d68e6c3"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:stage2+stem",
+      "describe_run": "4t opt:all no-arena",
+      "result": {
+        "status": "ok",
+        "latency_ms": 2.4252,
+        "size_bytes": 2022361,
+        "peak_rss_mb": 85.46875,
+        "top1": 70.66666666666667,
+        "screen_top1": 71.0,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "no-arena",
+      "quant_hash": "c007b5622b018a1f",
+      "config_hash": "c0d78acf34909695",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier",
+            "stage2",
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "c007b5622b018a1f",
+        "config_hash": "c0d78acf34909695"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:classifier+stage2+stem",
+      "describe_run": "4t opt:all no-arena",
+      "result": {
+        "status": "ok",
+        "latency_ms": 2.4135,
+        "size_bytes": 2077291,
+        "peak_rss_mb": 85.46875,
+        "top1": 70.56666666666666,
+        "screen_top1": 70.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "per-tensor",
+      "quant_hash": "06e1b9094831a2a6",
+      "config_hash": "51010d7f9625be14",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "06e1b9094831a2a6",
+        "config_hash": "51010d7f9625be14"
+      },
+      "describe": "static per-tensor act:uint8 minmax/512",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.7858,
+        "size_bytes": 1811932,
+        "peak_rss_mb": 84.796875,
+        "top1": 70.43333333333334,
+        "screen_top1": 71.2,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "per-tensor",
+      "quant_hash": "6cc3faa0ba826652",
+      "config_hash": "c361636498f175ae",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "6cc3faa0ba826652",
+        "config_hash": "c361636498f175ae"
+      },
+      "describe": "static per-tensor act:uint8 minmax/512 fp32:classifier",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.792,
+        "size_bytes": 1868191,
+        "peak_rss_mb": 85.296875,
+        "top1": 70.63333333333334,
+        "screen_top1": 72.0,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "per-tensor",
+      "quant_hash": "1cdbf6095a148117",
+      "config_hash": "94ecaa85d80d9046",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stage2"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "1cdbf6095a148117",
+        "config_hash": "94ecaa85d80d9046"
+      },
+      "describe": "static per-tensor act:uint8 minmax/512 fp32:stage2",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 2.3149,
+        "size_bytes": 2000652,
+        "peak_rss_mb": 85.421875,
+        "top1": 70.7,
+        "screen_top1": 71.2,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "per-tensor",
+      "quant_hash": "8fc7685fd72cc1ec",
+      "config_hash": "6282924178293948",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "8fc7685fd72cc1ec",
+        "config_hash": "6282924178293948"
+      },
+      "describe": "static per-tensor act:uint8 minmax/512 fp32:stem",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.8826,
+        "size_bytes": 1816334,
+        "peak_rss_mb": 85.28125,
+        "top1": 70.9,
+        "screen_top1": 71.6,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "per-tensor",
+      "quant_hash": "b4fbd57e30eb2bd8",
+      "config_hash": "5c97f934a6fc52dc",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier",
+            "stage2"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "b4fbd57e30eb2bd8",
+        "config_hash": "5c97f934a6fc52dc"
+      },
+      "describe": "static per-tensor act:uint8 minmax/512 fp32:classifier+stage2",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 2.3408,
+        "size_bytes": 2056911,
+        "peak_rss_mb": 85.484375,
+        "top1": 70.6,
+        "screen_top1": 71.0,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "per-tensor",
+      "quant_hash": "392ec615527a1a33",
+      "config_hash": "b41ddb80f55992bf",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier",
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "392ec615527a1a33",
+        "config_hash": "b41ddb80f55992bf"
+      },
+      "describe": "static per-tensor act:uint8 minmax/512 fp32:classifier+stem",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.8754,
+        "size_bytes": 1872593,
+        "peak_rss_mb": 85.34375,
+        "top1": 70.93333333333334,
+        "screen_top1": 71.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "per-tensor",
+      "quant_hash": "1124412685084c0a",
+      "config_hash": "3e7d4f5ca99a2830",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stage2",
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "1124412685084c0a",
+        "config_hash": "3e7d4f5ca99a2830"
+      },
+      "describe": "static per-tensor act:uint8 minmax/512 fp32:stage2+stem",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 2.4018,
+        "size_bytes": 2005054,
+        "peak_rss_mb": 85.4375,
+        "top1": 70.63333333333334,
+        "screen_top1": 70.0,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "per-tensor",
+      "quant_hash": "e0fdc397dc70cff5",
+      "config_hash": "fc7961c6355b34e2",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier",
+            "stage2",
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "e0fdc397dc70cff5",
+        "config_hash": "fc7961c6355b34e2"
+      },
+      "describe": "static per-tensor act:uint8 minmax/512 fp32:classifier+stage2+stem",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 2.3868,
+        "size_bytes": 2061313,
+        "peak_rss_mb": 85.484375,
+        "top1": 70.66666666666667,
+        "screen_top1": 70.2,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "act-int8",
+      "quant_hash": "bf34bfcd8dd317f7",
+      "config_hash": "4d677a5961e23433",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "bf34bfcd8dd317f7",
+        "config_hash": "4d677a5961e23433"
+      },
+      "describe": "static per-channel act:int8 minmax/512",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.6807,
+        "size_bytes": 1839522,
+        "peak_rss_mb": 85.28125,
+        "top1": 70.5,
+        "screen_top1": 71.2,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "act-int8",
+      "quant_hash": "10cbd1e18f830fd2",
+      "config_hash": "f251f00d9a17ff92",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "10cbd1e18f830fd2",
+        "config_hash": "f251f00d9a17ff92"
+      },
+      "describe": "static per-channel act:int8 minmax/512 fp32:classifier",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.6865,
+        "size_bytes": 1894434,
+        "peak_rss_mb": 84.875,
+        "top1": 70.56666666666666,
+        "screen_top1": 71.0,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "act-int8",
+      "quant_hash": "11784a2794578437",
+      "config_hash": "4dee2b40d63c4eec",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stage2"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "11784a2794578437",
+        "config_hash": "4dee2b40d63c4eec"
+      },
+      "describe": "static per-channel act:int8 minmax/512 fp32:stage2",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 2.2306,
+        "size_bytes": 2018927,
+        "peak_rss_mb": 85.40625,
+        "top1": 70.66666666666667,
+        "screen_top1": 71.0,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "act-int8",
+      "quant_hash": "c68fa4c356b03a39",
+      "config_hash": "71012a0ecf26e86d",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "c68fa4c356b03a39",
+        "config_hash": "71012a0ecf26e86d"
+      },
+      "describe": "static per-channel act:int8 minmax/512 fp32:stem",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.7946,
+        "size_bytes": 1843055,
+        "peak_rss_mb": 85.265625,
+        "top1": 70.63333333333334,
+        "screen_top1": 70.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "act-int8",
+      "quant_hash": "9859d84b2b808ea7",
+      "config_hash": "1c874b3b3813eec8",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier",
+            "stage2"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "9859d84b2b808ea7",
+        "config_hash": "1c874b3b3813eec8"
+      },
+      "describe": "static per-channel act:int8 minmax/512 fp32:classifier+stage2",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 2.2321,
+        "size_bytes": 2073839,
+        "peak_rss_mb": 85.515625,
+        "top1": 70.6,
+        "screen_top1": 70.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "act-int8",
+      "quant_hash": "fc26ad9da7b56625",
+      "config_hash": "78c8aca02e8f01eb",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier",
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "fc26ad9da7b56625",
+        "config_hash": "78c8aca02e8f01eb"
+      },
+      "describe": "static per-channel act:int8 minmax/512 fp32:classifier+stem",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.8076,
+        "size_bytes": 1897967,
+        "peak_rss_mb": 85.375,
+        "top1": 70.56666666666666,
+        "screen_top1": 70.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "act-int8",
+      "quant_hash": "9aba17d96d10371e",
+      "config_hash": "2df185ec551c2965",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stage2",
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "9aba17d96d10371e",
+        "config_hash": "2df185ec551c2965"
+      },
+      "describe": "static per-channel act:int8 minmax/512 fp32:stage2+stem",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 2.3052,
+        "size_bytes": 2022460,
+        "peak_rss_mb": 85.390625,
+        "top1": 70.66666666666667,
+        "screen_top1": 71.0,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "act-int8",
+      "quant_hash": "c6da977e268cb089",
+      "config_hash": "406e97aa6138d428",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier",
+            "stage2",
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "c6da977e268cb089",
+        "config_hash": "406e97aa6138d428"
+      },
+      "describe": "static per-channel act:int8 minmax/512 fp32:classifier+stage2+stem",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 2.3049,
+        "size_bytes": 2077372,
+        "peak_rss_mb": 85.515625,
+        "top1": 70.56666666666666,
+        "screen_top1": 70.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "opt-extended",
+      "quant_hash": "6c2712900e73dc56",
+      "config_hash": "9f1600d449d48a02",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "extended",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "6c2712900e73dc56",
+        "config_hash": "9f1600d449d48a02"
+      },
+      "describe": "static per-channel act:uint8 minmax/512",
+      "describe_run": "4t opt:extended",
+      "result": {
+        "status": "ok",
+        "latency_ms": 2.5907,
+        "size_bytes": 1839387,
+        "peak_rss_mb": 85.34375,
+        "top1": 70.5,
+        "screen_top1": 71.2,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "opt-extended",
+      "quant_hash": "511ee19b0540f6e7",
+      "config_hash": "65e645485961dd43",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "extended",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "511ee19b0540f6e7",
+        "config_hash": "65e645485961dd43"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:classifier",
+      "describe_run": "4t opt:extended",
+      "result": {
+        "status": "ok",
+        "latency_ms": 2.5894,
+        "size_bytes": 1894317,
+        "peak_rss_mb": 85.34375,
+        "top1": 70.56666666666666,
+        "screen_top1": 71.0,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "opt-extended",
+      "quant_hash": "6276efddb94c9d17",
+      "config_hash": "25af5baf4f6e939d",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stage2"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "extended",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "6276efddb94c9d17",
+        "config_hash": "25af5baf4f6e939d"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:stage2",
+      "describe_run": "4t opt:extended",
+      "result": {
+        "status": "ok",
+        "latency_ms": 2.8739,
+        "size_bytes": 2018819,
+        "peak_rss_mb": 85.453125,
+        "top1": 70.66666666666667,
+        "screen_top1": 71.0,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "opt-extended",
+      "quant_hash": "8326e6e880bba208",
+      "config_hash": "21ec3382e51434e0",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "extended",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "8326e6e880bba208",
+        "config_hash": "21ec3382e51434e0"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:stem",
+      "describe_run": "4t opt:extended",
+      "result": {
+        "status": "ok",
+        "latency_ms": 2.6397,
+        "size_bytes": 1842929,
+        "peak_rss_mb": 85.296875,
+        "top1": 70.63333333333334,
+        "screen_top1": 70.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "opt-extended",
+      "quant_hash": "efc47cb114ce3eaf",
+      "config_hash": "8e61b80ee521218f",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier",
+            "stage2"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "extended",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "efc47cb114ce3eaf",
+        "config_hash": "8e61b80ee521218f"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:classifier+stage2",
+      "describe_run": "4t opt:extended",
+      "result": {
+        "status": "ok",
+        "latency_ms": 2.8513,
+        "size_bytes": 2073749,
+        "peak_rss_mb": 85.515625,
+        "top1": 70.6,
+        "screen_top1": 70.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "opt-extended",
+      "quant_hash": "fab849212574592b",
+      "config_hash": "b85cf5e0a4a0f055",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier",
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "extended",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "fab849212574592b",
+        "config_hash": "b85cf5e0a4a0f055"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:classifier+stem",
+      "describe_run": "4t opt:extended",
+      "result": {
+        "status": "ok",
+        "latency_ms": 2.6353,
+        "size_bytes": 1897859,
+        "peak_rss_mb": 85.359375,
+        "top1": 70.56666666666666,
+        "screen_top1": 70.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "opt-extended",
+      "quant_hash": "7388796f80ade43f",
+      "config_hash": "c1059ff610cecf3d",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stage2",
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "extended",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "7388796f80ade43f",
+        "config_hash": "c1059ff610cecf3d"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:stage2+stem",
+      "describe_run": "4t opt:extended",
+      "result": {
+        "status": "ok",
+        "latency_ms": 2.8865,
+        "size_bytes": 2022361,
+        "peak_rss_mb": 85.453125,
+        "top1": 70.66666666666667,
+        "screen_top1": 71.0,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "opt-extended",
+      "quant_hash": "c007b5622b018a1f",
+      "config_hash": "85c0f58b79eafa15",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier",
+            "stage2",
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "extended",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "c007b5622b018a1f",
+        "config_hash": "85c0f58b79eafa15"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:classifier+stage2+stem",
+      "describe_run": "4t opt:extended",
+      "result": {
+        "status": "ok",
+        "latency_ms": 2.9132,
+        "size_bytes": 2077291,
+        "peak_rss_mb": 85.515625,
+        "top1": 70.56666666666666,
+        "screen_top1": 70.8,
+        "admissible": true,
+        "error": null
+      }
+    }
+  ],
+  "pareto": [
+    {
+      "round": "canonical",
+      "quant_hash": "6c2712900e73dc56",
+      "config_hash": "6bd18ba89f010ad2",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "6c2712900e73dc56",
+        "config_hash": "6bd18ba89f010ad2"
+      },
+      "describe": "static per-channel act:uint8 minmax/512",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.7916,
+        "size_bytes": 1839387,
+        "peak_rss_mb": 84.875,
+        "top1": 70.5,
+        "screen_top1": 71.2,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "canonical",
+      "quant_hash": "511ee19b0540f6e7",
+      "config_hash": "10ab80078c86d9ab",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "511ee19b0540f6e7",
+        "config_hash": "10ab80078c86d9ab"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:classifier",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.7852,
+        "size_bytes": 1894317,
+        "peak_rss_mb": 84.90625,
+        "top1": 70.56666666666666,
+        "screen_top1": 71.0,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "canonical",
+      "quant_hash": "8326e6e880bba208",
+      "config_hash": "a7026d6f6faa2bb3",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "8326e6e880bba208",
+        "config_hash": "a7026d6f6faa2bb3"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:stem",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.8789,
+        "size_bytes": 1842929,
+        "peak_rss_mb": 84.84375,
+        "top1": 70.63333333333334,
+        "screen_top1": 70.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "no-arena",
+      "quant_hash": "6276efddb94c9d17",
+      "config_hash": "23c8dd7bc600b036",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stage2"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": false,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "6276efddb94c9d17",
+        "config_hash": "23c8dd7bc600b036"
+      },
+      "describe": "static per-channel act:uint8 minmax/512 fp32:stage2",
+      "describe_run": "4t opt:all no-arena",
+      "result": {
+        "status": "ok",
+        "latency_ms": 2.3776,
+        "size_bytes": 2018819,
+        "peak_rss_mb": 83.921875,
+        "top1": 70.66666666666667,
+        "screen_top1": 71.0,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "per-tensor",
+      "quant_hash": "06e1b9094831a2a6",
+      "config_hash": "51010d7f9625be14",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "06e1b9094831a2a6",
+        "config_hash": "51010d7f9625be14"
+      },
+      "describe": "static per-tensor act:uint8 minmax/512",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.7858,
+        "size_bytes": 1811932,
+        "peak_rss_mb": 84.796875,
+        "top1": 70.43333333333334,
+        "screen_top1": 71.2,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "per-tensor",
+      "quant_hash": "6cc3faa0ba826652",
+      "config_hash": "c361636498f175ae",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "6cc3faa0ba826652",
+        "config_hash": "c361636498f175ae"
+      },
+      "describe": "static per-tensor act:uint8 minmax/512 fp32:classifier",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.792,
+        "size_bytes": 1868191,
+        "peak_rss_mb": 85.296875,
+        "top1": 70.63333333333334,
+        "screen_top1": 72.0,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "per-tensor",
+      "quant_hash": "8fc7685fd72cc1ec",
+      "config_hash": "6282924178293948",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "8fc7685fd72cc1ec",
+        "config_hash": "6282924178293948"
+      },
+      "describe": "static per-tensor act:uint8 minmax/512 fp32:stem",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.8826,
+        "size_bytes": 1816334,
+        "peak_rss_mb": 85.28125,
+        "top1": 70.9,
+        "screen_top1": 71.6,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "per-tensor",
+      "quant_hash": "392ec615527a1a33",
+      "config_hash": "b41ddb80f55992bf",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": false,
+          "activation_type": "uint8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier",
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "392ec615527a1a33",
+        "config_hash": "b41ddb80f55992bf"
+      },
+      "describe": "static per-tensor act:uint8 minmax/512 fp32:classifier+stem",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.8754,
+        "size_bytes": 1872593,
+        "peak_rss_mb": 85.34375,
+        "top1": 70.93333333333334,
+        "screen_top1": 71.8,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "act-int8",
+      "quant_hash": "bf34bfcd8dd317f7",
+      "config_hash": "4d677a5961e23433",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "bf34bfcd8dd317f7",
+        "config_hash": "4d677a5961e23433"
+      },
+      "describe": "static per-channel act:int8 minmax/512",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.6807,
+        "size_bytes": 1839522,
+        "peak_rss_mb": 85.28125,
+        "top1": 70.5,
+        "screen_top1": 71.2,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "act-int8",
+      "quant_hash": "10cbd1e18f830fd2",
+      "config_hash": "f251f00d9a17ff92",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "classifier"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "10cbd1e18f830fd2",
+        "config_hash": "f251f00d9a17ff92"
+      },
+      "describe": "static per-channel act:int8 minmax/512 fp32:classifier",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.6865,
+        "size_bytes": 1894434,
+        "peak_rss_mb": 84.875,
+        "top1": 70.56666666666666,
+        "screen_top1": 71.0,
+        "admissible": true,
+        "error": null
+      }
+    },
+    {
+      "round": "act-int8",
+      "quant_hash": "c68fa4c356b03a39",
+      "config_hash": "71012a0ecf26e86d",
+      "config": {
+        "quant": {
+          "quant_type": "static",
+          "per_channel": true,
+          "activation_type": "int8",
+          "weight_type": "int8",
+          "calibration_method": "minmax",
+          "calibration_size": 512,
+          "excluded_groups": [
+            "stem"
+          ],
+          "reduce_range": false
+        },
+        "run": {
+          "intra_op_num_threads": 4,
+          "graph_optimization_level": "all",
+          "enable_cpu_mem_arena": true,
+          "allow_intra_op_spinning": true
+        },
+        "quant_hash": "c68fa4c356b03a39",
+        "config_hash": "71012a0ecf26e86d"
+      },
+      "describe": "static per-channel act:int8 minmax/512 fp32:stem",
+      "describe_run": "4t opt:all",
+      "result": {
+        "status": "ok",
+        "latency_ms": 1.7946,
+        "size_bytes": 1843055,
+        "peak_rss_mb": 85.265625,
+        "top1": 70.63333333333334,
+        "screen_top1": 70.8,
+        "admissible": true,
+        "error": null
+      }
+    }
+  ],
+  "selections": {
+    "fastest_valid": "4d677a5961e23433",
+    "smallest_valid": "51010d7f9625be14",
+    "lowest_ram": "23c8dd7bc600b036",
+    "most_accurate": "b41ddb80f55992bf",
+    "recommended": "4d677a5961e23433"
+  },
+  "created_at_utc": "2026-08-14T14:18:31.414533+00:00"
+}

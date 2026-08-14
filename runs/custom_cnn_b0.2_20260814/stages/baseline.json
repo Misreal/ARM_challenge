@@ -1,0 +1,80 @@
+{
+  "model": "custom_cnn",
+  "checkpoint": {
+    "path": "artifacts\\checkpoints\\custom_cnn.pt",
+    "sha256": "b17a9418e26e60397ffc4b08d769c8e9394c484569c030c4c9ef5dba9bd8d69f"
+  },
+  "split_fingerprint": "d692cdcdeddfac3b",
+  "onnx": {
+    "path": "artifacts\\onnx\\custom_cnn.onnx",
+    "sha256": "132eceeb940ab7c60e528e0f453c26b86de7d4b578d7f9fe314361e9fb493729",
+    "bytes": 7137449,
+    "opset": 17,
+    "input_name": "images",
+    "input_shape": [
+      1,
+      3,
+      32,
+      32
+    ],
+    "output_name": "logits",
+    "operators": {
+      "Add": 1,
+      "Conv": 10,
+      "Flatten": 1,
+      "Gemm": 1,
+      "GlobalAveragePool": 1,
+      "MaxPool": 3,
+      "Relu": 9
+    }
+  },
+  "onnx_quant_ready": {
+    "path": "artifacts\\onnx\\custom_cnn_quant_ready.onnx",
+    "sha256": "0917c9497d3d25e9bc388e9e53f04f0c4feef99f70efa18ee32f054044b77e7f",
+    "bytes": 7139225,
+    "operators": {
+      "Add": 1,
+      "Conv": 10,
+      "Flatten": 1,
+      "Gemm": 1,
+      "GlobalAveragePool": 1,
+      "MaxPool": 3,
+      "Relu": 9
+    },
+    "note": "Shape-inferred and fused graph. Phase 4 must quantize THIS file, never the deployable export (PLAN.md DO-NOT #4)."
+  },
+  "preprocessing": {
+    "input": "normalized_float32_nchw",
+    "mean": [
+      0.5071,
+      0.4865,
+      0.4409
+    ],
+    "std": [
+      0.2673,
+      0.2564,
+      0.2762
+    ]
+  },
+  "metrics": {
+    "optval_top1": 70.53333333333333,
+    "test_top1_sealed": 70.45
+  },
+  "verification": {
+    "torch_vs_onnx": {
+      "samples": 512,
+      "top1_agreement": 1.0,
+      "max_logit_delta": 9.5367431640625e-06
+    },
+    "onnx_vs_quant_ready": {
+      "samples": 512,
+      "top1_agreement": 1.0,
+      "max_logit_delta": 0.0
+    }
+  },
+  "package_versions": {
+    "torch": "2.13.0+cu126",
+    "onnxruntime": "1.27.0"
+  },
+  "created_at_utc": "2026-07-25T11:59:01.742597+00:00"
+}

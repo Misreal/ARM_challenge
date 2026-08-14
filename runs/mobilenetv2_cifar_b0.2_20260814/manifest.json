@@ -1,0 +1,84 @@
+{
+  "schema": "manifest/1",
+  "stages": {
+    "baseline": {
+      "status": "ok",
+      "seconds": 0.0,
+      "completed_at_utc": "2026-08-14T14:25:32+00:00",
+      "from": "artifacts/reports/mobilenetv2_cifar_baseline.json"
+    },
+    "quant_baselines": {
+      "status": "ok",
+      "seconds": 108.69,
+      "completed_at_utc": "2026-08-14T14:27:20+00:00",
+      "from": "artifacts/reports_pi/mobilenetv2_cifar_quant_baselines.json"
+    },
+    "sensitivity": {
+      "status": "ok",
+      "seconds": 12.84,
+      "completed_at_utc": "2026-08-14T14:27:33+00:00",
+      "from": "artifacts/reports_pi/mobilenetv2_cifar_sensitivity.json"
+    },
+    "group_cost": {
+      "status": "ok",
+      "seconds": 0.82,
+      "completed_at_utc": "2026-08-14T14:27:34+00:00",
+      "model": "mobilenetv2_cifar",
+      "measured": "per-group exclusions",
+      "cache": "artifacts/bench_cache"
+    },
+    "cost_benefit": {
+      "status": "ok",
+      "seconds": 0.72,
+      "completed_at_utc": "2026-08-14T14:27:35+00:00",
+      "from": "artifacts/reports_pi/cost_benefit.json"
+    },
+    "sentinel": {
+      "status": "ok",
+      "seconds": 1705.39,
+      "completed_at_utc": "2026-08-14T15:16:43+00:00",
+      "from": "artifacts/reports_pi/sentinel_mobilenetv2_cifar_20260814.json"
+    },
+    "search_space": {
+      "status": "ok",
+      "seconds": 0.65,
+      "completed_at_utc": "2026-08-14T15:16:43+00:00",
+      "from": "artifacts/reports_pi/search_space.json"
+    },
+    "study": {
+      "status": "ok",
+      "seconds": 527.9,
+      "completed_at_utc": "2026-08-14T15:25:31+00:00",
+      "from": "artifacts/search/mobilenetv2_cifar_budget0.2_v4.json"
+    },
+    "finalists": {
+      "status": "ok",
+      "seconds": 66.28,
+      "completed_at_utc": "2026-08-14T15:32:36+00:00",
+      "from": "artifacts/reports_pi/mobilenetv2_cifar_finalists.json"
+    },
+    "final_test": {
+      "status": "ok",
+      "seconds": 208.49,
+      "completed_at_utc": "2026-08-14T15:36:04+00:00",
+      "from": "artifacts/reports_pi/mobilenetv2_cifar_final_test.json"
+    },
+    "dashboard": {
+      "status": "ok",
+      "seconds": 0.94,
+      "completed_at_utc": "2026-08-14T15:36:05+00:00",
+      "page": "runs/mobilenetv2_cifar_b0.2_20260814/dashboard/index.html"
+    },
+    "index": {
+      "status": "ok",
+      "seconds": 1.15,
+      "completed_at_utc": "2026-08-14T15:36:06+00:00",
+      "index": "artifacts/dashboard/index.html"
+    }
+  },
+  "host": {
+    "platform": "Windows-10-10.0.26200-SP0",
+    "machine": "AMD64"
+  },
+  "updated_at_utc": "2026-08-14T15:36:06+00:00"
+}
