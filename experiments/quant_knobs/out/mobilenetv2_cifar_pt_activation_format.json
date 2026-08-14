@@ -1,0 +1,324 @@
+{
+  "campaign_config": false,
+  "model": "mobilenetv2_cifar",
+  "base": {
+    "quant_format": "QDQ",
+    "per_channel": "False",
+    "reduce_range": "False",
+    "activation_type": "QUInt8",
+    "weight_type": "QInt8",
+    "calibrate_method": "CalibrationMethod.MinMax"
+  },
+  "calibration_size": 512,
+  "eval_split": "optval",
+  "limit": null,
+  "run_config": {
+    "intra_op_num_threads": 4,
+    "graph_optimization_level": "all",
+    "enable_cpu_mem_arena": true,
+    "allow_intra_op_spinning": true
+  },
+  "onnxruntime": "1.27.0",
+  "created_at_utc": "2026-08-12T15:19:10.053615+00:00",
+  "arms": {
+    "baseline": {
+      "arm": "baseline",
+      "state_before": {
+        "governor": "performance",
+        "cur_freq_khz": "2400000",
+        "temp": "temp=64.2'C",
+        "throttled": "throttled=0x0"
+      },
+      "overrides": {},
+      "build_seconds": 5.3,
+      "bytes": 2503586,
+      "operators": {
+        "Add": 10,
+        "Conv": 52,
+        "DequantizeLinear": 172,
+        "Flatten": 1,
+        "Gemm": 1,
+        "GlobalAveragePool": 1,
+        "QuantizeLinear": 66
+      },
+      "zero_points": {
+        "int32": [
+          0
+        ],
+        "int8": [
+          0
+        ],
+        "uint8": [
+          0,
+          71,
+          96,
+          103,
+          104,
+          112,
+          113,
+          114,
+          117,
+          118,
+          119,
+          120
+        ]
+      },
+      "latency": {
+        "reps": 300,
+        "min_ms": 1.4551,
+        "median_ms": 1.4762,
+        "mean_ms": 1.4861,
+        "p95_ms": 1.5196
+      },
+      "accuracy": {
+        "samples": 3000,
+        "top1": 77.3,
+        "top5": 93.26666666666667
+      },
+      "split_fingerprint": "d692cdcdeddfac3b",
+      "state_after": {
+        "governor": "performance",
+        "cur_freq_khz": "2400000",
+        "temp": "temp=67.0'C",
+        "throttled": "throttled=0x0"
+      },
+      "status": "ok"
+    },
+    "u8_sym": {
+      "arm": "u8_sym",
+      "state_before": {
+        "governor": "performance",
+        "cur_freq_khz": "2400000",
+        "temp": "temp=65.3'C",
+        "throttled": "throttled=0x0"
+      },
+      "overrides": {
+        "extra_options": {
+          "ActivationSymmetric": true
+        }
+      },
+      "build_seconds": 5.28,
+      "bytes": 2546309,
+      "operators": {
+        "Add": 10,
+        "Clip": 35,
+        "Conv": 52,
+        "DequantizeLinear": 207,
+        "Flatten": 1,
+        "Gemm": 1,
+        "GlobalAveragePool": 1,
+        "QuantizeLinear": 101
+      },
+      "zero_points": {
+        "int32": [
+          0
+        ],
+        "int8": [
+          0
+        ],
+        "uint8": [
+          128
+        ]
+      },
+      "latency": {
+        "reps": 300,
+        "min_ms": 3.4161,
+        "median_ms": 3.4802,
+        "mean_ms": 3.4766,
+        "p95_ms": 3.502
+      },
+      "accuracy": {
+        "samples": 3000,
+        "top1": 77.43333333333334,
+        "top5": 93.46666666666667
+      },
+      "split_fingerprint": "d692cdcdeddfac3b",
+      "state_after": {
+        "governor": "performance",
+        "cur_freq_khz": "2400000",
+        "temp": "temp=66.4'C",
+        "throttled": "throttled=0x0"
+      },
+      "status": "ok"
+    },
+    "s8_asym": {
+      "arm": "s8_asym",
+      "state_before": {
+        "governor": "performance",
+        "cur_freq_khz": "2400000",
+        "temp": "temp=66.4'C",
+        "throttled": "throttled=0x0"
+      },
+      "overrides": {
+        "activation_type": "QInt8"
+      },
+      "build_seconds": 5.27,
+      "bytes": 2504090,
+      "operators": {
+        "Add": 10,
+        "Conv": 52,
+        "DequantizeLinear": 172,
+        "Flatten": 1,
+        "Gemm": 1,
+        "GlobalAveragePool": 1,
+        "QuantizeLinear": 66
+      },
+      "zero_points": {
+        "int32": [
+          0
+        ],
+        "int8": [
+          -128,
+          -57,
+          -32,
+          -25,
+          -24,
+          -16,
+          -15,
+          -14,
+          -11,
+          -10,
+          -9,
+          -8
+        ]
+      },
+      "latency": {
+        "reps": 300,
+        "min_ms": 1.481,
+        "median_ms": 1.5041,
+        "mean_ms": 1.514,
+        "p95_ms": 1.5535
+      },
+      "accuracy": {
+        "samples": 3000,
+        "top1": 77.3,
+        "top5": 93.26666666666667
+      },
+      "split_fingerprint": "d692cdcdeddfac3b",
+      "state_after": {
+        "governor": "performance",
+        "cur_freq_khz": "2400000",
+        "temp": "temp=66.4'C",
+        "throttled": "throttled=0x0"
+      },
+      "status": "ok"
+    },
+    "s8_sym": {
+      "arm": "s8_sym",
+      "state_before": {
+        "governor": "performance",
+        "cur_freq_khz": "2400000",
+        "temp": "temp=67.0'C",
+        "throttled": "throttled=0x0"
+      },
+      "overrides": {
+        "activation_type": "QInt8",
+        "extra_options": {
+          "ActivationSymmetric": true
+        }
+      },
+      "build_seconds": 5.29,
+      "bytes": 2546208,
+      "operators": {
+        "Add": 10,
+        "Clip": 35,
+        "Conv": 52,
+        "DequantizeLinear": 207,
+        "Flatten": 1,
+        "Gemm": 1,
+        "GlobalAveragePool": 1,
+        "QuantizeLinear": 101
+      },
+      "zero_points": {
+        "int32": [
+          0
+        ],
+        "int8": [
+          0
+        ]
+      },
+      "latency": {
+        "reps": 300,
+        "min_ms": 3.3537,
+        "median_ms": 3.4124,
+        "mean_ms": 3.4095,
+        "p95_ms": 3.4346
+      },
+      "accuracy": {
+        "samples": 3000,
+        "top1": 77.46666666666667,
+        "top5": 93.3
+      },
+      "split_fingerprint": "d692cdcdeddfac3b",
+      "state_after": {
+        "governor": "performance",
+        "cur_freq_khz": "2400000",
+        "temp": "temp=64.8'C",
+        "throttled": "throttled=0x0"
+      },
+      "status": "ok"
+    },
+    "qoperator": {
+      "arm": "qoperator",
+      "state_before": {
+        "governor": "performance",
+        "cur_freq_khz": "2400000",
+        "temp": "temp=65.9'C",
+        "throttled": "throttled=0x0"
+      },
+      "overrides": {
+        "quant_format": "QOperator"
+      },
+      "build_seconds": 5.17,
+      "bytes": 2456847,
+      "operators": {
+        "DequantizeLinear": 2,
+        "Flatten": 1,
+        "QGemm": 1,
+        "QLinearAdd": 10,
+        "QLinearConv": 52,
+        "QLinearGlobalAveragePool": 1,
+        "QuantizeLinear": 2
+      },
+      "zero_points": {
+        "int8": [
+          0
+        ],
+        "uint8": [
+          0,
+          71,
+          96,
+          103,
+          104,
+          112,
+          113,
+          114,
+          117,
+          118,
+          119,
+          120
+        ]
+      },
+      "latency": {
+        "reps": 300,
+        "min_ms": 1.4413,
+        "median_ms": 1.4624,
+        "mean_ms": 1.4725,
+        "p95_ms": 1.5073
+      },
+      "accuracy": {
+        "samples": 3000,
+        "top1": 77.3,
+        "top5": 93.26666666666667
+      },
+      "split_fingerprint": "d692cdcdeddfac3b",
+      "state_after": {
+        "governor": "performance",
+        "cur_freq_khz": "2400000",
+        "temp": "temp=66.4'C",
+        "throttled": "throttled=0x0"
+      },
+      "status": "ok"
+    }
+  }
+}
