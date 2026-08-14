@@ -64,6 +64,24 @@
       "baseline_top1": 78.5,
       "fp32_bytes": 44870838,
       "classes": 100
+    },
+    "resnet34_cifar100_hf": {
+      "name": "resnet34_cifar100_hf",
+      "source": "imported",
+      "groups": [
+        "conv1",
+        "act1",
+        "layer1",
+        "layer2",
+        "layer3",
+        "layer4",
+        "global_pool",
+        "fc"
+      ],
+      "group_depth": 1,
+      "baseline_top1": 100.0,
+      "fp32_bytes": 85296310,
+      "classes": 100
     }
   }
 }
