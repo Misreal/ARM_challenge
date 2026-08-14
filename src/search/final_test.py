@@ -18,8 +18,9 @@ from typing import Any
 from src.bench.agent import BenchSpec
 from src.bench.remote import PiConnection, RemoteBenchmarker
 from src.data.export_test_bundle import DEFAULT_OUTPUT_DIR as TEST_BUNDLE_DIR, SPLIT_NAME
+from src.model_index import known_models
 from src.quant.baselines import BASELINE_CONFIGS
-from src.quant.config import DeploymentConfig, EXPORTED_MODELS
+from src.quant.config import DeploymentConfig
 from src.quant.quantize import DEFAULT_ONNX_DIR
 from src.search.study import DEFAULT_STUDY_DIR, SEED_RUN
 from src.search.version import study_name
@@ -73,7 +74,7 @@ def scored_candidates(summary: dict[str, Any]) -> list[tuple[str, DeploymentConf
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--model", required=True, choices=EXPORTED_MODELS)
+    parser.add_argument("--model", required=True, choices=known_models())
     parser.add_argument("--budget-pt", type=float, default=0.2)
     # The pipeline knows the exact study it produced, including any population
     # suffix. Rebuilding the name from --budget-pt alone silently scores a

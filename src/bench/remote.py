@@ -24,10 +24,11 @@ from typing import Any, Iterable, Sequence
 
 from src.bench.agent import BenchSpec
 from src.bench.protocol import RESULT_SCHEMA
+from src.model_index import known_models
 from src.portable.benchmark import DEFAULT_ITERATIONS, DEFAULT_WARMUP
 from src.quant.baselines import BASELINE_CONFIGS
 from src.quant.candidates import CANDIDATE_EXCLUSIONS, candidate_configs, per_group_configs
-from src.quant.config import DeploymentConfig, EXPORTED_MODELS, QuantConfig, RunConfig
+from src.quant.config import DeploymentConfig, QuantConfig, RunConfig
 
 DEFAULT_TARGET_FILE = Path("pi_target.json")
 DEFAULT_CACHE_DIR = Path("artifacts/bench_cache")
@@ -543,7 +544,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--check", action="store_true", help="Probe the device and exit")
     parser.add_argument("--push-code", action="store_true", help="Copy src/ to the device first")
-    parser.add_argument("--model", choices=EXPORTED_MODELS)
+    parser.add_argument("--model", choices=known_models())
     # Not `choices`: the selective-FP32 candidates are model-specific, so the
     # valid set is only known once --model is parsed.
     parser.add_argument(

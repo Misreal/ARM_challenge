@@ -16,7 +16,8 @@ from typing import Any
 
 from src.bench.agent import BenchSpec
 from src.bench.remote import PiConnection, RemoteBenchmarker, configs_for
-from src.quant.config import EXPORTED_MODELS, DeploymentConfig, RunConfig
+from src.model_index import known_models
+from src.quant.config import DeploymentConfig, RunConfig
 
 DEFAULT_REPORT_DIR = Path("artifacts/reports_pi")
 DEFAULT_CONFIGS = ("fp32", "static_per_channel")
@@ -110,7 +111,7 @@ def summarize(rows: list[dict[str, Any]]) -> dict[str, Any]:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--model", required=True, choices=EXPORTED_MODELS)
+    parser.add_argument("--model", required=True, choices=known_models())
     parser.add_argument("--configs", nargs="+", default=list(DEFAULT_CONFIGS))
     parser.add_argument("--no-cache", action="store_true")
     parser.add_argument("--report-dir", type=Path, default=DEFAULT_REPORT_DIR)

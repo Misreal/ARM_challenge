@@ -20,8 +20,9 @@ from typing import Any
 import numpy as np
 import onnxruntime as ort
 
+from src.model_index import known_models
 from src.portable.bundle import DEFAULT_BUNDLE_DIR, load_bundle
-from src.quant.config import EXPORTED_MODELS, QuantConfig, RunConfig
+from src.quant.config import QuantConfig, RunConfig
 from src.quant.groups import build_group_map, quantizable_groups, refine_group
 from src.quant.quantize import DEFAULT_CACHE_DIR, DEFAULT_ONNX_DIR, ModelPaths
 from src.sensitivity.metrics import accuracy_from_logits
@@ -53,7 +54,7 @@ def default_report_dir() -> Path:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--model", required=True, choices=EXPORTED_MODELS)
+    parser.add_argument("--model", required=True, choices=known_models())
     parser.add_argument("--schemes", nargs="+", choices=sorted(SCHEMES), default=sorted(SCHEMES))
     parser.add_argument(
         "--limit", type=int, default=None, help="evaluate only the first N optval images"

@@ -16,9 +16,9 @@ from typing import Any
 
 from src.bench.agent import BenchSpec
 from src.bench.remote import PiConnection, RemoteBenchmarker
+from src.model_index import known_models
 from src.quant.config import (
     CALIBRATION_METHODS,
-    EXPORTED_MODELS,
     DeploymentConfig,
     QuantConfig,
     RunConfig,
@@ -108,7 +108,7 @@ def summarize(rows: list[dict[str, Any]]) -> dict[str, Any]:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--model", required=True, choices=EXPORTED_MODELS)
+    parser.add_argument("--model", required=True, choices=known_models())
     parser.add_argument(
         "--per-channel", nargs="+", type=int, default=[1], help="1, 0, or both"
     )

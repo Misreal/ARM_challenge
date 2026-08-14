@@ -17,6 +17,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from src.model_index import known_models
 from src.quant.config import EXPORTED_MODELS
 from src.sensitivity.analyze import DEVICE_REPORT_DIR
 
@@ -265,7 +266,7 @@ def known_groups(model: str) -> tuple[str, ...] | None:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--model", nargs="+", choices=EXPORTED_MODELS, default=list(EXPORTED_MODELS))
+    parser.add_argument("--model", nargs="+", choices=known_models(), default=list(EXPORTED_MODELS))
     parser.add_argument("--cost-benefit", type=Path, default=DEFAULT_COST_BENEFIT)
     parser.add_argument("--sentinel", type=Path, default=None, help="repeat-spread report for the band")
     parser.add_argument("--out", type=Path, default=DEVICE_REPORT_DIR / "search_space.json")

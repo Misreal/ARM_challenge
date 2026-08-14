@@ -23,9 +23,10 @@ from typing import Any
 
 from src.bench.agent import BenchSpec
 from src.bench.remote import PiConnection, RemoteBenchmarker
+from src.model_index import known_models
 from src.quant.baselines import BASELINE_CONFIGS
 from src.quant.candidates import candidate_configs
-from src.quant.config import DeploymentConfig, EXPORTED_MODELS, QuantConfig
+from src.quant.config import DeploymentConfig, QuantConfig
 from src.quant.groups import build_group_map, quantizable_groups
 from src.quant.quantize import DEFAULT_ONNX_DIR, ModelPaths
 from src.search import select
@@ -217,7 +218,7 @@ def measure_references(runner: Any, model: str, space, threshold: float) -> dict
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--model", required=True, choices=EXPORTED_MODELS)
+    parser.add_argument("--model", required=True, choices=known_models())
     parser.add_argument("--trials", type=int, default=None, help="max unique candidate evaluations")
     parser.add_argument("--budget-pt", type=float, default=DEFAULT_ACCURACY_BUDGET_PT)
     parser.add_argument("--max-rss-mb", type=float, default=None)
