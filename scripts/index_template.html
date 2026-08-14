@@ -141,8 +141,6 @@ footer { color: var(--muted); font-size: 11px; margin-top: 18px; }
   <section class="panel">
     <p class="eyebrow">Hardware-in-the-loop deployment search</p>
     <h1 id="title"></h1>
-    <p class="lede" id="lede"></p>
-    <ol class="how" id="how"></ol>
   </section>
 
   <p class="section-label">Load an existing run</p>
@@ -191,27 +189,7 @@ const el = (tag, attrs = {}, text = null) => {
 
 function renderIntro() {
   document.getElementById("title").textContent =
-    "There is no single best way to deploy a model.";
-  document.getElementById("lede").textContent =
-    `Each run below searched one network's deployment settings — how to quantize it, which ` +
-    `blocks to leave alone, how to configure the runtime — and kept every configuration that ` +
-    `nothing else beats on all four counts at once. Speed, size, memory and accuracy were ` +
-    `measured on a Raspberry Pi 5, never predicted.`;
-
-  const how = document.getElementById("how");
-  [
-    ["1", "Pick a run.", "Each one is a different network, searched independently."],
-    ["2", "Say what you care about.", "Rank speed, size, memory and accuracy; the table reorders."],
-    ["3", "Read the recipe.", "The winning row tells you exactly how to build that model."]
-  ].forEach(([n, bold, rest]) => {
-    const li = el("li");
-    li.appendChild(el("span", { class: "mono" }, n));
-    const body = el("span");
-    body.appendChild(el("b", {}, bold + " "));
-    body.appendChild(document.createTextNode(rest));
-    li.appendChild(body);
-    how.appendChild(li);
-  });
+    "EdgeTuner doesn't chase one best configuration.";
 }
 
 function figure(key, value, note) {

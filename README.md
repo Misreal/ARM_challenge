@@ -1,33 +1,55 @@
-# Deployment optimizer for ARM edge devices
+# EdgeTuner: A Deployment Optimizer for ARM Edge Devices
 
-There is no single best way to deploy a neural network. How you quantize it, which layers you
-leave alone, and how you configure the runtime trade speed against size against memory against
-accuracy, and the trade-offs are hardware-specific: **a smaller model is frequently not a faster
-one on ARM**.
+## What is EdgeTuner?
+Quantization, layer precision, runtime settings — every one of these choices trades speed against
+size against memory against accuracy, and the trade-offs are hardware-specific. This makes it overwhelmingly complicated to pick one single configuration for our model.
 
-This searches those settings automatically, measures every candidate on a real Raspberry Pi 5, and
-returns the set of configurations that nothing else beats on all four counts at once.
-
-> Optuna finds the best *training* configuration. This finds the best *deployment* configuration.
+That is why we build EdgeTuner. EdgeTuner finds the optimal combination for you: it searches those settings automatically, measures every candidate on a real Raspberry Pi 5, and
+hands you a shortlist of configurations — fastest, smallest, most accurate, or balanced — so you can pick the one that fits what you're building, backed by real measurements instead of a guess.
 
 ---
 
-## Look at the results first
+## How it works
 
-Open **`artifacts/dashboard/index.html`** in a browser. No install, no hardware, no network. It
-lists every measured campaign; click one to explore its trade space, rank the four objectives by
-what you care about, and read the exact recipe for the winning configuration.
+1. **Per-group sensitivity analysis.** Every layer group (not layer — the model is graphed and
+   grouped by module path) is quantized to INT8 in isolation and scored for accuracy loss.
+   This produces two numbers per group: how much accuracy it costs to spare it as FP32
+   (`recovery_share`), and, from a follow-up latency probe, how much it costs in milliseconds
+   (`cost_ms`).
 
-Three campaigns ship measured on a Pi 5. Their fastest members, against their own FP32 exports:
+2. **Cost/benefit reduction, not a heuristic cutoff.** The groups are treated as a knapsack over
+   `recovery_share / cost_ms` — the accuracy bought per millisecond spent. A group is pinned FP32
+   if it's worth its cost outright, pinned INT8 if it buys nothing, and left **searchable** only
+   if its cost falls inside a measured reproducibility band (by default 2% of a reference latency,
+   or the sentinel-measured spread when one's been run) — i.e., only when the device's own
+   measurement noise can't tell its cost apart from zero. That band is what keeps a lucky
+   measurement from being pinned as fact.
 
-| Model | Fastest member | Speedup | Smallest | Pareto set |
-| --- | --- | --- | --- | --- |
-| ResNet-18 | 3.36 ms | 5.0x | 11.3 MB from 44.9 MB | 8 configurations |
-| MobileNetV2 | 1.48 ms | 2.5x | 2.5 MB from 9.4 MB | 5 configurations |
-| Custom CNN | 1.77 ms | 3.9x | 1.8 MB from 7.1 MB | 13 configurations |
+3. **Enumeration over NSGA-II, when it fits.** The reduced space is walked one factor at a time
+   off a canonical recipe (static per-channel UINT8, MinMax/512, `all` graph optimization, arena
+   on) — precision vector, then per-channel, then activation type, then optimization level, then
+   calibration — covering every precision vector each round before moving to the next factor.
+   NSGA-II only kicks in if `2^|searchable groups|` exceeds the trial budget; every bundled model
+   reduces small enough that enumeration is the live path.
 
-Every figure on every page is extracted from the result JSONs at build time. The templates contain
-no numbers, so a page cannot drift from what was measured.
+4. **Every candidate is measured, not estimated.** Each precision/runtime vector is exported,
+   quantized, and benchmarked as one process on the Pi 5 — latency, peak RSS, artifact size,
+   top-1 accuracy. Candidates below `baseline_top1 - accuracy_budget_pt` (default 1.0 points, set
+   with `--budget-pt`) are rejected outright, a hard filter, not a soft objective.
+
+5. **Pareto front, not a leaderboard.** Surviving candidates are ranked across the four measured
+   objectives; the output is every configuration nothing else beats on all four at once, not one
+   "winner." Surviving just means it cleared step 4's accuracy filter — the ranking itself has
+   nothing to do with whether a candidate stays or goes.
+
+```mermaid
+flowchart LR
+    A[Trained ONNX model] --> B["Per-group sensitivity probe<br/>recovery_share, cost_ms"]
+    B --> C["Cost/benefit knapsack<br/>pin FP32 / pin INT8 / leave searchable"]
+    C --> D["Enumerate reduced space<br/>(NSGA-II if too large)"]
+    D --> E["Per-candidate Pi benchmark<br/>latency, RSS, size, top-1"]
+    E --> F["Pareto front<br/>accuracy floor applied as hard filter"]
+```
 
 ## What you need before you start
 
@@ -137,34 +159,37 @@ never sees the data the search is scored on.
 
 ### 5. Bring in a model
 
-Trained checkpoints and ONNX graphs are build outputs, not source, so they are not in the
-repository. Pick whichever route suits you.
+**Have a PyTorch checkpoint, not ONNX yet?** Export it first with a static `(1, 3, 32, 32)` input
+and the legacy exporter — `dynamo=False` is what keeps node names carrying module paths, which is
+what per-block sensitivity groups on:
 
-**Option A — download the models these results were measured on.** The three FP32 exports are
-attached to the [v1.0 release](https://github.com/Misreal/ARM_challenge/releases/tag/v1.0):
+```python
+torch.onnx.export(
+    model.cpu().eval(), torch.zeros(1, 3, 32, 32),
+    "your_model.onnx", input_names=["images"], output_names=["logits"],
+    opset_version=17, dynamo=False,
+)
+```
+
+Then import the ONNX file:
+
+```bash
+python -m src.import_onnx --onnx your_model.onnx --name your_model --seal-test
+```
+
+Needs: CIFAR-100, static `(1, 3, 32, 32)` input, exported by `torch.onnx.export`. The importer
+checks and tells you if it doesn't qualify. Use a name that isn't already taken — re-importing
+under an existing name is blocked so the sealed test score can't be scored twice.
+
+Want the three models these results were measured on instead? They're on the
+[v1.0 release](https://github.com/Misreal/ARM_challenge/releases/tag/v1.0):
 
 ```bash
 curl -L -O https://github.com/Misreal/ARM_challenge/releases/download/v1.0/resnet18_cifar.onnx
 python -m src.import_onnx --onnx resnet18_cifar.onnx --name resnet18_repro --seal-test
 ```
 
-| Asset | Size |
-| --- | --- |
-| `resnet18_cifar.onnx` | 42.8 MB |
-| `mobilenetv2_cifar.onnx` | 8.9 MB |
-| `custom_cnn.onnx` | 6.8 MB |
-
-Import under a **new name**, as above. The bundled reports already carry sealed test scores, and
-the importer refuses to overwrite one — that guard is what stops the sealed split from being
-scored twice.
-
-**Option B — bring your own model.** Same command, your graph:
-
-```bash
-python -m src.import_onnx --onnx your_model.onnx --name your_model --seal-test
-```
-
-It must meet the three requirements above. The importer checks them and refuses with a reason.
+Swap in `mobilenetv2_cifar.onnx` or `custom_cnn.onnx` for the other two.
 
 ### 6. Run the campaign
 
@@ -240,6 +265,23 @@ constrained NSGA-II, which no model bundled here reaches.
   candidate. The finalists are then measured five more times, interleaved, so the recommendation
   does not rest on a single pass.
 
+## Results
+
+Open **`artifacts/dashboard/index.html`** in a browser. No install, no hardware, no network. It
+lists every measured campaign; click one to explore its trade space, rank the four objectives by
+what you care about, and read the exact recipe for the winning configuration.
+
+Three campaigns ship measured on a Pi 5. Their fastest members, against their own FP32 exports:
+
+| Model | Fastest member | Speedup | Smallest | Pareto set |
+| --- | --- | --- | --- | --- |
+| ResNet-18 | 3.23 ms | 5.2x | 11.3 MB from 44.9 MB | 20 configurations |
+| MobileNetV2 | 1.54 ms | 2.4x | 2.7 MB from 9.4 MB | 7 configurations |
+| Custom CNN | 1.68 ms | 4.1x | 1.8 MB from 7.1 MB | 11 configurations |
+
+Every figure on every page is extracted from the result JSONs at build time. The templates contain
+no numbers, so a page cannot drift from what was measured.
+
 ## Layout
 
 ```
@@ -259,7 +301,7 @@ runs/                one directory per campaign, each with its own page
 
 - **CIFAR-100 only.** Another dataset would need its own splits, calibration set and evaluation
   bundles. That is a design job, not a configuration flag.
-- **Pruning is deliberately out of scope.** Zeroing weights shrinks a parameter count without
+- **Pruning is deliberately out of scope.** Zero-ing weights shrinks a parameter count without
   making ARM inference faster; real gains need structured pruning plus a graph rebuild.
 - **Accuracy screening does not work on this dev machine.** The host CPU has AVX2 but no VNNI, so
   ONNX Runtime's INT8 path accumulates in 16 bits and saturates, which makes per-channel
@@ -270,6 +312,12 @@ runs/                one directory per campaign, each with its own page
   near 3.4 ms. Applying the same percentage there assumes the spread scales with the work done. It
   probably mostly does, but it is an assumption, and the honest fix is a second sentinel near the
   front's latency.
+- **The default trial budget never reaches calibration.** Calibration method and size (MinMax,
+  Entropy, Percentile, at 128 to 1000 images) are real search factors in `src/search/plan.py`, but
+  the auto budget only covers the five structural rounds and calibration is ordered last, so every
+  shipped front here uses MinMax/512 by default. Reaching every calibration round needs an explicit
+  `--trials 112` (ResNet-18, Custom CNN) or `--trials 224` (MobileNetV2) — the already-measured
+  structural candidates are cache hits, so only the new calibration configs cost device time.
 
 ## Trying the pipeline without a Raspberry Pi
 
