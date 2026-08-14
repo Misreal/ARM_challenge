@@ -45,6 +45,9 @@ def captured_argv(monkeypatch, run, module: str = "src.pipeline_device") -> dict
         monkeypatch.setattr(executors, "RemoteBenchmarker", lambda connection: _NoDevice())
         monkeypatch.setattr(executors, "on_device", lambda *a, **k: None)
         monkeypatch.setattr(executors, "adopt_file", lambda *a, **k: {})
+        # Force the export branch: this checkout has the graph already, so the
+        # baseline stage would adopt it and build no command to check.
+        monkeypatch.setattr(executors, "already_exported", lambda model: False)
 
     executor = executors.make_executor(run)
     by_stage: dict[str, list[str]] = {}

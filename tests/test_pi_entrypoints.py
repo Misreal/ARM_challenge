@@ -15,6 +15,7 @@ fresh interpreter can tell us whether importing the module pulled torch in.
 
 from __future__ import annotations
 
+import json
 import subprocess
 import sys
 from pathlib import Path
@@ -69,9 +70,18 @@ def test_exported_models_match_the_baseline_reports() -> None:
     drift that matters: a model exported and baselined but never added here
     would be silently unmeasurable.
     """
-    baselined = tuple(sorted(p.name.removesuffix("_baseline.json") for p in BASELINE_REPORTS))
-    assert baselined, f"no baseline reports found under {REPORT_DIR}"
-    assert EXPORTED_MODELS == baselined
+    # An imported model has a baseline report and no checkpoint to export from,
+    # so it is deliberately absent from EXPORTED_MODELS; src.model_index is what
+    # makes it reachable instead.
+    trained = tuple(
+        sorted(
+            path.name.removesuffix("_baseline.json")
+            for path in BASELINE_REPORTS
+            if json.loads(path.read_text(encoding="utf-8")).get("source") != "imported"
+        )
+    )
+    assert trained, f"no baseline reports for trained models found under {REPORT_DIR}"
+    assert EXPORTED_MODELS == trained
 
 
 def test_exported_models_are_registered_architectures() -> None:
