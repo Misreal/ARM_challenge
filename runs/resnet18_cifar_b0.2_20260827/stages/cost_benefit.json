@@ -1,0 +1,58 @@
+[
+  {
+    "group": "conv1",
+    "recovery_share": 0.20516458045900218,
+    "latency_ms": 3.5543,
+    "cost_ms": 0.2126999999999999,
+    "share_per_ms": 0.9645725456464611
+  },
+  {
+    "group": "fc",
+    "recovery_share": 0.028706542903404846,
+    "latency_ms": 3.3746,
+    "cost_ms": 0.03299999999999992,
+    "share_per_ms": 0.8698952394971187
+  },
+  {
+    "group": "layer1",
+    "recovery_share": 0.4359637355242973,
+    "latency_ms": 5.792,
+    "cost_ms": 2.4503999999999997,
+    "share_per_ms": 0.17791533444510993
+  },
+  {
+    "group": "layer2",
+    "recovery_share": 0.09432854633659096,
+    "latency_ms": 5.2503,
+    "cost_ms": 1.9087,
+    "share_per_ms": 0.04942031033509245
+  },
+  {
+    "group": "layer3",
+    "recovery_share": 0.08836130711411365,
+    "latency_ms": 6.3502,
+    "cost_ms": 3.0086,
+    "share_per_ms": 0.029369576252779913
+  },
+  {
+    "group": "layer4",
+    "recovery_share": 0.04496009340969914,
+    "latency_ms": 9.93,
+    "cost_ms": 6.5884,
+    "share_per_ms": 0.006824129289311387
+  },
+  {
+    "group": "relu",
+    "recovery_share": -0.20072581522524274,
+    "latency_ms": 3.5044,
+    "cost_ms": 0.16279999999999983,
+    "share_per_ms": -1.2329595529806079
+  },
+  {
+    "group": "avgpool",
+    "recovery_share": 0.0,
+    "latency_ms": 3.3609,
+    "cost_ms": 0.019299999999999873,
+    "share_per_ms": null
+  }
+]

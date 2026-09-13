@@ -25,110 +25,95 @@
   "quant_hash": "6c2712900e73dc56",
   "config_hash": "f73ab847fe773d32",
   "onnxruntime": "1.27.0",
-  "created_at_utc": "2026-08-09T14:20:41.920583+00:00",
+  "created_at_utc": "2026-08-27T04:51:19.905134+00:00",
   "readiness": {
     "enforced": true,
     "violations": [],
     "note": "device guards enforced",
     "cooldown": {
       "requested_c": 60.0,
-      "temperature_c": 52.35,
+      "temperature_c": null,
       "waited_s": 0.0,
       "reached": true,
-      "reason": "at or below threshold"
+      "reason": "no temperature sensor on this host"
     },
     "device": {
-      "platform": "Linux-6.12.96+rpt-rpi-2712-aarch64-with-glibc2.36",
+      "platform": "Linux-6.17.0-1017-aws-aarch64-with-glibc2.39",
       "machine": "aarch64",
       "is_target": true,
-      "governors": [
-        "performance",
-        "performance",
-        "performance",
-        "performance"
-      ],
-      "governor": "performance",
-      "governor_is_pinned": true,
-      "clock_mhz": 2400.0,
-      "temperature_c": 52.35,
+      "governors": [],
+      "governor": null,
+      "governor_is_pinned": false,
+      "clock_mhz": null,
+      "temperature_c": null,
       "throttle": {
-        "raw": 0,
-        "hex": "0x0",
+        "raw": null,
+        "hex": null,
         "live": [],
         "sticky": [],
-        "available": true
+        "available": false
       }
     }
   },
   "admissible": true,
   "admissibility_reason": "aarch64 target, no throttling, timings stable",
   "bytes": 11338184,
-  "sha256": "fb99c9a16599c525e65fb39a255909592e6e950c38dbd02cf0fd731c28ac9381",
+  "sha256": "77aef55126be4b883c36c537d9a52911995b6272e6be6efb7128d9551ce41e4f",
   "int8_op_count": 106,
   "latency": {
     "iterations": 100,
     "warmup": 20,
     "batch_size": 1,
-    "mean_ms": 5.4629,
-    "median_ms": 5.4592,
-    "p90_ms": 5.4818,
-    "p95_ms": 5.4901,
-    "p99_ms": 5.5006,
-    "min_ms": 5.4393,
-    "max_ms": 5.537,
-    "stdev_ms": 0.0169,
-    "throughput_ips": 183.05,
-    "drift_ratio": 1.0004,
+    "mean_ms": 5.2656,
+    "median_ms": 5.2669,
+    "p90_ms": 5.305,
+    "p95_ms": 5.3273,
+    "p99_ms": 5.3337,
+    "min_ms": 5.1978,
+    "max_ms": 5.4112,
+    "stdev_ms": 0.0337,
+    "throughput_ips": 189.91,
+    "drift_ratio": 1.0001,
     "stable": true
   },
-  "session_load_seconds": 0.0486,
-  "peak_rss_mb": 105.46875,
+  "session_load_seconds": 0.0489,
+  "peak_rss_mb": 105.875,
   "rss_attributable": true,
   "rss_note": "peak RSS covers session creation and inference only",
-  "cpu_cores_busy": 1.96,
+  "cpu_cores_busy": 1.95,
   "throttle_events": [],
   "device_before": {
-    "platform": "Linux-6.12.96+rpt-rpi-2712-aarch64-with-glibc2.36",
+    "platform": "Linux-6.17.0-1017-aws-aarch64-with-glibc2.39",
     "machine": "aarch64",
     "is_target": true,
-    "governors": [
-      "performance",
-      "performance",
-      "performance",
-      "performance"
-    ],
-    "governor": "performance",
-    "governor_is_pinned": true,
-    "clock_mhz": 2400.0,
-    "temperature_c": 51.8,
+    "governors": [],
+    "governor": null,
+    "governor_is_pinned": false,
+    "clock_mhz": null,
+    "temperature_c": null,
     "throttle": {
-      "raw": 0,
-      "hex": "0x0",
+      "raw": null,
+      "hex": null,
       "live": [],
       "sticky": [],
-      "available": true
+      "available": false
     }
   },
   "device_after": {
-    "platform": "Linux-6.12.96+rpt-rpi-2712-aarch64-with-glibc2.36",
+    "platform": "Linux-6.17.0-1017-aws-aarch64-with-glibc2.39",
     "machine": "aarch64",
     "is_target": true,
-    "governors": [
-      "performance",
-      "performance",
-      "performance",
-      "performance"
-    ],
-    "governor": "performance",
-    "governor_is_pinned": true,
-    "clock_mhz": 2400.0,
-    "temperature_c": 54.55,
+    "governors": [],
+    "governor": null,
+    "governor_is_pinned": false,
+    "clock_mhz": null,
+    "temperature_c": null,
     "throttle": {
-      "raw": 0,
-      "hex": "0x0",
+      "raw": null,
+      "hex": null,
       "live": [],
       "sticky": [],
-      "available": true
+      "available": false
     }
   }
 }

@@ -5,11 +5,12 @@ guards only enforce on aarch64, so this still imports on the dev box.
 
 from __future__ import annotations
 
+import os
 import platform
 import re
 import subprocess
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
@@ -257,11 +258,20 @@ def wait_until_cool(
     )
 
 
+def _default_require_governor() -> bool:
+    # Escape hatch for aarch64 hosts with no cpufreq (cloud ARM VMs like AWS
+    # Graviton): the governor guard can never pass where /sys exposes no
+    # scaling_governor. Strict by default so the Pi path is unchanged; set
+    # ARMOPT_REQUIRE_GOVERNOR=0 to relax it, which the shipped spec records so a
+    # relaxed measurement is never mistaken for a pinned one.
+    return os.environ.get("ARMOPT_REQUIRE_GOVERNOR", "1") != "0"
+
+
 @dataclass(frozen=True)
 class ReadinessPolicy:
     """What the device must satisfy before a timed section may start."""
 
-    require_governor: bool = True
+    require_governor: bool = field(default_factory=_default_require_governor)
     require_clean_throttle: bool = True
     max_start_temperature_c: float = DEFAULT_MAX_START_TEMPERATURE_C
     cooldown_timeout_s: float = DEFAULT_COOLDOWN_TIMEOUT_S

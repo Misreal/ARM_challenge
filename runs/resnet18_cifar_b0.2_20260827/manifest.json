@@ -1,0 +1,66 @@
+{
+  "schema": "manifest/1",
+  "stages": {
+    "baseline": {
+      "status": "ok",
+      "seconds": 0.0,
+      "completed_at_utc": "2026-08-27T04:54:52+00:00",
+      "from": "artifacts/reports/resnet18_cifar_baseline.json"
+    },
+    "quant_baselines": {
+      "status": "ok",
+      "seconds": 471.02,
+      "completed_at_utc": "2026-08-27T05:02:43+00:00",
+      "from": "artifacts/reports_pi/resnet18_cifar_quant_baselines.json"
+    },
+    "sensitivity": {
+      "status": "ok",
+      "seconds": 3645.5,
+      "completed_at_utc": "2026-08-27T06:03:29+00:00",
+      "from": "artifacts/reports_pi/resnet18_cifar_sensitivity.json"
+    },
+    "group_cost": {
+      "status": "ok",
+      "seconds": 0.78,
+      "completed_at_utc": "2026-08-27T06:03:30+00:00",
+      "model": "resnet18_cifar",
+      "measured": "per-group exclusions",
+      "cache": "artifacts/bench_cache"
+    },
+    "cost_benefit": {
+      "status": "ok",
+      "seconds": 0.8,
+      "completed_at_utc": "2026-08-27T06:03:31+00:00",
+      "from": "artifacts/reports_pi/cost_benefit.json"
+    },
+    "search_space": {
+      "status": "ok",
+      "seconds": 0.61,
+      "completed_at_utc": "2026-08-27T06:03:31+00:00",
+      "from": "artifacts/reports_pi/search_space.json"
+    },
+    "study": {
+      "status": "ok",
+      "seconds": 5705.31,
+      "completed_at_utc": "2026-08-27T09:34:00+00:00",
+      "from": "artifacts/search/resnet18_cifar_budget0.2_v4.json"
+    },
+    "finalists": {
+      "status": "ok",
+      "seconds": 879.82,
+      "completed_at_utc": "2026-08-27T09:48:40+00:00",
+      "from": "artifacts/reports_pi/resnet18_cifar_finalists.json"
+    },
+    "dashboard": {
+      "status": "ok",
+      "seconds": 1.1,
+      "completed_at_utc": "2026-08-27T09:48:41+00:00",
+      "page": "runs/resnet18_cifar_b0.2_20260827/dashboard/index.html"
+    }
+  },
+  "host": {
+    "platform": "Windows-10-10.0.26200-SP0",
+    "machine": "AMD64"
+  },
+  "updated_at_utc": "2026-08-27T09:48:41+00:00"
+}
