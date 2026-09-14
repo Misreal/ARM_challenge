@@ -31,6 +31,9 @@ GROUP_DEPTH: dict[str, int] = {
     "resnet18_cifar": 1,
     "mobilenetv2_cifar": 2,
     "custom_cnn": 1,
+    # Like MobileNetV2: every transformer block sits under one `blocks`
+    # container, so depth 1 would be a single group holding the whole graph.
+    "vit_cifar": 2,
 }
 DEFAULT_GROUP_DEPTH = 1
 

@@ -66,14 +66,23 @@ def build_param_groups(model: nn.Module, weight_decay: float) -> list[dict[str, 
     normalisation itself and costs roughly half a point of top-1 on CIFAR. This
     is standard practice in the recipes whose published accuracies this project
     expects to reproduce, not an optimisation experiment.
+
+    The 1-D test catches norm scales and biases in every convolutional model,
+    but not a transformer's `pos_embed` (1, tokens, dim) or `cls_token`
+    (1, 1, dim), which are 3-D and would be decayed by shape alone. Both encode
+    learned position rather than a transformation, and every published ViT
+    recipe exempts them, so they are named explicitly. No convolutional model
+    here has a parameter by either name, so this changes nothing already
+    trained.
     """
+    undecayed_names = {"pos_embed", "cls_token"}
     decayed: list[nn.Parameter] = []
     plain: list[nn.Parameter] = []
     for name, param in model.named_parameters():
         if not param.requires_grad:
             continue
         # BN weights/biases and all biases are 1-D; conv/linear weights are not.
-        if param.ndim <= 1 or name.endswith(".bias"):
+        if param.ndim <= 1 or name.endswith(".bias") or name.split(".")[-1] in undecayed_names:
             plain.append(param)
         else:
             decayed.append(param)

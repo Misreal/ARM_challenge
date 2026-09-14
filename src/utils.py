@@ -29,11 +29,22 @@ def set_seed(seed: int, deterministic: bool = False) -> None:
 
 
 def resolve_device(requested: str = "auto") -> torch.device:
-    """Map 'auto'/'cuda'/'cpu' to a concrete device, falling back gracefully."""
+    """Map 'auto'/'cuda'/'mps'/'cpu' to a concrete device, falling back gracefully.
+
+    CUDA outranks MPS under `auto` because the campaign's recorded runs were
+    trained on a rented GPU; MPS is the Apple Silicon path, which is slower but
+    an order of magnitude better than this machine's CPU.
+    """
     if requested == "auto":
-        return torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        if torch.cuda.is_available():
+            return torch.device("cuda")
+        if torch.backends.mps.is_available():
+            return torch.device("mps")
+        return torch.device("cpu")
     if requested == "cuda" and not torch.cuda.is_available():
         raise RuntimeError("CUDA requested but torch.cuda.is_available() is False")
+    if requested == "mps" and not torch.backends.mps.is_available():
+        raise RuntimeError("MPS requested but torch.backends.mps.is_available() is False")
     return torch.device(requested)
 
 

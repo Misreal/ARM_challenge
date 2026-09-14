@@ -23,9 +23,11 @@ from src.data.splits import SplitIndices
 from src.portable.preprocess import CIFAR100_MEAN, CIFAR100_STD
 
 __all__ = [
+    "AUGMENTATION_IDS",
     "CIFAR100_MEAN",
     "CIFAR100_STD",
     "DEFAULT_DATA_ROOT",
+    "augmentation_id",
     "build_loader",
     "build_train_loader",
     "build_transforms",
@@ -35,12 +37,48 @@ __all__ = [
 DEFAULT_DATA_ROOT = Path("data")
 
 
-def build_transforms(train: bool) -> transforms.Compose:
-    """Standard CIFAR augmentation. Kept intentionally plain -- Stage 0's job is
-    a credible baseline, not a SOTA accuracy chase (see CLAUDE.md)."""
+# Recipe name -> the string stamped into the checkpoint's TrainingRecipe, so a
+# trained model always carries the augmentation it actually saw.
+AUGMENTATION_IDS: dict[str, str] = {
+    "standard": "randomcrop32_pad4_reflect+hflip",
+    "heavy": "randomcrop32_pad4_reflect+hflip+randaugment2x9+erasing0.25",
+}
+
+
+def augmentation_id(recipe: str) -> str:
+    """Provenance string for an augmentation recipe name."""
+    if recipe not in AUGMENTATION_IDS:
+        raise ValueError(f"Unknown augmentation {recipe!r}; known: {sorted(AUGMENTATION_IDS)}")
+    return AUGMENTATION_IDS[recipe]
+
+
+def build_transforms(train: bool, recipe: str = "standard") -> transforms.Compose:
+    """CIFAR augmentation. `standard` is kept intentionally plain -- Stage 0's job
+    is a credible baseline, not a SOTA accuracy chase (see CLAUDE.md).
+
+    `heavy` adds RandAugment and random erasing, and exists for `vit_cifar`
+    alone. That is not a SOTA chase either: a from-scratch transformer has no
+    convolutional prior, and under the plain recipe it overfits 44k images
+    badly enough that its FP32 baseline would not be credible. The CNNs keep
+    `standard`, so nothing already trained is affected.
+    """
+    augmentation_id(recipe)  # reject an unknown name before building anything
     normalize = transforms.Normalize(CIFAR100_MEAN, CIFAR100_STD)
     if not train:
         return transforms.Compose([transforms.ToTensor(), normalize])
+    if recipe == "heavy":
+        return transforms.Compose(
+            [
+                transforms.RandomCrop(32, padding=4, padding_mode="reflect"),
+                transforms.RandomHorizontalFlip(),
+                transforms.RandAugment(num_ops=2, magnitude=9),
+                transforms.ToTensor(),
+                normalize,
+                # After normalize, so erased pixels are the channel mean (zero
+                # in normalized space) rather than a raw-pixel constant.
+                transforms.RandomErasing(p=0.25),
+            ]
+        )
     return transforms.Compose(
         [
             transforms.RandomCrop(32, padding=4, padding_mode="reflect"),
@@ -52,13 +90,16 @@ def build_transforms(train: bool) -> transforms.Compose:
 
 
 def load_base_dataset(
-    root: Path = DEFAULT_DATA_ROOT, train: bool = True, augment: bool = False
+    root: Path = DEFAULT_DATA_ROOT,
+    train: bool = True,
+    augment: bool = False,
+    recipe: str = "standard",
 ) -> CIFAR100:
     return CIFAR100(
         root=str(root),
         train=train,
         download=True,
-        transform=build_transforms(train=augment),
+        transform=build_transforms(train=augment, recipe=recipe),
     )
 
 
@@ -67,9 +108,10 @@ def build_train_loader(
     root: Path = DEFAULT_DATA_ROOT,
     batch_size: int = 128,
     num_workers: int = 4,
+    recipe: str = "standard",
 ) -> DataLoader:
     """Augmented loader over the 44k training subset."""
-    dataset = load_base_dataset(root, train=True, augment=True)
+    dataset = load_base_dataset(root, train=True, augment=True, recipe=recipe)
     return DataLoader(
         Subset(dataset, list(split.train)),
         batch_size=batch_size,

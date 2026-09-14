@@ -27,7 +27,13 @@ import torch.nn as nn
 
 import src.models  # noqa: F401  -- import for its @register_model side effects
 from src.checkpoint import DEFAULT_CHECKPOINT_DIR, TrainingRecipe, save_checkpoint
-from src.data.loaders import DEFAULT_DATA_ROOT, build_loader, build_train_loader, load_base_dataset
+from src.data.loaders import (
+    DEFAULT_DATA_ROOT,
+    augmentation_id,
+    build_loader,
+    build_train_loader,
+    load_base_dataset,
+)
 from src.data.splits import DEFAULT_SPLIT_PATH, load_or_create_split, split_fingerprint
 from src.engine import build_param_groups, evaluate, select_amp_dtype, train_one_epoch
 from src.models.registry import available_models, build_model
@@ -35,12 +41,31 @@ from src.schedule import WarmupCosine
 from src.utils import count_parameters, resolve_device, set_seed
 
 
+MOMENTUM = 0.9
+WEIGHT_DECAY = 5e-4
+LABEL_SMOOTHING = 0.1
+WARMUP_EPOCHS = 5
+SMOKE_EPOCHS = 2
+SMOKE_BATCHES = 5
+
+
 @dataclass(frozen=True)
 class ModelDefaults:
-    """Model-specific training defaults."""
+    """Model-specific training defaults.
+
+    Everything below `lr` exists because a transformer cannot train under the
+    convolutional recipe. Each defaults to the CNN value, so the three
+    convolutional entries below resolve to exactly the recipe their
+    checkpoints already record -- adding these knobs moves no trained number.
+    """
 
     epochs: int
     lr: float
+    optimizer: str = "sgd_nesterov"
+    weight_decay: float = WEIGHT_DECAY
+    warmup_epochs: int = WARMUP_EPOCHS
+    grad_clip: float | None = None
+    augmentation: str = "standard"
 
 
 # MobileNetV2 gets 300 epochs: it is known to still be improving at 200, and
@@ -49,15 +74,23 @@ MODEL_DEFAULTS: dict[str, ModelDefaults] = {
     "resnet18_cifar": ModelDefaults(epochs=200, lr=0.1),
     "mobilenetv2_cifar": ModelDefaults(epochs=300, lr=0.1),
     "custom_cnn": ModelDefaults(epochs=200, lr=0.1),
+    # The ViT will not train under the recipe above: SGD at lr 0.1 diverges
+    # within a few epochs. AdamW at 1e-3, decay 0.05 (100x the CNNs', since
+    # attention has no convolutional prior to regularise it), a long warmup
+    # while the attention maps are still unstable, and gradient clipping for
+    # the spikes that survive -- the standard from-scratch ViT recipe, taken
+    # as published rather than tuned here.
+    "vit_cifar": ModelDefaults(
+        epochs=300,
+        lr=1e-3,
+        optimizer="adamw",
+        weight_decay=0.05,
+        warmup_epochs=20,
+        grad_clip=1.0,
+        augmentation="heavy",
+    ),
 }
 FALLBACK_DEFAULTS = ModelDefaults(epochs=200, lr=0.1)
-
-MOMENTUM = 0.9
-WEIGHT_DECAY = 5e-4
-LABEL_SMOOTHING = 0.1
-WARMUP_EPOCHS = 5
-SMOKE_EPOCHS = 2
-SMOKE_BATCHES = 5
 
 
 def parse_args() -> argparse.Namespace:
@@ -70,7 +103,10 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument(
-        "--warmup-epochs", type=int, default=WARMUP_EPOCHS, help="linear LR warmup length"
+        "--warmup-epochs",
+        type=int,
+        default=None,
+        help="linear LR warmup length; default is per-model",
     )
     parser.add_argument(
         "--smoke",
@@ -87,7 +123,7 @@ def parse_args() -> argparse.Namespace:
         "overwrite the full-length ones",
     )
     parser.add_argument("--workers", type=int, default=4)
-    parser.add_argument("--device", default="auto", choices=["auto", "cuda", "cpu"])
+    parser.add_argument("--device", default="auto", choices=["auto", "cuda", "mps", "cpu"])
     parser.add_argument("--amp", default="auto", choices=["auto", "bf16", "off"])
     parser.add_argument("--data-root", type=Path, default=DEFAULT_DATA_ROOT)
     parser.add_argument("--split-path", type=Path, default=DEFAULT_SPLIT_PATH)
@@ -99,19 +135,22 @@ def resolve_recipe(args: argparse.Namespace) -> TrainingRecipe:
     """Combine command-line options with model defaults."""
     defaults = MODEL_DEFAULTS.get(args.model, FALLBACK_DEFAULTS)
     epochs = SMOKE_EPOCHS if args.smoke else (args.epochs or defaults.epochs)
+    requested_warmup = defaults.warmup_epochs if args.warmup_epochs is None else args.warmup_epochs
     # A 5-epoch warmup inside a 2-epoch smoke run is not a schedule; shrink it.
-    warmup = min(args.warmup_epochs, max(1, epochs - 1))
+    warmup = min(requested_warmup, max(1, epochs - 1))
     return TrainingRecipe(
         model=args.model,
         epochs=epochs,
         batch_size=args.batch_size,
         lr=args.lr or defaults.lr,
         momentum=MOMENTUM,
-        weight_decay=WEIGHT_DECAY,
+        weight_decay=defaults.weight_decay,
         warmup_epochs=warmup,
         label_smoothing=LABEL_SMOOTHING,
         seed=args.seed,
         amp_dtype="pending",  # replaced once the device is known
+        optimizer=defaults.optimizer,
+        augmentation=augmentation_id(defaults.augmentation),
     )
 
 
@@ -148,9 +187,14 @@ def main() -> None:
     split = load_or_create_split(labels, path=args.split_path, seed=args.seed)
     fingerprint = split_fingerprint(split)
 
+    defaults = MODEL_DEFAULTS.get(args.model, FALLBACK_DEFAULTS)
     workers = 0 if args.smoke else args.workers
     train_loader = build_train_loader(
-        split, root=args.data_root, batch_size=recipe.batch_size, num_workers=workers
+        split,
+        root=args.data_root,
+        batch_size=recipe.batch_size,
+        num_workers=workers,
+        recipe=defaults.augmentation,
     )
     trainval_loader = build_loader(
         split, "trainval", root=args.data_root, batch_size=256, num_workers=workers
@@ -164,12 +208,17 @@ def main() -> None:
     model = maybe_compile(model, args.compile)
 
     criterion = nn.CrossEntropyLoss(label_smoothing=recipe.label_smoothing)
-    optimizer = torch.optim.SGD(
-        build_param_groups(trainable, recipe.weight_decay),
-        lr=recipe.lr,
-        momentum=recipe.momentum,
-        nesterov=True,
-    )
+    param_groups = build_param_groups(trainable, recipe.weight_decay)
+    if recipe.optimizer == "adamw":
+        # `momentum` goes unused here; it stays in the recipe as a recorded
+        # field so one schema describes every run.
+        optimizer: torch.optim.Optimizer = torch.optim.AdamW(
+            param_groups, lr=recipe.lr, betas=(0.9, 0.999)
+        )
+    else:
+        optimizer = torch.optim.SGD(
+            param_groups, lr=recipe.lr, momentum=recipe.momentum, nesterov=True
+        )
 
     max_batches = SMOKE_BATCHES if args.smoke else None
     steps_per_epoch = min(len(train_loader), max_batches or len(train_loader))
@@ -205,6 +254,7 @@ def main() -> None:
             global_step=global_step,
             amp_dtype=amp_dtype,
             max_batches=max_batches,
+            grad_clip=defaults.grad_clip,
         )
         global_step = epoch_result.next_step
         val = evaluate(model, trainval_loader, device, criterion, max_batches=max_batches)
