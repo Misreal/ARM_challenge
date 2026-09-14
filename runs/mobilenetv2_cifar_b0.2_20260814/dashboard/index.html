@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <title>Deployment trade space — ResNet-18 on a Raspberry Pi 5</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -131,6 +132,7 @@ h2 {
 }
 .chip--split::before { background: var(--series-1); }
 .chip--warn::before { background: var(--warning); }
+.chip--recommended::before { background: var(--good); }
 
 .mock-banner {
   border: 2px solid var(--warning); border-radius: 4px;
@@ -197,6 +199,7 @@ tbody tr[aria-selected="true"] td { border-bottom-color: var(--series-1); }
   border: 1px solid currentColor;
 }
 .tag--dyn { color: var(--series-2); }
+.tag--recommended { color: var(--good); }
 .scroll { overflow-x: auto; }
 
 /* ---------------------------------------------------------------- detail */
@@ -364,7 +367,7 @@ footer {
  "model_label": "MobileNetV2",
  "venue": "pi",
  "study": "mobilenetv2_cifar_budget0.2_v4",
- "built_at_utc": "2026-08-14T21:07:23+00:00",
+ "built_at_utc": "2026-09-14T12:47:14+00:00",
  "split": {
   "name": "optval",
   "samples": 3000,
@@ -420,11 +423,25 @@ footer {
   "peak_rss_mb",
   "size_mb"
  ],
+ "recommended": {
+  "id": "C2",
+  "config_hash": "6bd18ba89f010ad2",
+  "describe": "static per-channel act:uint8 minmax/512",
+  "describe_run": "4t opt:all",
+  "latency_ms": 1.5621,
+  "median_ms": 1.5515,
+  "mad_ms": 0.0123,
+  "repeats": 5,
+  "size_mb": 2.7283,
+  "peak_rss_mb": 87.3125,
+  "top1": 77.4
+ },
  "front": [
   {
    "describe": "static per-channel act:uint8 minmax/512 fp32:features.18",
    "describe_run": "4t opt:all",
    "quant_hash": "76a3528abaa31083",
+   "config_hash": "bafc51aea512bbc3",
    "quant_type": "static",
    "per_channel": true,
    "activation_type": "uint8",
@@ -446,12 +463,14 @@ footer {
    "screen_top1": 78.2,
    "images_vs_baseline": -1,
    "id": "C1",
-   "test_top1": 77.26
+   "test_top1": 77.26,
+   "is_recommended": false
   },
   {
    "describe": "static per-channel act:uint8 minmax/512",
    "describe_run": "4t opt:all",
    "quant_hash": "6c2712900e73dc56",
+   "config_hash": "6bd18ba89f010ad2",
    "quant_type": "static",
    "per_channel": true,
    "activation_type": "uint8",
@@ -471,12 +490,14 @@ footer {
    "screen_top1": 78.2,
    "images_vs_baseline": 0,
    "id": "C2",
-   "test_top1": 77.24
+   "test_top1": 77.24,
+   "is_recommended": true
   },
   {
    "describe": "static per-channel act:uint8 minmax/512 fp32:features.0+features.1+features.18",
    "describe_run": "4t opt:all",
    "quant_hash": "9241ca02431ba4e6",
+   "config_hash": "c2bec6954469a9cb",
    "quant_type": "static",
    "per_channel": true,
    "activation_type": "uint8",
@@ -500,12 +521,14 @@ footer {
    "screen_top1": 78.8,
    "images_vs_baseline": 5,
    "id": "C3",
-   "test_top1": 77.22
+   "test_top1": 77.22,
+   "is_recommended": false
   },
   {
    "describe": "static per-channel act:uint8 minmax/512 fp32:features.0+features.1",
    "describe_run": "4t opt:all",
    "quant_hash": "84878afb894c784c",
+   "config_hash": "daa92898470b42c6",
    "quant_type": "static",
    "per_channel": true,
    "activation_type": "uint8",
@@ -528,12 +551,14 @@ footer {
    "screen_top1": 78.8,
    "images_vs_baseline": 4,
    "id": "C4",
-   "test_top1": 77.24
+   "test_top1": 77.24,
+   "is_recommended": false
   },
   {
    "describe": "static per-channel act:uint8 minmax/512 fp32:features.1",
    "describe_run": "4t opt:all",
    "quant_hash": "b67f4372a7ad85f1",
+   "config_hash": "9c647e199cebf3c5",
    "quant_type": "static",
    "per_channel": true,
    "activation_type": "uint8",
@@ -555,12 +580,14 @@ footer {
    "screen_top1": 78.2,
    "images_vs_baseline": -2,
    "id": "C5",
-   "test_top1": 77.32
+   "test_top1": 77.32,
+   "is_recommended": false
   },
   {
    "describe": "static per-channel act:uint8 minmax/512 fp32:classifier.1+features.0+features.1",
    "describe_run": "4t opt:all",
    "quant_hash": "5f339d6ece711a79",
+   "config_hash": "bcb006d8fff3c67e",
    "quant_type": "static",
    "per_channel": true,
    "activation_type": "uint8",
@@ -584,12 +611,14 @@ footer {
    "screen_top1": 79.0,
    "images_vs_baseline": 5,
    "id": "C6",
-   "test_top1": 77.21
+   "test_top1": 77.21,
+   "is_recommended": false
   },
   {
    "describe": "static per-channel act:uint8 minmax/512 fp32:classifier.1+features.0+features.1+features.18",
    "describe_run": "4t opt:all",
    "quant_hash": "0a77e57006778ac8",
+   "config_hash": "bb909df2ab60f354",
    "quant_type": "static",
    "per_channel": true,
    "activation_type": "uint8",
@@ -614,7 +643,8 @@ footer {
    "screen_top1": 79.0,
    "images_vs_baseline": 6,
    "id": "C7",
-   "test_top1": 77.2
+   "test_top1": 77.2,
+   "is_recommended": false
   }
  ],
  "test": {
@@ -2783,6 +2813,13 @@ function renderHeader() {
     chip.appendChild(el("b", { class: "mono" }, value));
     chips.appendChild(chip);
   };
+  if (D.recommended) {
+    const rec = D.recommended;
+    const lat = rec.median_ms != null
+      ? `${fmt(rec.latency_ms, "latency_ms")}ms (5x median ${fmt(rec.median_ms, "latency_ms")}ms)`
+      : `${fmt(rec.latency_ms, "latency_ms")}ms`;
+    add("Recommended", `${rec.id} — ${rec.describe} · ${lat} · ${fmt(rec.size_mb, "size_mb")}MB · ${fmt(rec.top1, "top1")}% top1`, "chip--recommended");
+  }
   add("Search graded on", `${D.split.name} · ${D.split.samples.toLocaleString()} held-out images`, "chip--split");
   if (D.test) {
     add("Confirmed on", `sealed ${D.test.split} · ${D.test.samples.toLocaleString()} images, scored once`, "chip--split");
@@ -3149,6 +3186,12 @@ function renderRanking() {
       recipe.appendChild(el("span", { class: "tag tag--dyn",
         title: "Pareto-valid but impractical: it wins only on size and RAM, at several times the latency." },
         "not practical"));
+    }
+    if (r.is_recommended) {
+      recipe.appendChild(document.createTextNode(" "));
+      recipe.appendChild(el("span", { class: "tag tag--recommended",
+        title: "The finalist stage's recommended deployment choice, re-measured five times on the device." },
+        "recommended"));
     }
     const decided = el("span", { class: "decided" },
       i === 0 ? "—"

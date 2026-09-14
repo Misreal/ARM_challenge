@@ -94,6 +94,7 @@ class Sources:
     final_test: Path | None = None
     sentinel: Path | None = None
     study_db: Path | None = None
+    finalists: Path | None = None
     venue: str = "pi"
 
     @classmethod
@@ -108,6 +109,7 @@ class Sources:
         sentinel: Path | None = None,
     ) -> Sources:
         final_test = device_dir / f"{model}_final_test.json"
+        finalists = device_dir / f"{model}_finalists.json"
         return cls(
             model=model,
             study=study,
@@ -120,12 +122,13 @@ class Sources:
             final_test=final_test if final_test.exists() else None,
             sentinel=sentinel if sentinel is None or sentinel.exists() else None,
             study_db=search_dir / f"{study}.db",
+            finalists=finalists if finalists.exists() else None,
         )
 
     @classmethod
     def from_run(cls, run: Run, cache_dir: Path, search_dir: Path) -> Sources:
         stage = run.paths.stage
-        optional = {name: stage(name) for name in ("final_test", "sentinel")}
+        optional = {name: stage(name) for name in ("final_test", "sentinel", "finalists")}
         return cls(
             model=run.model,
             study=run.study,
@@ -137,6 +140,7 @@ class Sources:
             cache_dir=cache_dir,
             final_test=optional["final_test"] if optional["final_test"].exists() else None,
             sentinel=optional["sentinel"] if optional["sentinel"].exists() else None,
+            finalists=optional["finalists"] if optional["finalists"].exists() else None,
             # The sqlite study stays where optuna wrote it: it is gitignored and
             # rewritten on every resume, so a run copies the summary, not the db.
             study_db=search_dir / f"{run.study}.db",
@@ -369,6 +373,7 @@ def front_rows(summary: dict[str, Any], baseline_top1: float, samples: int) -> l
                 "describe": member["describe"],
                 "describe_run": member["describe_run"],
                 "quant_hash": member["quant_hash"],
+                "config_hash": member["config_hash"],
                 "quant_type": quant.quant_type,
                 "per_channel": quant.per_channel,
                 "activation_type": quant.activation_type if quant.quant_type == "static" else None,
@@ -601,6 +606,41 @@ def trial_rows(
     return rows
 
 
+def recommended_pick(finalists_path: Path | None, rows: list[dict[str, Any]]) -> dict[str, Any] | None:
+    """The finalist stage's repeat-verified `recommended` choice, matched to its front row.
+
+    None where this campaign has no finalists.json (older legacy runs) or where
+    the recommended hash cannot be resolved -- `select.finalists()` only ever
+    re-measures the fastest three, the smallest and the lowest-RAM, so a
+    `recommended` hash that isn't among those five is a data problem to surface
+    by omission rather than a row to fabricate.
+    """
+    if finalists_path is None:
+        return None
+    finalists = read_json(finalists_path)
+    rec_hash = finalists.get("selections", {}).get("recommended")
+    if not rec_hash:
+        return None
+    row = next((r for r in rows if r["config_hash"] == rec_hash), None)
+    if row is None:
+        return None
+    entry = next((f for f in finalists["finalists"] if f["config_hash"] == rec_hash), None)
+    repeated = entry.get("repeated", {}) if entry else {}
+    return {
+        "id": row["id"],
+        "config_hash": rec_hash,
+        "describe": row["describe"],
+        "describe_run": row["describe_run"],
+        "latency_ms": row["latency_ms"],
+        "median_ms": repeated.get("median_ms"),
+        "mad_ms": repeated.get("mad_ms"),
+        "repeats": repeated.get("repeats"),
+        "size_mb": row["size_mb"],
+        "peak_rss_mb": row["peak_rss_mb"],
+        "top1": row["top1"],
+    }
+
+
 def build_payload(sources: Sources) -> dict[str, Any]:
     model = sources.model
     summary = read_json(sources.summary)
@@ -618,6 +658,9 @@ def build_payload(sources: Sources) -> dict[str, Any]:
     test = attach_test_scores(rows, sources.final_test) if sources.final_test else None
     noise = noise_floor(read_json(sources.sentinel)) if sources.sentinel else unmeasured_noise()
     resolved = orderings(rows, tie_groups(rows, noise["percent"]))
+    recommended = recommended_pick(sources.finalists, rows)
+    for row in rows:
+        row["is_recommended"] = recommended is not None and row["config_hash"] == recommended["config_hash"]
 
     return {
         "model": model,
@@ -642,6 +685,7 @@ def build_payload(sources: Sources) -> dict[str, Any]:
         },
         "objectives": list(OBJECTIVES),
         "default_priority": list(DEFAULT_PRIORITY),
+        "recommended": recommended,
         "front": rows,
         "test": test,
         "orderings": resolved,

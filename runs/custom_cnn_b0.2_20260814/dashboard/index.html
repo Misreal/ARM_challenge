@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <title>Deployment trade space — ResNet-18 on a Raspberry Pi 5</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -131,6 +132,7 @@ h2 {
 }
 .chip--split::before { background: var(--series-1); }
 .chip--warn::before { background: var(--warning); }
+.chip--recommended::before { background: var(--good); }
 
 .mock-banner {
   border: 2px solid var(--warning); border-radius: 4px;
@@ -197,6 +199,7 @@ tbody tr[aria-selected="true"] td { border-bottom-color: var(--series-1); }
   border: 1px solid currentColor;
 }
 .tag--dyn { color: var(--series-2); }
+.tag--recommended { color: var(--good); }
 .scroll { overflow-x: auto; }
 
 /* ---------------------------------------------------------------- detail */
@@ -364,7 +367,7 @@ footer {
  "model_label": "Custom CNN",
  "venue": "pi",
  "study": "custom_cnn_budget0.2_v4",
- "built_at_utc": "2026-08-14T21:07:19+00:00",
+ "built_at_utc": "2026-09-14T12:47:14+00:00",
  "split": {
   "name": "optval",
   "samples": 3000,
@@ -420,11 +423,25 @@ footer {
   "peak_rss_mb",
   "size_mb"
  ],
+ "recommended": {
+  "id": "C1",
+  "config_hash": "4d677a5961e23433",
+  "describe": "static per-channel act:int8 minmax/512",
+  "describe_run": "4t opt:all",
+  "latency_ms": 1.6807,
+  "median_ms": 1.6767,
+  "mad_ms": 0.008,
+  "repeats": 5,
+  "size_mb": 1.839522,
+  "peak_rss_mb": 85.28125,
+  "top1": 70.5
+ },
  "front": [
   {
    "describe": "static per-channel act:int8 minmax/512",
    "describe_run": "4t opt:all",
    "quant_hash": "bf34bfcd8dd317f7",
+   "config_hash": "4d677a5961e23433",
    "quant_type": "static",
    "per_channel": true,
    "activation_type": "int8",
@@ -444,12 +461,14 @@ footer {
    "screen_top1": 71.2,
    "images_vs_baseline": -1,
    "id": "C1",
-   "test_top1": 70.42
+   "test_top1": 70.42,
+   "is_recommended": true
   },
   {
    "describe": "static per-channel act:int8 minmax/512 fp32:classifier",
    "describe_run": "4t opt:all",
    "quant_hash": "10cbd1e18f830fd2",
+   "config_hash": "f251f00d9a17ff92",
    "quant_type": "static",
    "per_channel": true,
    "activation_type": "int8",
@@ -471,12 +490,14 @@ footer {
    "screen_top1": 71.0,
    "images_vs_baseline": 1,
    "id": "C2",
-   "test_top1": 70.46
+   "test_top1": 70.46,
+   "is_recommended": false
   },
   {
    "describe": "static per-channel act:uint8 minmax/512 fp32:classifier",
    "describe_run": "4t opt:all",
    "quant_hash": "511ee19b0540f6e7",
+   "config_hash": "10ab80078c86d9ab",
    "quant_type": "static",
    "per_channel": true,
    "activation_type": "uint8",
@@ -498,12 +519,14 @@ footer {
    "screen_top1": 71.0,
    "images_vs_baseline": 1,
    "id": "C3",
-   "test_top1": 70.46
+   "test_top1": 70.46,
+   "is_recommended": false
   },
   {
    "describe": "static per-tensor act:uint8 minmax/512",
    "describe_run": "4t opt:all",
    "quant_hash": "06e1b9094831a2a6",
+   "config_hash": "51010d7f9625be14",
    "quant_type": "static",
    "per_channel": false,
    "activation_type": "uint8",
@@ -523,12 +546,14 @@ footer {
    "screen_top1": 71.2,
    "images_vs_baseline": -3,
    "id": "C4",
-   "test_top1": 70.27
+   "test_top1": 70.27,
+   "is_recommended": false
   },
   {
    "describe": "static per-channel act:uint8 minmax/512",
    "describe_run": "4t opt:all",
    "quant_hash": "6c2712900e73dc56",
+   "config_hash": "6bd18ba89f010ad2",
    "quant_type": "static",
    "per_channel": true,
    "activation_type": "uint8",
@@ -548,12 +573,14 @@ footer {
    "screen_top1": 71.2,
    "images_vs_baseline": -1,
    "id": "C5",
-   "test_top1": 70.42
+   "test_top1": 70.42,
+   "is_recommended": false
   },
   {
    "describe": "static per-tensor act:uint8 minmax/512 fp32:classifier",
    "describe_run": "4t opt:all",
    "quant_hash": "6cc3faa0ba826652",
+   "config_hash": "c361636498f175ae",
    "quant_type": "static",
    "per_channel": false,
    "activation_type": "uint8",
@@ -575,12 +602,14 @@ footer {
    "screen_top1": 72.0,
    "images_vs_baseline": 3,
    "id": "C6",
-   "test_top1": 70.28
+   "test_top1": 70.28,
+   "is_recommended": false
   },
   {
    "describe": "static per-channel act:int8 minmax/512 fp32:stem",
    "describe_run": "4t opt:all",
    "quant_hash": "c68fa4c356b03a39",
+   "config_hash": "71012a0ecf26e86d",
    "quant_type": "static",
    "per_channel": true,
    "activation_type": "int8",
@@ -602,12 +631,14 @@ footer {
    "screen_top1": 70.8,
    "images_vs_baseline": 3,
    "id": "C7",
-   "test_top1": 70.56
+   "test_top1": 70.56,
+   "is_recommended": false
   },
   {
    "describe": "static per-tensor act:uint8 minmax/512 fp32:classifier+stem",
    "describe_run": "4t opt:all",
    "quant_hash": "392ec615527a1a33",
+   "config_hash": "b41ddb80f55992bf",
    "quant_type": "static",
    "per_channel": false,
    "activation_type": "uint8",
@@ -630,12 +661,14 @@ footer {
    "screen_top1": 71.8,
    "images_vs_baseline": 12,
    "id": "C8",
-   "test_top1": 70.25
+   "test_top1": 70.25,
+   "is_recommended": false
   },
   {
    "describe": "static per-channel act:uint8 minmax/512 fp32:stem",
    "describe_run": "4t opt:all",
    "quant_hash": "8326e6e880bba208",
+   "config_hash": "a7026d6f6faa2bb3",
    "quant_type": "static",
    "per_channel": true,
    "activation_type": "uint8",
@@ -657,12 +690,14 @@ footer {
    "screen_top1": 70.8,
    "images_vs_baseline": 3,
    "id": "C9",
-   "test_top1": 70.56
+   "test_top1": 70.56,
+   "is_recommended": false
   },
   {
    "describe": "static per-tensor act:uint8 minmax/512 fp32:stem",
    "describe_run": "4t opt:all",
    "quant_hash": "8fc7685fd72cc1ec",
+   "config_hash": "6282924178293948",
    "quant_type": "static",
    "per_channel": false,
    "activation_type": "uint8",
@@ -684,12 +719,14 @@ footer {
    "screen_top1": 71.6,
    "images_vs_baseline": 11,
    "id": "C10",
-   "test_top1": 70.24
+   "test_top1": 70.24,
+   "is_recommended": false
   },
   {
    "describe": "static per-channel act:uint8 minmax/512 fp32:stage2",
    "describe_run": "4t opt:all no-arena",
    "quant_hash": "6276efddb94c9d17",
+   "config_hash": "23c8dd7bc600b036",
    "quant_type": "static",
    "per_channel": true,
    "activation_type": "uint8",
@@ -711,7 +748,8 @@ footer {
    "screen_top1": 71.0,
    "images_vs_baseline": 4,
    "id": "C11",
-   "test_top1": 70.35
+   "test_top1": 70.35,
+   "is_recommended": false
   }
  ],
  "test": {
@@ -4041,6 +4079,13 @@ function renderHeader() {
     chip.appendChild(el("b", { class: "mono" }, value));
     chips.appendChild(chip);
   };
+  if (D.recommended) {
+    const rec = D.recommended;
+    const lat = rec.median_ms != null
+      ? `${fmt(rec.latency_ms, "latency_ms")}ms (5x median ${fmt(rec.median_ms, "latency_ms")}ms)`
+      : `${fmt(rec.latency_ms, "latency_ms")}ms`;
+    add("Recommended", `${rec.id} — ${rec.describe} · ${lat} · ${fmt(rec.size_mb, "size_mb")}MB · ${fmt(rec.top1, "top1")}% top1`, "chip--recommended");
+  }
   add("Search graded on", `${D.split.name} · ${D.split.samples.toLocaleString()} held-out images`, "chip--split");
   if (D.test) {
     add("Confirmed on", `sealed ${D.test.split} · ${D.test.samples.toLocaleString()} images, scored once`, "chip--split");
@@ -4407,6 +4452,12 @@ function renderRanking() {
       recipe.appendChild(el("span", { class: "tag tag--dyn",
         title: "Pareto-valid but impractical: it wins only on size and RAM, at several times the latency." },
         "not practical"));
+    }
+    if (r.is_recommended) {
+      recipe.appendChild(document.createTextNode(" "));
+      recipe.appendChild(el("span", { class: "tag tag--recommended",
+        title: "The finalist stage's recommended deployment choice, re-measured five times on the device." },
+        "recommended"));
     }
     const decided = el("span", { class: "decided" },
       i === 0 ? "—"

@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <title>Deployment trade space — ResNet-18 on a Raspberry Pi 5</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -131,6 +132,7 @@ h2 {
 }
 .chip--split::before { background: var(--series-1); }
 .chip--warn::before { background: var(--warning); }
+.chip--recommended::before { background: var(--good); }
 
 .mock-banner {
   border: 2px solid var(--warning); border-radius: 4px;
@@ -197,6 +199,7 @@ tbody tr[aria-selected="true"] td { border-bottom-color: var(--series-1); }
   border: 1px solid currentColor;
 }
 .tag--dyn { color: var(--series-2); }
+.tag--recommended { color: var(--good); }
 .scroll { overflow-x: auto; }
 
 /* ---------------------------------------------------------------- detail */
@@ -364,7 +367,7 @@ footer {
  "model_label": "ResNet-18",
  "venue": "pi",
  "study": "resnet18_cifar_budget0.2_v4",
- "built_at_utc": "2026-08-14T21:24:25+00:00",
+ "built_at_utc": "2026-09-14T12:47:14+00:00",
  "split": {
   "name": "optval",
   "samples": 3000,
@@ -420,11 +423,25 @@ footer {
   "peak_rss_mb",
   "size_mb"
  ],
+ "recommended": {
+  "id": "C1",
+  "config_hash": "4d677a5961e23433",
+  "describe": "static per-channel act:int8 minmax/512",
+  "describe_run": "4t opt:all",
+  "latency_ms": 3.2251,
+  "median_ms": 3.2455,
+  "mad_ms": 0.0037,
+  "repeats": 5,
+  "size_mb": 11.338442,
+  "peak_rss_mb": 105.75,
+  "top1": 78.4
+ },
  "front": [
   {
    "describe": "static per-channel act:int8 minmax/512",
    "describe_run": "4t opt:all",
    "quant_hash": "bf34bfcd8dd317f7",
+   "config_hash": "4d677a5961e23433",
    "quant_type": "static",
    "per_channel": true,
    "activation_type": "int8",
@@ -444,12 +461,14 @@ footer {
    "screen_top1": 80.2,
    "images_vs_baseline": -3,
    "id": "C1",
-   "test_top1": 77.96
+   "test_top1": 77.96,
+   "is_recommended": true
   },
   {
    "describe": "static per-channel act:int8 minmax/512 fp32:fc",
    "describe_run": "4t opt:all",
    "quant_hash": "f9fc1b945367ab4a",
+   "config_hash": "a981ac08e9b027fb",
    "quant_type": "static",
    "per_channel": true,
    "activation_type": "int8",
@@ -471,12 +490,14 @@ footer {
    "screen_top1": 80.0,
    "images_vs_baseline": -5,
    "id": "C2",
-   "test_top1": 77.95
+   "test_top1": 77.95,
+   "is_recommended": false
   },
   {
    "describe": "static per-channel act:uint8 minmax/512",
    "describe_run": "4t opt:all",
    "quant_hash": "6c2712900e73dc56",
+   "config_hash": "6bd18ba89f010ad2",
    "quant_type": "static",
    "per_channel": true,
    "activation_type": "uint8",
@@ -496,12 +517,14 @@ footer {
    "screen_top1": 80.2,
    "images_vs_baseline": -3,
    "id": "C3",
-   "test_top1": 77.96
+   "test_top1": 77.96,
+   "is_recommended": false
   },
   {
    "describe": "static per-channel act:uint8 minmax/512",
    "describe_run": "4t opt:all no-arena",
    "quant_hash": "6c2712900e73dc56",
+   "config_hash": "e81e37a23c2007f2",
    "quant_type": "static",
    "per_channel": true,
    "activation_type": "uint8",
@@ -521,12 +544,14 @@ footer {
    "screen_top1": 80.2,
    "images_vs_baseline": -3,
    "id": "C4",
-   "test_top1": 77.96
+   "test_top1": 77.96,
+   "is_recommended": false
   },
   {
    "describe": "static per-channel act:int8 minmax/512 fp32:conv1",
    "describe_run": "4t opt:all",
    "quant_hash": "85a2333585dd9e61",
+   "config_hash": "cf5b3d4a79c3e56f",
    "quant_type": "static",
    "per_channel": true,
    "activation_type": "int8",
@@ -548,12 +573,14 @@ footer {
    "screen_top1": 80.4,
    "images_vs_baseline": -1,
    "id": "C5",
-   "test_top1": 77.94
+   "test_top1": 77.94,
+   "is_recommended": false
   },
   {
    "describe": "static per-tensor act:uint8 minmax/512 fp32:conv1",
    "describe_run": "4t opt:all",
    "quant_hash": "6b91d5e8555c119a",
+   "config_hash": "f696452374b92697",
    "quant_type": "static",
    "per_channel": false,
    "activation_type": "uint8",
@@ -575,12 +602,14 @@ footer {
    "screen_top1": 80.6,
    "images_vs_baseline": -4,
    "id": "C6",
-   "test_top1": 77.9
+   "test_top1": 77.9,
+   "is_recommended": false
   },
   {
    "describe": "static per-channel act:uint8 minmax/512 fp32:conv1+fc",
    "describe_run": "4t opt:all",
    "quant_hash": "b3dce3dabb14a76d",
+   "config_hash": "4c7c16e8b460162c",
    "quant_type": "static",
    "per_channel": true,
    "activation_type": "uint8",
@@ -603,12 +632,14 @@ footer {
    "screen_top1": 80.4,
    "images_vs_baseline": -1,
    "id": "C7",
-   "test_top1": 78.03
+   "test_top1": 78.03,
+   "is_recommended": false
   },
   {
    "describe": "static per-channel act:uint8 minmax/512 fp32:conv1+fc",
    "describe_run": "4t opt:all no-arena",
    "quant_hash": "b3dce3dabb14a76d",
+   "config_hash": "aa4734416874f213",
    "quant_type": "static",
    "per_channel": true,
    "activation_type": "uint8",
@@ -631,12 +662,14 @@ footer {
    "screen_top1": 80.4,
    "images_vs_baseline": -1,
    "id": "C8",
-   "test_top1": 78.03
+   "test_top1": 78.03,
+   "is_recommended": false
   },
   {
    "describe": "static per-channel act:uint8 minmax/512 fp32:conv1",
    "describe_run": "4t opt:all",
    "quant_hash": "846d58cd52bc8226",
+   "config_hash": "115b64b9cbec232b",
    "quant_type": "static",
    "per_channel": true,
    "activation_type": "uint8",
@@ -658,12 +691,14 @@ footer {
    "screen_top1": 80.4,
    "images_vs_baseline": -1,
    "id": "C9",
-   "test_top1": 77.94
+   "test_top1": 77.94,
+   "is_recommended": false
   },
   {
    "describe": "static per-channel act:uint8 minmax/512 fp32:conv1",
    "describe_run": "4t opt:all no-arena",
    "quant_hash": "846d58cd52bc8226",
+   "config_hash": "d4d6c72a5e6e7a58",
    "quant_type": "static",
    "per_channel": true,
    "activation_type": "uint8",
@@ -685,12 +720,14 @@ footer {
    "screen_top1": 80.4,
    "images_vs_baseline": -1,
    "id": "C10",
-   "test_top1": 77.94
+   "test_top1": 77.94,
+   "is_recommended": false
   },
   {
    "describe": "static per-channel act:int8 minmax/512 fp32:conv1+layer1",
    "describe_run": "4t opt:all",
    "quant_hash": "63088414f302fb46",
+   "config_hash": "8ac81ac5c074b2a2",
    "quant_type": "static",
    "per_channel": true,
    "activation_type": "int8",
@@ -713,12 +750,14 @@ footer {
    "screen_top1": 80.4,
    "images_vs_baseline": 3,
    "id": "C11",
-   "test_top1": 77.97
+   "test_top1": 77.97,
+   "is_recommended": false
   },
   {
    "describe": "static per-channel act:int8 minmax/512 fp32:conv1+fc+layer1",
    "describe_run": "4t opt:all",
    "quant_hash": "b1009bbab3d00484",
+   "config_hash": "c53bb0814d1cdc1a",
    "quant_type": "static",
    "per_channel": true,
    "activation_type": "int8",
@@ -742,12 +781,14 @@ footer {
    "screen_top1": 80.4,
    "images_vs_baseline": 5,
    "id": "C12",
-   "test_top1": 77.97
+   "test_top1": 77.97,
+   "is_recommended": false
   },
   {
    "describe": "static per-channel act:uint8 minmax/512 fp32:conv1+layer1",
    "describe_run": "4t opt:all no-arena",
    "quant_hash": "c6594a26c3b167fe",
+   "config_hash": "414109a12a5ce251",
    "quant_type": "static",
    "per_channel": true,
    "activation_type": "uint8",
@@ -770,12 +811,14 @@ footer {
    "screen_top1": 80.4,
    "images_vs_baseline": 3,
    "id": "C13",
-   "test_top1": 77.97
+   "test_top1": 77.97,
+   "is_recommended": false
   },
   {
    "describe": "static per-channel act:uint8 minmax/512 fp32:conv1+fc+layer1",
    "describe_run": "4t opt:all",
    "quant_hash": "ffbab7077894d416",
+   "config_hash": "0c5e688915d26fd8",
    "quant_type": "static",
    "per_channel": true,
    "activation_type": "uint8",
@@ -799,12 +842,14 @@ footer {
    "screen_top1": 80.4,
    "images_vs_baseline": 5,
    "id": "C14",
-   "test_top1": 77.97
+   "test_top1": 77.97,
+   "is_recommended": false
   },
   {
    "describe": "static per-channel act:uint8 minmax/512 fp32:conv1+fc+layer1",
    "describe_run": "4t opt:all no-arena",
    "quant_hash": "ffbab7077894d416",
+   "config_hash": "ddef15cf6c848261",
    "quant_type": "static",
    "per_channel": true,
    "activation_type": "uint8",
@@ -828,12 +873,14 @@ footer {
    "screen_top1": 80.4,
    "images_vs_baseline": 5,
    "id": "C15",
-   "test_top1": 77.97
+   "test_top1": 77.97,
+   "is_recommended": false
   },
   {
    "describe": "static per-channel act:int8 minmax/512 fp32:layer1",
    "describe_run": "4t opt:all",
    "quant_hash": "2d6c14cecef30af5",
+   "config_hash": "04b1ba74f8ed7cae",
    "quant_type": "static",
    "per_channel": true,
    "activation_type": "int8",
@@ -855,12 +902,14 @@ footer {
    "screen_top1": 79.8,
    "images_vs_baseline": 1,
    "id": "C16",
-   "test_top1": 77.81
+   "test_top1": 77.81,
+   "is_recommended": false
   },
   {
    "describe": "static per-channel act:uint8 minmax/512 fp32:layer1",
    "describe_run": "4t opt:all",
    "quant_hash": "0670e91eb4510407",
+   "config_hash": "e3559d2b4b82f13a",
    "quant_type": "static",
    "per_channel": true,
    "activation_type": "uint8",
@@ -882,12 +931,14 @@ footer {
    "screen_top1": 79.8,
    "images_vs_baseline": 1,
    "id": "C17",
-   "test_top1": 77.81
+   "test_top1": 77.81,
+   "is_recommended": false
   },
   {
    "describe": "static per-channel act:uint8 minmax/512 fp32:conv1+layer1",
    "describe_run": "4t opt:extended",
    "quant_hash": "c6594a26c3b167fe",
+   "config_hash": "7b260e8de0142424",
    "quant_type": "static",
    "per_channel": true,
    "activation_type": "uint8",
@@ -910,12 +961,14 @@ footer {
    "screen_top1": 80.4,
    "images_vs_baseline": 4,
    "id": "C18",
-   "test_top1": 77.96
+   "test_top1": 77.96,
+   "is_recommended": false
   },
   {
    "describe": "static per-channel act:uint8 minmax/512 fp32:fc+layer1",
    "describe_run": "4t opt:all no-arena",
    "quant_hash": "801fdd6e7c25336d",
+   "config_hash": "3fda9a632ca73f1b",
    "quant_type": "static",
    "per_channel": true,
    "activation_type": "uint8",
@@ -938,12 +991,14 @@ footer {
    "screen_top1": 79.8,
    "images_vs_baseline": 0,
    "id": "C19",
-   "test_top1": 77.83
+   "test_top1": 77.83,
+   "is_recommended": false
   },
   {
    "describe": "static per-channel act:uint8 minmax/512 fp32:layer1",
    "describe_run": "4t opt:all no-arena",
    "quant_hash": "0670e91eb4510407",
+   "config_hash": "80513cb093023ef5",
    "quant_type": "static",
    "per_channel": true,
    "activation_type": "uint8",
@@ -965,7 +1020,8 @@ footer {
    "screen_top1": 79.8,
    "images_vs_baseline": 1,
    "id": "C20",
-   "test_top1": 77.81
+   "test_top1": 77.81,
+   "is_recommended": false
   }
  ],
  "test": {
@@ -2991,9 +3047,9 @@ footer {
   {
    "name": "static_per_channel",
    "describe": "static per-channel act:uint8 minmax/512",
-   "latency_ms": 3.3416,
+   "latency_ms": 12.4534,
    "size_mb": 11.338184,
-   "peak_rss_mb": 105.796875,
+   "peak_rss_mb": 106.0,
    "top1": 78.4,
    "same_as": "C3"
   }
@@ -3098,15 +3154,6 @@ footer {
     "at": "2026-08-08T17:38:47.187288+00:00",
     "before_c": 45.75,
     "after_c": 51.8,
-    "clock_mhz": 2400.0,
-    "pinned": true,
-    "throttled": false,
-    "stable": true
-   },
-   {
-    "at": "2026-08-08T17:39:01.368428+00:00",
-    "before_c": 52.35,
-    "after_c": 56.2,
     "clock_mhz": 2400.0,
     "pinned": true,
     "throttled": false,
@@ -3952,15 +3999,6 @@ footer {
    {
     "at": "2026-08-09T14:20:38.503341+00:00",
     "before_c": 51.25,
-    "after_c": 54.55,
-    "clock_mhz": 2400.0,
-    "pinned": true,
-    "throttled": false,
-    "stable": true
-   },
-   {
-    "at": "2026-08-09T14:20:41.920583+00:00",
-    "before_c": 51.8,
     "after_c": 54.55,
     "clock_mhz": 2400.0,
     "pinned": true,
@@ -5192,15 +5230,6 @@ footer {
     "stable": true
    },
    {
-    "at": "2026-08-13T17:10:24.341396+00:00",
-    "before_c": 57.85,
-    "after_c": 62.8,
-    "clock_mhz": 2400.0,
-    "pinned": true,
-    "throttled": false,
-    "stable": true
-   },
-   {
     "at": "2026-08-13T17:10:44.002317+00:00",
     "before_c": 57.3,
     "after_c": 62.25,
@@ -5417,42 +5446,6 @@ footer {
     "stable": true
    },
    {
-    "at": "2026-08-13T17:26:14.376922+00:00",
-    "before_c": 54.0,
-    "after_c": 57.3,
-    "clock_mhz": 2400.0,
-    "pinned": true,
-    "throttled": false,
-    "stable": true
-   },
-   {
-    "at": "2026-08-13T17:26:17.366997+00:00",
-    "before_c": 54.0,
-    "after_c": 58.4,
-    "clock_mhz": 2400.0,
-    "pinned": true,
-    "throttled": false,
-    "stable": true
-   },
-   {
-    "at": "2026-08-13T17:26:20.278354+00:00",
-    "before_c": 54.0,
-    "after_c": 58.95,
-    "clock_mhz": 2400.0,
-    "pinned": true,
-    "throttled": false,
-    "stable": true
-   },
-   {
-    "at": "2026-08-13T17:26:23.235798+00:00",
-    "before_c": 52.9,
-    "after_c": 58.95,
-    "clock_mhz": 2400.0,
-    "pinned": true,
-    "throttled": false,
-    "stable": true
-   },
-   {
     "at": "2026-08-13T17:26:27.111448+00:00",
     "before_c": 52.9,
     "after_c": 58.4,
@@ -5462,7 +5455,7 @@ footer {
     "stable": true
    }
   ],
-  "count": 272,
+  "count": 265,
   "min_c": 45.75,
   "max_c": 66.1,
   "median_rise_c": 4.95,
@@ -6085,6 +6078,13 @@ function renderHeader() {
     chip.appendChild(el("b", { class: "mono" }, value));
     chips.appendChild(chip);
   };
+  if (D.recommended) {
+    const rec = D.recommended;
+    const lat = rec.median_ms != null
+      ? `${fmt(rec.latency_ms, "latency_ms")}ms (5x median ${fmt(rec.median_ms, "latency_ms")}ms)`
+      : `${fmt(rec.latency_ms, "latency_ms")}ms`;
+    add("Recommended", `${rec.id} — ${rec.describe} · ${lat} · ${fmt(rec.size_mb, "size_mb")}MB · ${fmt(rec.top1, "top1")}% top1`, "chip--recommended");
+  }
   add("Search graded on", `${D.split.name} · ${D.split.samples.toLocaleString()} held-out images`, "chip--split");
   if (D.test) {
     add("Confirmed on", `sealed ${D.test.split} · ${D.test.samples.toLocaleString()} images, scored once`, "chip--split");
@@ -6451,6 +6451,12 @@ function renderRanking() {
       recipe.appendChild(el("span", { class: "tag tag--dyn",
         title: "Pareto-valid but impractical: it wins only on size and RAM, at several times the latency." },
         "not practical"));
+    }
+    if (r.is_recommended) {
+      recipe.appendChild(document.createTextNode(" "));
+      recipe.appendChild(el("span", { class: "tag tag--recommended",
+        title: "The finalist stage's recommended deployment choice, re-measured five times on the device." },
+        "recommended"));
     }
     const decided = el("span", { class: "decided" },
       i === 0 ? "—"

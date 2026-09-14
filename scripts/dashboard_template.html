@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <title>Deployment trade space — ResNet-18 on a Raspberry Pi 5</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -131,6 +132,7 @@ h2 {
 }
 .chip--split::before { background: var(--series-1); }
 .chip--warn::before { background: var(--warning); }
+.chip--recommended::before { background: var(--good); }
 
 .mock-banner {
   border: 2px solid var(--warning); border-radius: 4px;
@@ -197,6 +199,7 @@ tbody tr[aria-selected="true"] td { border-bottom-color: var(--series-1); }
   border: 1px solid currentColor;
 }
 .tag--dyn { color: var(--series-2); }
+.tag--recommended { color: var(--good); }
 .scroll { overflow-x: auto; }
 
 /* ---------------------------------------------------------------- detail */
@@ -490,6 +493,13 @@ function renderHeader() {
     chip.appendChild(el("b", { class: "mono" }, value));
     chips.appendChild(chip);
   };
+  if (D.recommended) {
+    const rec = D.recommended;
+    const lat = rec.median_ms != null
+      ? `${fmt(rec.latency_ms, "latency_ms")}ms (5x median ${fmt(rec.median_ms, "latency_ms")}ms)`
+      : `${fmt(rec.latency_ms, "latency_ms")}ms`;
+    add("Recommended", `${rec.id} — ${rec.describe} · ${lat} · ${fmt(rec.size_mb, "size_mb")}MB · ${fmt(rec.top1, "top1")}% top1`, "chip--recommended");
+  }
   add("Search graded on", `${D.split.name} · ${D.split.samples.toLocaleString()} held-out images`, "chip--split");
   if (D.test) {
     add("Confirmed on", `sealed ${D.test.split} · ${D.test.samples.toLocaleString()} images, scored once`, "chip--split");
@@ -856,6 +866,12 @@ function renderRanking() {
       recipe.appendChild(el("span", { class: "tag tag--dyn",
         title: "Pareto-valid but impractical: it wins only on size and RAM, at several times the latency." },
         "not practical"));
+    }
+    if (r.is_recommended) {
+      recipe.appendChild(document.createTextNode(" "));
+      recipe.appendChild(el("span", { class: "tag tag--recommended",
+        title: "The finalist stage's recommended deployment choice, re-measured five times on the device." },
+        "recommended"));
     }
     const decided = el("span", { class: "decided" },
       i === 0 ? "—"
