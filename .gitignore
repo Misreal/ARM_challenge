@@ -71,3 +71,6 @@ imports/
 # Stray scratch files at repo root
 convergence.json
 huggingface_model_test.py
+
+# Paper drafts, kept out of the code history
+paper/
