@@ -30,7 +30,7 @@ HASH_LENGTH = 16
 # baselines, saturation_probe -- unimportable on the machine they exist to run
 # on. Duplication is the cheaper cost, and `tests/test_pi_entrypoints.py` fails
 # if this list ever drifts from the registry.
-EXPORTED_MODELS = ("custom_cnn", "mobilenetv2_cifar", "resnet18_cifar")
+EXPORTED_MODELS = ("custom_cnn", "mobilenetv2_cifar", "resnet18_cifar", "vit_cifar")
 
 QUANT_TYPES = ("none", "dynamic", "static")
 TENSOR_TYPES = ("int8", "uint8")
