@@ -534,6 +534,12 @@ def attach_test_scores(front: list[dict[str, Any]], path: Path) -> dict[str, Any
 
     report = read_json(path)
     by_label = {result["label"]: result for result in report["results"] if result["status"] == "ok"}
+    # A report can exist with nothing scored in it -- the stage runs, reaches the
+    # device and fails there (a missing bundle, a transport error), and records
+    # the failure per candidate. That is the same situation as "not run yet" as
+    # far as the page is concerned, and it must not take the build down with it.
+    if not by_label:
+        return None
     for row in front:
         scored = by_label.get(f"{row['describe']} | {row['describe_run']}")
         row["test_top1"] = scored["test"]["top1"] if scored else None
