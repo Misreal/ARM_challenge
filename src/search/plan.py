@@ -17,6 +17,7 @@ from src.search.reduce import Band, ReducedSpace
 from src.search.space import (
     FIXED_SPINNING,
     FIXED_THREADS,
+    calibration_methods_for,
     calibration_sizes_for,
 )
 from src.search.version import SPACE_VERSION
@@ -80,10 +81,10 @@ STRUCTURE_ROUNDS: tuple[Round, ...] = (
 )
 
 
-def calibration_rounds() -> tuple[Round, ...]:
+def calibration_rounds(model: str | None = None) -> tuple[Round, ...]:
     """Every calibration setting except the canonical one, at fixed structure."""
     rounds = []
-    for method in CALIBRATION_METHODS:
+    for method in calibration_methods_for(model):
         for size in calibration_sizes_for(method):
             if (method, size) == (CANONICAL_QUANT.calibration_method, CANONICAL_QUANT.calibration_size):
                 continue
@@ -97,8 +98,8 @@ def calibration_rounds() -> tuple[Round, ...]:
     return tuple(rounds)
 
 
-def all_rounds() -> tuple[Round, ...]:
-    return STRUCTURE_ROUNDS + calibration_rounds()
+def all_rounds(model: str | None = None) -> tuple[Round, ...]:
+    return STRUCTURE_ROUNDS + calibration_rounds(model)
 
 
 def precision_vectors(space: ReducedSpace) -> list[tuple[str, ...]]:
@@ -123,7 +124,7 @@ def candidate_for(vector: tuple[str, ...], round_: Round) -> DeploymentConfig:
 
 
 def enumerate_candidates(
-    space: ReducedSpace, budget: int
+    space: ReducedSpace, budget: int, model: str | None = None
 ) -> tuple[list[tuple[str, DeploymentConfig]], list[str], str | None]:
     """Walk the rounds, covering every vector in one before starting the next.
 
@@ -136,7 +137,7 @@ def enumerate_candidates(
     completed: list[str] = []
     truncated: str | None = None
 
-    for round_ in all_rounds():
+    for round_ in all_rounds(model):
         if len(ordered) >= budget:
             break
         for vector in vectors:
@@ -226,7 +227,7 @@ def make_plan(
     vectors = space.reduced_size
 
     if vectors <= budget:
-        candidates, completed, truncated = enumerate_candidates(space, budget)
+        candidates, completed, truncated = enumerate_candidates(space, budget, model)
         return SearchPlan(
             model=model,
             space=space,

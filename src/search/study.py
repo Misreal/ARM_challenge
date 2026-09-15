@@ -142,7 +142,7 @@ def run_nsga2(runner: Any, plan: SearchPlan, name: str, study_dir: Path, seed: i
     seen: set[str] = set()
 
     def objective(trial: optuna.Trial) -> tuple[float, float, float, float]:
-        config = suggest_within(trial, plan.space)
+        config = suggest_within(trial, plan.space, model=plan.model)
         if config.hash in seen:
             # A duplicate costs a 500-image screen plus a full pass on the
             # device and teaches the sampler nothing it does not already know.

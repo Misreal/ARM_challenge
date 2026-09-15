@@ -25,6 +25,15 @@ QUANT_TYPES = ("static",)
 HISTOGRAM_METHODS = ("entropy", "percentile")
 HISTOGRAM_MAX_CALIBRATION_SIZE = 512
 
+# Models whose graph has too many activation tensors for a histogram at any
+# size. The cap above bounds the calibration set; it cannot bound the tensor
+# count, and for `vit_cifar` that is what exhausts the device: 1037 QDQ nodes
+# over 65x192 activations per block. Measured on the Pi 5 -- entropy was
+# OOM-killed at 3.96 GB for 128, 256 and 512 images alike, while minmax peaked
+# at 346 MB. A histogram trial here is not a slow candidate, it is one that
+# kills the agent and costs the study its remaining budget.
+NO_HISTOGRAM_MODELS = ("vit_cifar",)
+
 # The runtime sweep measured 4 threads fastest at every optimization level with
 # peak RSS flat, and spinning on faster with no memory saving. Neither is a
 # trade-off, so searching them would only dilute the trial budget.
@@ -42,6 +51,13 @@ def calibration_sizes_for(method: str) -> tuple[int, ...]:
     return CALIBRATION_SIZES
 
 
+def calibration_methods_for(model: str | None) -> tuple[str, ...]:
+    """Calibration methods the device can actually build for this model."""
+    if model in NO_HISTOGRAM_MODELS:
+        return tuple(m for m in CALIBRATION_METHODS if m not in HISTOGRAM_METHODS)
+    return tuple(CALIBRATION_METHODS)
+
+
 def suggest_run_config(trial: Any) -> RunConfig:
     """The execution half of the space: no effect on the artifact bytes."""
     return RunConfig(
@@ -56,20 +72,22 @@ def suggest_run_config(trial: Any) -> RunConfig:
     )
 
 
-def suggest_within(trial: Any, space: Any) -> DeploymentConfig:
+def suggest_within(trial: Any, space: Any, model: str | None = None) -> DeploymentConfig:
     """One point inside a reduced space: pins composed, searchable groups sampled.
 
     The pins are composed rather than sampled, so no trial can spend device time
     on a precision vector the measurements already decided.
     """
-    config = suggest_config(trial, tuple(sorted(space.searchable)))
+    config = suggest_config(trial, tuple(sorted(space.searchable)), model=model)
     excluded = tuple(sorted(set(config.quant.excluded_groups) | set(space.pinned_fp32)))
     return DeploymentConfig(
         quant=replace(config.quant, excluded_groups=excluded), run=config.run
     )
 
 
-def suggest_config(trial: Any, groups: tuple[str, ...]) -> DeploymentConfig:
+def suggest_config(
+    trial: Any, groups: tuple[str, ...], model: str | None = None
+) -> DeploymentConfig:
     """One point in the space: a per-group precision vector plus global settings.
 
     The precision vector is sampled as one independent boolean per group rather
@@ -90,7 +108,9 @@ def suggest_config(trial: Any, groups: tuple[str, ...]) -> DeploymentConfig:
             quant_type="dynamic", per_channel=per_channel, excluded_groups=excluded
         )
     else:
-        method = trial.suggest_categorical("calibration_method", list(CALIBRATION_METHODS))
+        method = trial.suggest_categorical(
+            "calibration_method", list(calibration_methods_for(model))
+        )
         quant = QuantConfig(
             quant_type="static",
             per_channel=per_channel,
