@@ -1,18 +1,20 @@
-# Install PyTorch FIRST from the official index, matching your CUDA build.
-# PyTorch no longer ships conda packages - use pip inside the conda env.
+# Install PyTorch FIRST, with pip inside the conda env (PyTorch no longer
+# ships conda packages).
 #
-#   Local (RTX 3050 Ti, driver 581.29 -> CUDA 12.6 wheels):
-#     pip install torch torchvision --index-url https://download.pytorch.org/whl/cu126
-#   Cloud GPU (check the host's CUDA, cu124/cu126/cu128 as appropriate)
-#   CPU only:
-#     pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+#   Apple Silicon / CPU:  pip install torch torchvision
+#   NVIDIA:               pip install torch torchvision --index-url https://download.pytorch.org/whl/cu126
 #
 # Then: pip install -r requirements.txt
 
 numpy>=1.26
-onnx>=1.16
-onnxruntime>=1.18
 tqdm>=4.66
+
+# Pinned to match requirements-pi.txt exactly. Quantization is version
+# sensitive, so a PC that quantizes on one build and a Pi that measures on
+# another produces numbers that cannot be compared -- including against the
+# runs already recorded, every one of which used 1.27.0.
+onnx==1.22.0
+onnxruntime==1.27.0
 
 # Testing. Scope is deliberately narrow: correctness-critical pure logic only
 # (split guards, LR schedule, later config hashing and gate decisions).
