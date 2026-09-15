@@ -1,4 +1,4 @@
-"""Small shared helpers: seeding, metric accumulation, model introspection."""
+# Small shared helpers: seeding, metric accumulation, model introspection.
 
 from __future__ import annotations
 

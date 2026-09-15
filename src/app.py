@@ -1,10 +1,9 @@
-"""One entry point for the whole thing.
+"""One entry point for the whole thing."""
 
-    python -m src.app list                          # what has been measured
-    python -m src.app run --model resnet18_cifar --mock
-    python -m src.app run --model resnet18_cifar    # needs a Raspberry Pi
-    python -m src.app dashboard --run <run_id>
-"""
+# python -m src.app list                          # what has been measured
+# python -m src.app run --model resnet18_cifar --mock
+# python -m src.app run --model resnet18_cifar    # needs a Raspberry Pi
+# python -m src.app dashboard --run <run_id>
 
 from __future__ import annotations
 

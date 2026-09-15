@@ -1,23 +1,22 @@
-"""MobileNetV2 adapted for 32x32 CIFAR input.
-
-Two changes versus the ImageNet configuration:
-
-    * stem convolution stride 2 -> 1
-    * the second inverted-residual stage stride 2 -> 1
-
-Stock MobileNetV2 downsamples 32x total (224 -> 7). On a 32x32 input that ends
-at 1x1 before the classifier, destroying spatial information. The edits above
-reduce total downsampling to 8x, giving a 4x4 final feature map that matches the
-ResNet-CIFAR variant.
-
-Role in this project: the quantization-SENSITIVE probe, and the reason this
-architecture earns its slot. Depthwise convolutions have wildly different weight
-ranges per channel, and the linear (unactivated) bottlenecks produce
-large-dynamic-range activations. Per-TENSOR INT8 typically collapses this model
-by tens of accuracy points, while per-CHANNEL INT8 recovers most of it. That gap
-is precisely the phenomenon the Stage 1 sensitivity analysis exists to detect and
-exploit, so this model is the strongest single piece of evidence for the thesis.
-"""
+# MobileNetV2 adapted for 32x32 CIFAR input.
+#
+# Two changes versus the ImageNet configuration:
+#
+#     * stem convolution stride 2 -> 1
+#     * the second inverted-residual stage stride 2 -> 1
+#
+# Stock MobileNetV2 downsamples 32x total (224 -> 7). On a 32x32 input that ends
+# at 1x1 before the classifier, destroying spatial information. The edits above
+# reduce total downsampling to 8x, giving a 4x4 final feature map that matches the
+# ResNet-CIFAR variant.
+#
+# Role in this project: the quantization-SENSITIVE probe, and the reason this
+# architecture earns its slot. Depthwise convolutions have wildly different weight
+# ranges per channel, and the linear (unactivated) bottlenecks produce
+# large-dynamic-range activations. Per-TENSOR INT8 typically collapses this model
+# by tens of accuracy points, while per-CHANNEL INT8 recovers most of it. That gap
+# is precisely the phenomenon the Stage 1 sensitivity analysis exists to detect and
+# exploit, so this model is the strongest single piece of evidence for the thesis.
 
 from __future__ import annotations
 

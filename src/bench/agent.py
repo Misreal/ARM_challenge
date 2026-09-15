@@ -1,11 +1,10 @@
-"""Measure one candidate per process on the Pi, so ru_maxrss is attributable.
+"""Measure one candidate per process on the Pi, so ru_maxrss is attributable."""
 
-Host contract is file-based (spec JSON in, result JSON out): stdout is unusable
-over SSH, where MOTD banners land in the same stream.
-
-    python -m src.bench.agent --spec spec.json --out result.json
-    python -m src.bench.agent --print-device
-"""
+# Host contract is file-based (spec JSON in, result JSON out): stdout is unusable
+# over SSH, where MOTD banners land in the same stream.
+#
+#     python -m src.bench.agent --spec spec.json --out result.json
+#     python -m src.bench.agent --print-device
 
 from __future__ import annotations
 

@@ -1,9 +1,8 @@
-"""The Pareto front and the named deployment choices drawn from it.
-
-Comparisons happen inside the measured band: two latencies closer than the
-harness can reproduce are a tie, and a tie is broken by the stated rules rather
-than by whichever printed digit happened to fall first.
-"""
+# The Pareto front and the named deployment choices drawn from it.
+#
+# Comparisons happen inside the measured band: two latencies closer than the
+# harness can reproduce are a tie, and a tie is broken by the stated rules rather
+# than by whichever printed digit happened to fall first.
 
 from __future__ import annotations
 

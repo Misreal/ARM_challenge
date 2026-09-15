@@ -1,11 +1,10 @@
-"""Adopt a finished campaign into a run directory.
+"""Adopt a finished campaign into a run directory."""
 
-The three Phase 6 campaigns predate the run layout, so their outputs are filed
-by phase with the model name in the filename. This copies those JSONs into a run
-without touching the originals, and records where each one came from.
-
-    python -m src.adopt --all
-"""
+# The three Phase 6 campaigns predate the run layout, so their outputs are filed
+# by phase with the model name in the filename. This copies those JSONs into a run
+# without touching the originals, and records where each one came from.
+#
+#     python -m src.adopt --all
 
 from __future__ import annotations
 

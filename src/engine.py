@@ -1,13 +1,12 @@
-"""The two loops: one training epoch, and evaluation.
-
-Kept separate from `train.py` because Stage 0 is not their only caller --
-Phase 2's export-parity gate and Phase 7's final test-set evaluation both need
-`evaluate()` with byte-identical semantics. `evaluate()` always runs full FP32
-even though training uses bf16 autocast, since it produces the baseline the
-Stage 1 accuracy constraint is measured against and autocast shifts accuracy
-in the third decimal place. bf16 rather than fp16 throughout: bf16 keeps
-FP32's exponent range so gradients can't underflow and no GradScaler is needed.
-"""
+# The two loops: one training epoch, and evaluation.
+#
+# Kept separate from `train.py` because Stage 0 is not their only caller --
+# Phase 2's export-parity gate and Phase 7's final test-set evaluation both need
+# `evaluate()` with byte-identical semantics. `evaluate()` always runs full FP32
+# even though training uses bf16 autocast, since it produces the baseline the
+# Stage 1 accuracy constraint is measured against and autocast shifts accuracy
+# in the third decimal place. bf16 rather than fp16 throughout: bf16 keeps
+# FP32's exponent range so gradients can't underflow and no GradScaler is needed.
 
 from __future__ import annotations
 

@@ -1,35 +1,34 @@
-"""A sensitivity TESTBED: a CNN with planted fragile and robust blocks.
-
-The original design ("quantization-friendly by construction") is retired: a
-model that quantizes cleanly everywhere gives the sensitivity analyzer nothing
-to find, so it validated nothing. This redesign plants known-robust and
-known-fragile blocks deliberately, which turns the model into an answer key:
-Stage 1's analyzer is correct if and only if it rediscovers the plants.
-
-The plants and their mechanisms:
-
-    * stem / stage1 -- dense 3x3 Conv+BN+ReLU. Folded weights are
-      well-conditioned and activations one-sided: expected LOW sensitivity.
-    * stage2 -- depthwise-separable convolutions. Depthwise weight ranges vary
-      wildly per channel, so expected HIGH sensitivity under per-TENSOR
-      weights, largely RECOVERED by per-channel. Probes MobileNetV2's failure
-      mechanism in isolation.
-    * stage3 -- linear bottleneck with a residual add: the projection conv has
-      BN but NO activation, so its output range is wide and two-sided, and the
-      add mixes mismatched scales. Activation quantization is per-tensor
-      regardless of the weight scheme, so this block stays fragile EVEN with
-      per-channel weights -- the plant that survives the honest baseline.
-    * classifier -- the standard-cookbook "keep FP32" layer; moderate
-      sensitivity expected.
-
-EXPECTED_SENSITIVITY below is the machine-readable answer key; Stage 1's
-validation test asserts the analyzer's ranking against it.
-
-Named modules throughout (stage2.dw1.dw.conv, ...), never anonymous Sequential
-indices: checkpoint keys and ONNX node scopes inherit these names, and
-renaming after training would orphan every saved checkpoint, so the names are
-settled now, before the first training run.
-"""
+# A sensitivity TESTBED: a CNN with planted fragile and robust blocks.
+#
+# The original design ("quantization-friendly by construction") is retired: a
+# model that quantizes cleanly everywhere gives the sensitivity analyzer nothing
+# to find, so it validated nothing. This redesign plants known-robust and
+# known-fragile blocks deliberately, which turns the model into an answer key:
+# Stage 1's analyzer is correct if and only if it rediscovers the plants.
+#
+# The plants and their mechanisms:
+#
+#     * stem / stage1 -- dense 3x3 Conv+BN+ReLU. Folded weights are
+#       well-conditioned and activations one-sided: expected LOW sensitivity.
+#     * stage2 -- depthwise-separable convolutions. Depthwise weight ranges vary
+#       wildly per channel, so expected HIGH sensitivity under per-TENSOR
+#       weights, largely RECOVERED by per-channel. Probes MobileNetV2's failure
+#       mechanism in isolation.
+#     * stage3 -- linear bottleneck with a residual add: the projection conv has
+#       BN but NO activation, so its output range is wide and two-sided, and the
+#       add mixes mismatched scales. Activation quantization is per-tensor
+#       regardless of the weight scheme, so this block stays fragile EVEN with
+#       per-channel weights -- the plant that survives the honest baseline.
+#     * classifier -- the standard-cookbook "keep FP32" layer; moderate
+#       sensitivity expected.
+#
+# EXPECTED_SENSITIVITY below is the machine-readable answer key; Stage 1's
+# validation test asserts the analyzer's ranking against it.
+#
+# Named modules throughout (stage2.dw1.dw.conv, ...), never anonymous Sequential
+# indices: checkpoint keys and ONNX node scopes inherit these names, and
+# renaming after training would orphan every saved checkpoint, so the names are
+# settled now, before the first training run.
 
 from __future__ import annotations
 

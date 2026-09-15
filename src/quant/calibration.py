@@ -1,14 +1,13 @@
-"""Calibration data for static INT8 quantization.
-
-Calibration images come exclusively from the 1,000-image `calib` split, loaded
-through the Pi bundle -- a structural guarantee rather than a rule someone has
-to remember, since there is no code path here that can reach optval or test.
-`splits.py` stratifies calib 10-per-class then sorts by dataset index, so a
-raw prefix of 128 images covers only ~79 of 100 classes and skews the
-activation ranges calibration measures. `stratified_prefix` takes round-robin
-across classes instead so every subset size stays balanced, while the arrays
-on disk keep their faithful index order.
-"""
+# Calibration data for static INT8 quantization.
+#
+# Calibration images come exclusively from the 1,000-image `calib` split, loaded
+# through the Pi bundle -- a structural guarantee rather than a rule someone has
+# to remember, since there is no code path here that can reach optval or test.
+# `splits.py` stratifies calib 10-per-class then sorts by dataset index, so a
+# raw prefix of 128 images covers only ~79 of 100 classes and skews the
+# activation ranges calibration measures. `stratified_prefix` takes round-robin
+# across classes instead so every subset size stays balanced, while the arrays
+# on disk keep their faithful index order.
 
 from __future__ import annotations
 

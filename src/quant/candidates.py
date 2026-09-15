@@ -1,8 +1,7 @@
-"""Named selective-FP32 candidates for the Phase 5 head-to-head.
-
-Exclusion sets name real graph groups, so they are model-specific and cannot
-live alongside the model-agnostic BASELINE_CONFIGS.
-"""
+# Named selective-FP32 candidates for the Phase 5 head-to-head.
+#
+# Exclusion sets name real graph groups, so they are model-specific and cannot
+# live alongside the model-agnostic BASELINE_CONFIGS.
 
 from __future__ import annotations
 

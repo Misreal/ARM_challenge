@@ -1,11 +1,10 @@
-"""CIFAR-100 transforms and dataloader construction.
-
-Normalization is applied *here*, in the data pipeline, and deliberately NOT
-baked into the exported ONNX graph. The graph therefore expects an already
-normalized float tensor. The constants below are written into every baseline
-report so the Raspberry Pi benchmark agent preprocesses identically -- a
-mismatch here shows up as an unexplained accuracy drop on device.
-"""
+# CIFAR-100 transforms and dataloader construction.
+#
+# Normalization is applied *here*, in the data pipeline, and deliberately NOT
+# baked into the exported ONNX graph. The graph therefore expects an already
+# normalized float tensor. The constants below are written into every baseline
+# report so the Raspberry Pi benchmark agent preprocesses identically -- a
+# mismatch here shows up as an unexplained accuracy drop on device.
 
 from __future__ import annotations
 

@@ -1,9 +1,8 @@
-"""The search space's version and the study name derived from it.
-
-Kept dependency-free and in one place: the name is built by `src.app`, the study
-driver, the final test and the dashboard, and when those disagree the study
-writes a file the pipeline then cannot find.
-"""
+# The search space's version and the study name derived from it.
+#
+# Kept dependency-free and in one place: the name is built by `src.app`, the study
+# driver, the final test and the dashboard, and when those disagree the study
+# writes a file the pipeline then cannot find.
 
 from __future__ import annotations
 

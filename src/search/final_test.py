@@ -1,11 +1,10 @@
-"""Score the measured Pareto front on the sealed CIFAR-100 test set, on the Pi.
+"""Score the measured Pareto front on the sealed CIFAR-100 test set, on the Pi."""
 
-Every front member plus any named choice not already on it, in one pass, so no
-candidate is ever selected using test-set signal. Configs are read back from the
-study report rather than replayed out of a gitignored sqlite file.
-
-    python -m src.search.final_test --model resnet18_cifar --confirm
-"""
+# Every front member plus any named choice not already on it, in one pass, so no
+# candidate is ever selected using test-set signal. Configs are read back from the
+# study report rather than replayed out of a gitignored sqlite file.
+#
+#     python -m src.search.final_test --model resnet18_cifar --confirm
 
 from __future__ import annotations
 

@@ -1,8 +1,7 @@
-"""Versioned host<->device contract. Bump when a field's meaning changes.
-
-Without the schema check an older agent silently defaults fields it does not
-know, and returns a plausible number measured under the wrong settings.
-"""
+# Versioned host<->device contract. Bump when a field's meaning changes.
+#
+# Without the schema check an older agent silently defaults fields it does not
+# know, and returns a plausible number measured under the wrong settings.
 
 from __future__ import annotations
 

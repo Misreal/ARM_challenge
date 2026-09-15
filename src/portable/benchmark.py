@@ -1,19 +1,18 @@
-"""Inference latency and memory measurement, shared verbatim between PC and Pi.
-
-Same reason as `onnx_eval`: the Pi never gets PyTorch, and a timing
-methodology that differs between the two machines makes PC-vs-Pi comparison
-meaningless -- Phase 3's device agent imports this module unchanged. Reports
-the median, not the mean, since the Pi throttles and a handful of slow
-iterations while it heats would drag the mean somewhere that describes
-neither the hot nor the cold steady state (p95/p99 are reported separately so
-the tail stays visible). Also reports a stability verdict: the timed samples
-split in half, their medians compared, and if the second half is slower by
-more than `stability_tolerance` the run was still heating and `stable` is
-False -- a fact about the measurement, not the model, so callers are expected
-to re-measure rather than record it. Peak RSS is process-wide (`ru_maxrss`
-never decreases for the life of the process), so benchmark one artifact per
-process or the second inherits the first one's peak.
-"""
+# Inference latency and memory measurement, shared verbatim between PC and Pi.
+#
+# Same reason as `onnx_eval`: the Pi never gets PyTorch, and a timing
+# methodology that differs between the two machines makes PC-vs-Pi comparison
+# meaningless -- Phase 3's device agent imports this module unchanged. Reports
+# the median, not the mean, since the Pi throttles and a handful of slow
+# iterations while it heats would drag the mean somewhere that describes
+# neither the hot nor the cold steady state (p95/p99 are reported separately so
+# the tail stays visible). Also reports a stability verdict: the timed samples
+# split in half, their medians compared, and if the second half is slower by
+# more than `stability_tolerance` the run was still heating and `stable` is
+# False -- a fact about the measurement, not the model, so callers are expected
+# to re-measure rather than record it. Peak RSS is process-wide (`ru_maxrss`
+# never decreases for the life of the process), so benchmark one artifact per
+# process or the second inherits the first one's peak.
 
 from __future__ import annotations
 

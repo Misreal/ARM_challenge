@@ -1,11 +1,10 @@
-"""What the app knows about each model, without opening its ONNX graph.
+"""What the app knows about each model, without opening its ONNX graph."""
 
-The graphs are gitignored (61 MB), so a fresh clone cannot call `build_group_map`.
-This index carries the few facts the search and the simulator need, costs a few
-kilobytes, and is what an imported model registers itself in.
-
-    python -m src.model_index --rebuild
-"""
+# The graphs are gitignored (61 MB), so a fresh clone cannot call `build_group_map`.
+# This index carries the few facts the search and the simulator need, costs a few
+# kilobytes, and is what an imported model registers itself in.
+#
+#     python -m src.model_index --rebuild
 
 from __future__ import annotations
 

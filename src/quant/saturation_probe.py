@@ -1,16 +1,15 @@
-"""Diagnose INT8 accumulator saturation on the host CPU.
+"""Diagnose INT8 accumulator saturation on the host CPU."""
 
-Per-channel INT8 scored worse than per-tensor on all three models here, which
-is impossible as a property of quantization -- per-channel is strictly finer
-grained. This dev CPU (Ryzen 7 5800H, Zen 3) has AVX2 but no VNNI, so ONNX
-Runtime's U8S8 path accumulates in 16 bits and saturates, and per-channel
-makes that worse by using more of the int8 range per channel. reduce_range
-avoids the overflow but changes the weights, so it's not screening-only.
-Re-run this on the Pi (Cortex-A76 has ARMv8.2 dot-product, should not
-saturate) before trusting any PC accuracy screen.
-
-    python -m src.quant.saturation_probe --model resnet18_cifar
-"""
+# Per-channel INT8 scored worse than per-tensor on all three models here, which
+# is impossible as a property of quantization -- per-channel is strictly finer
+# grained. This dev CPU (Ryzen 7 5800H, Zen 3) has AVX2 but no VNNI, so ONNX
+# Runtime's U8S8 path accumulates in 16 bits and saturates, and per-channel
+# makes that worse by using more of the int8 range per channel. reduce_range
+# avoids the overflow but changes the weights, so it's not screening-only.
+# Re-run this on the Pi (Cortex-A76 has ARMv8.2 dot-product, should not
+# saturate) before trusting any PC accuracy screen.
+#
+#     python -m src.quant.saturation_probe --model resnet18_cifar
 
 from __future__ import annotations
 

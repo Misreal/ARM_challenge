@@ -1,9 +1,8 @@
-"""Sweep the ONNX Runtime session knobs against a fixed artifact, on the Pi.
+"""Sweep the ONNX Runtime session knobs against a fixed artifact, on the Pi."""
 
-Nothing here is requantized: every cell measures the same bytes run differently.
-
-    python -m src.bench.runtime_sweep --model resnet18_cifar
-"""
+# Nothing here is requantized: every cell measures the same bytes run differently.
+#
+#     python -m src.bench.runtime_sweep --model resnet18_cifar
 
 from __future__ import annotations
 

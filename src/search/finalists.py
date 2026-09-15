@@ -1,12 +1,11 @@
-"""Re-measure the shortlist, so no ranking rests on a single noisy measurement.
+"""Re-measure the shortlist, so no ranking rests on a single noisy measurement."""
 
-The front is built from one measurement per candidate. Repeat-to-repeat spread
-on byte-equivalent work reaches 1.9% at p90, which is larger than most gaps
-between neighbouring front members -- so the finalists are measured again, with
-the cache off, and compared inside the band rather than on printed digits.
-
-    python -m src.search.finalists --model resnet18_cifar --study <name>
-"""
+# The front is built from one measurement per candidate. Repeat-to-repeat spread
+# on byte-equivalent work reaches 1.9% at p90, which is larger than most gaps
+# between neighbouring front members -- so the finalists are measured again, with
+# the cache off, and compared inside the band rather than on printed digits.
+#
+#     python -m src.search.finalists --model resnet18_cifar --study <name>
 
 from __future__ import annotations
 

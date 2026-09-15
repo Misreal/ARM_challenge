@@ -1,9 +1,8 @@
-"""Vary only the static calibration recipe, on the Pi, with the graph held fixed.
+"""Vary only the static calibration recipe, on the Pi, with the graph held fixed."""
 
-The Phase 6 trials cannot answer this: each one also had different FP32 blocks.
-
-    python -m src.bench.calibration_sweep --model resnet18_cifar
-"""
+# The Phase 6 trials cannot answer this: each one also had different FP32 blocks.
+#
+#     python -m src.bench.calibration_sweep --model resnet18_cifar
 
 from __future__ import annotations
 

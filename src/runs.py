@@ -1,9 +1,8 @@
-"""Where one campaign's artifacts live.
-
-A run is a directory: the recipe that was asked for, every stage's output, its
-own dashboard, and a manifest of what actually happened. Nothing else in the
-tree composes a run's paths by hand.
-"""
+# Where one campaign's artifacts live.
+#
+# A run is a directory: the recipe that was asked for, every stage's output, its
+# own dashboard, and a manifest of what actually happened. Nothing else in the
+# tree composes a run's paths by hand.
 
 from __future__ import annotations
 

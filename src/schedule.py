@@ -1,14 +1,13 @@
-"""Learning-rate schedule: linear warmup into cosine decay.
-
-Computed per *optimizer step*, not per epoch. Warmup exists to stop the first
-few large-gradient updates from destabilising BatchNorm statistics; stepping it
-once per epoch would leave the entire first epoch at full learning rate, which
-is exactly the window it is meant to protect. MobileNetV2 trained from scratch
-is the model in this project most sensitive to getting that wrong.
-
-Pure functions of `step` -- no optimizer state, no hidden counters -- so the
-schedule can be unit-tested and plotted without constructing a training run.
-"""
+# Learning-rate schedule: linear warmup into cosine decay.
+#
+# Computed per *optimizer step*, not per epoch. Warmup exists to stop the first
+# few large-gradient updates from destabilising BatchNorm statistics; stepping it
+# once per epoch would leave the entire first epoch at full learning rate, which
+# is exactly the window it is meant to protect. MobileNetV2 trained from scratch
+# is the model in this project most sensitive to getting that wrong.
+#
+# Pure functions of `step` -- no optimizer state, no hidden counters -- so the
+# schedule can be unit-tested and plotted without constructing a training run.
 
 from __future__ import annotations
 

@@ -1,12 +1,11 @@
-"""Turn measured cost/benefit into a reduced search space and a greedy reference.
+"""Turn measured cost/benefit into a reduced search space and a greedy reference."""
 
-Sparing a group raises latency, size and RAM together, so it never trades one
-objective for another -- it only buys accuracy. The search is therefore a
-knapsack over `recovery_share / cost_ms`, which both shrinks the space and gives
-a zero-trial reference solution to judge the search against.
-
-    python -m src.search.reduce --model resnet18_cifar
-"""
+# Sparing a group raises latency, size and RAM together, so it never trades one
+# objective for another -- it only buys accuracy. The search is therefore a
+# knapsack over `recovery_share / cost_ms`, which both shrinks the space and gives
+# a zero-trial reference solution to judge the search against.
+#
+#     python -m src.search.reduce --model resnet18_cifar
 
 from __future__ import annotations
 

@@ -1,8 +1,7 @@
-"""Export a trained CIFAR-100 checkpoint to static ONNX and verify it.
+"""Export a trained CIFAR-100 checkpoint to static ONNX and verify it."""
 
-Example:
-    python -m src.export_onnx --model custom_cnn --tag pilot
-"""
+# Example:
+#     python -m src.export_onnx --model custom_cnn --tag pilot
 
 from __future__ import annotations
 

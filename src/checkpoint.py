@@ -1,12 +1,11 @@
-"""Checkpoint I/O that binds weights to the exact split and recipe that made them.
-
-Writes `<name>.pt` (weights + metadata) and `<name>.json` (same metadata plus
-the .pt's SHA-256, no weights), so provenance stays greppable without torch.
-The split fingerprint in that metadata is the load-time check that matters:
-Stage 1 scores every candidate on `optval` against a frozen baseline, and a
-checkpoint trained under a different split could have `optval` images in its
-training set, turning the accuracy constraint into a silent memorisation check.
-"""
+# Checkpoint I/O that binds weights to the exact split and recipe that made them.
+#
+# Writes `<name>.pt` (weights + metadata) and `<name>.json` (same metadata plus
+# the .pt's SHA-256, no weights), so provenance stays greppable without torch.
+# The split fingerprint in that metadata is the load-time check that matters:
+# Stage 1 scores every candidate on `optval` against a frozen baseline, and a
+# checkpoint trained under a different split could have `optval` images in its
+# training set, turning the accuracy constraint into a silent memorisation check.
 
 from __future__ import annotations
 

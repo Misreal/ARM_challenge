@@ -1,9 +1,8 @@
-"""Per-group INT8 probes: what one block costs alone, and what it costs in context.
-
-Every probe is an ordinary `QuantConfig` with a different `excluded_groups`, so
-the sweep reuses the Phase 4 toolkit verbatim rather than introducing a second
-quantization path whose results would not be comparable.
-"""
+# Per-group INT8 probes: what one block costs alone, and what it costs in context.
+#
+# Every probe is an ordinary `QuantConfig` with a different `excluded_groups`, so
+# the sweep reuses the Phase 4 toolkit verbatim rather than introducing a second
+# quantization path whose results would not be comparable.
 
 from __future__ import annotations
 

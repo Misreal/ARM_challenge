@@ -1,15 +1,14 @@
-"""PC-side accuracy scoring for quantized candidates.
-
-Screening happens here, on x86, because it is fast and needs no device. The
-honesty caveat from PLAN.md applies and is worth repeating in any report built
-on these numbers: x86 and ARM INT8 kernels can differ by roughly +/-0.1 pt from
-requantization rounding, so a PC score is a filter, not a finding. Finalists get
-their accuracy re-verified on the Pi.
-
-The evaluation loop itself lives in `src.portable.onnx_eval`, shared verbatim
-with the device, so any PC-vs-Pi gap is attributable to kernels rather than to
-two implementations drifting apart.
-"""
+# PC-side accuracy scoring for quantized candidates.
+#
+# Screening happens here, on x86, because it is fast and needs no device. The
+# honesty caveat from PLAN.md applies and is worth repeating in any report built
+# on these numbers: x86 and ARM INT8 kernels can differ by roughly +/-0.1 pt from
+# requantization rounding, so a PC score is a filter, not a finding. Finalists get
+# their accuracy re-verified on the Pi.
+#
+# The evaluation loop itself lives in `src.portable.onnx_eval`, shared verbatim
+# with the device, so any PC-vs-Pi gap is attributable to kernels rather than to
+# two implementations drifting apart.
 
 from __future__ import annotations
 

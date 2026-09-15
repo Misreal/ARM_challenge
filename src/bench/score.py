@@ -1,10 +1,9 @@
-"""Score one candidate's accuracy on the device, in its own process.
+"""Score one candidate's accuracy on the device, in its own process."""
 
-Deliberately not part of `agent.py`: evaluating 3000 images allocates arrays that
-would land in the `ru_maxrss` the agent exists to attribute to inference alone.
-
-    python -m src.bench.score --spec spec.json --out result.json --limit 500
-"""
+# Deliberately not part of `agent.py`: evaluating 3000 images allocates arrays that
+# would land in the `ru_maxrss` the agent exists to attribute to inference alone.
+#
+#     python -m src.bench.score --spec spec.json --out result.json --limit 500
 
 from __future__ import annotations
 

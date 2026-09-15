@@ -1,9 +1,8 @@
-"""Decide what will be evaluated before anything is, and write it down.
-
-Planning is separated from evaluation so a campaign is reproducible from its
-report alone: the plan names every candidate, the strategy that chose them and
-the reason, and it is fixed before the first device measurement.
-"""
+# Decide what will be evaluated before anything is, and write it down.
+#
+# Planning is separated from evaluation so a campaign is reproducible from its
+# report alone: the plan names every candidate, the strategy that chose them and
+# the reason, and it is fixed before the first device measurement.
 
 from __future__ import annotations
 

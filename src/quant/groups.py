@@ -1,18 +1,17 @@
-"""Map ONNX nodes back to named PyTorch blocks.
-
-PLAN.md schedules this for Phase 5, but Phase 4 needs it first, since mixed
-precision is implemented through `nodes_to_exclude` and excluding a block
-can't be translated without this map. `torch.onnx.export` prefixes each node
-with its module path (e.g. `/stage2/dw1/dw/conv/Conv`), reliable because of
-the registry's stable-naming contract (`src/models/registry.py:15`), verified
-to hold for all three exported graphs. Grouping depth is per-model: ResNet-18
-and custom_cnn group correctly at depth 1 (`layer1`, `stem`, ...), but
-MobileNetV2 has 167 of its 170 nodes under one `features` container, so its
-block structure is at depth 2 (`features.0`, ...) -- declared rather than
-inferred, with `MAX_GROUP_SHARE` catching the mistake if a new model skips
-this entry. custom_cnn groups to exactly the keys in `EXPECTED_SENSITIVITY`
-so Phase 5's validation compares them with no name translation.
-"""
+# Map ONNX nodes back to named PyTorch blocks.
+#
+# PLAN.md schedules this for Phase 5, but Phase 4 needs it first, since mixed
+# precision is implemented through `nodes_to_exclude` and excluding a block
+# can't be translated without this map. `torch.onnx.export` prefixes each node
+# with its module path (e.g. `/stage2/dw1/dw/conv/Conv`), reliable because of
+# the registry's stable-naming contract (`src/models/registry.py:15`), verified
+# to hold for all three exported graphs. Grouping depth is per-model: ResNet-18
+# and custom_cnn group correctly at depth 1 (`layer1`, `stem`, ...), but
+# MobileNetV2 has 167 of its 170 nodes under one `features` container, so its
+# block structure is at depth 2 (`features.0`, ...) -- declared rather than
+# inferred, with `MAX_GROUP_SHARE` catching the mistake if a new model skips
+# this entry. custom_cnn groups to exactly the keys in `EXPECTED_SENSITIVITY`
+# so Phase 5's validation compares them with no name translation.
 
 from __future__ import annotations
 

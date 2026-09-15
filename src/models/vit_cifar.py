@@ -1,34 +1,33 @@
-"""A patch-4 Vision Transformer for 32x32 CIFAR-100.
-
-Why a transformer is in a repo of CNNs: every bundled model so far loses under
-0.1 top-1 points to uniform INT8, which leaves mixed precision nothing to
-recover. The search cannot be shown to work or fail on models where the
-quantity it optimizes is already zero. Attention blocks are the standard
-counter-example -- per-tensor INT8 on QKV/projection MatMuls is genuinely
-lossy, and LayerNorm/Softmax/GELU sit outside ONNX Runtime's default
-quantizable op set and stay FP32 whatever the config says. That mix is the
-point: it is the regime the CNNs cannot reach.
-
-Patch 4 rather than the usual 16: at 32x32 a patch-16 grid is 2x2 = 4 tokens,
-which is not a sequence. Patch 4 gives an 8x8 grid, 64 tokens, and keeps the
-whole model at the project's (N, 3, 32, 32) input contract -- no resize, no
-change to the Pi data bundle, no change to `INPUT_SHAPE` in
-`src/export_onnx.py`.
-
-Every operation that carries weights lives inside a named `nn.Module`, and the
-attention math is written as module calls rather than functional one-liners
-wherever a functional call would emit an unscoped node. `src/quant/groups.py`
-maps ONNX nodes to blocks purely by their module path, raises on any unnamed
-node, and rejects a graph whose nodes fall mostly into `_unscoped`. A
-transformer written the idiomatic way -- `F.scaled_dot_product_attention`, bare
-`.transpose()`/`.reshape()` chains -- produces exactly that rejected graph.
-Hence `Attention` splitting QKV through named Linears and `nn.Softmax` as a
-module attribute, which read as verbose PyTorch and are deliberate.
-
-Grouping depth is 2 (`blocks.0`, `blocks.1`, ...), declared in `GROUP_DEPTH`
-alongside MobileNetV2's, because depth 1 would put every block under one
-`blocks` container and trip `MAX_GROUP_SHARE`.
-"""
+# A patch-4 Vision Transformer for 32x32 CIFAR-100.
+#
+# Why a transformer is in a repo of CNNs: every bundled model so far loses under
+# 0.1 top-1 points to uniform INT8, which leaves mixed precision nothing to
+# recover. The search cannot be shown to work or fail on models where the
+# quantity it optimizes is already zero. Attention blocks are the standard
+# counter-example -- per-tensor INT8 on QKV/projection MatMuls is genuinely
+# lossy, and LayerNorm/Softmax/GELU sit outside ONNX Runtime's default
+# quantizable op set and stay FP32 whatever the config says. That mix is the
+# point: it is the regime the CNNs cannot reach.
+#
+# Patch 4 rather than the usual 16: at 32x32 a patch-16 grid is 2x2 = 4 tokens,
+# which is not a sequence. Patch 4 gives an 8x8 grid, 64 tokens, and keeps the
+# whole model at the project's (N, 3, 32, 32) input contract -- no resize, no
+# change to the Pi data bundle, no change to `INPUT_SHAPE` in
+# `src/export_onnx.py`.
+#
+# Every operation that carries weights lives inside a named `nn.Module`, and the
+# attention math is written as module calls rather than functional one-liners
+# wherever a functional call would emit an unscoped node. `src/quant/groups.py`
+# maps ONNX nodes to blocks purely by their module path, raises on any unnamed
+# node, and rejects a graph whose nodes fall mostly into `_unscoped`. A
+# transformer written the idiomatic way -- `F.scaled_dot_product_attention`, bare
+# `.transpose()`/`.reshape()` chains -- produces exactly that rejected graph.
+# Hence `Attention` splitting QKV through named Linears and `nn.Softmax` as a
+# module attribute, which read as verbose PyTorch and are deliberate.
+#
+# Grouping depth is 2 (`blocks.0`, `blocks.1`, ...), declared in `GROUP_DEPTH`
+# alongside MobileNetV2's, because depth 1 would put every block under one
+# `blocks` container and trip `MAX_GROUP_SHARE`.
 
 from __future__ import annotations
 

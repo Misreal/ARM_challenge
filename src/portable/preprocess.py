@@ -1,12 +1,11 @@
-"""The CIFAR-100 preprocessing contract, in numpy.
-
-This module is the single source of truth for the normalization constants.
-`src.data.loaders` imports them from here rather than the other way round: the
-torch-free side has to own them, because it is the side that ships to the Pi.
-
-Normalization is deliberately NOT baked into the exported ONNX graph, so every
-consumer of a model artifact must apply exactly this transform first.
-"""
+# The CIFAR-100 preprocessing contract, in numpy.
+#
+# This module is the single source of truth for the normalization constants.
+# `src.data.loaders` imports them from here rather than the other way round: the
+# torch-free side has to own them, because it is the side that ships to the Pi.
+#
+# Normalization is deliberately NOT baked into the exported ONNX graph, so every
+# consumer of a model artifact must apply exactly this transform first.
 
 from __future__ import annotations
 

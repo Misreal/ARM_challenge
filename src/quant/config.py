@@ -1,15 +1,14 @@
-"""Deployment configuration objects and their content hashes.
-
-`QuantConfig` determines the artifact -- the bytes of the .onnx file.
-`RunConfig` determines the execution -- how ONNX Runtime is told to run it.
-Splitting them is what makes the search affordable: thread count is a search
-dimension, so one config object would re-quantize an identical file once per
-thread setting, whereas the artifact cache can key on the quant hash alone.
-`canonical_payload` drops fields that don't affect the artifact's bytes before
-hashing, so two configs that produce the same file also hash the same --
-otherwise the cache would miss and the Pi could measure one file twice under
-different names.
-"""
+# Deployment configuration objects and their content hashes.
+#
+# `QuantConfig` determines the artifact -- the bytes of the .onnx file.
+# `RunConfig` determines the execution -- how ONNX Runtime is told to run it.
+# Splitting them is what makes the search affordable: thread count is a search
+# dimension, so one config object would re-quantize an identical file once per
+# thread setting, whereas the artifact cache can key on the quant hash alone.
+# `canonical_payload` drops fields that don't affect the artifact's bytes before
+# hashing, so two configs that produce the same file also hash the same --
+# otherwise the cache would miss and the Pi could measure one file twice under
+# different names.
 
 from __future__ import annotations
 

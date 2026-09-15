@@ -1,11 +1,10 @@
-"""Join each group's accuracy benefit to its measured latency cost.
+"""Join each group's accuracy benefit to its measured latency cost."""
 
-The Phase 5 ranking answers "what does sparing this group buy?" and the Pi
-sweep answers "what does it cost?". Neither alone picks exclusions: the
-top-ranked group is often the most expensive one to spare.
-
-    python -m src.sensitivity.cost_benefit --model resnet18_cifar
-"""
+# The Phase 5 ranking answers "what does sparing this group buy?" and the Pi
+# sweep answers "what does it cost?". Neither alone picks exclusions: the
+# top-ranked group is often the most expensive one to spare.
+#
+#     python -m src.sensitivity.cost_benefit --model resnet18_cifar
 
 from __future__ import annotations
 

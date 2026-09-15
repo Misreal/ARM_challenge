@@ -1,11 +1,10 @@
-"""ONNX Runtime accuracy evaluation, shared verbatim between PC and Pi.
-
-The graphs are exported static at batch size 1 (a project invariant), so this
-feeds one image per call on both machines. That is slower than batching but it
-is what the deployment target actually does, and identical code on both sides
-means a PC-vs-Pi accuracy gap can only come from the kernels -- which is
-precisely the quantity Phase 4 warns is worth about +/-0.1 pt.
-"""
+# ONNX Runtime accuracy evaluation, shared verbatim between PC and Pi.
+#
+# The graphs are exported static at batch size 1 (a project invariant), so this
+# feeds one image per call on both machines. That is slower than batching but it
+# is what the deployment target actually does, and identical code on both sides
+# means a PC-vs-Pi accuracy gap can only come from the kernels -- which is
+# precisely the quantity Phase 4 warns is worth about +/-0.1 pt.
 
 from __future__ import annotations
 

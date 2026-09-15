@@ -1,17 +1,16 @@
-"""Multi-objective deployment search over the reduced space, measured on the Pi.
+"""Multi-objective deployment search over the reduced space, measured on the Pi."""
 
-Minimizes {median latency, size, peak RAM} and maximizes top-1. Accuracy is both
-an objective and a hard filter: the filter rejects anything under the budget, and
-the objective ranks what survives. Accuracy as a filter alone made the front
-degenerate, because the other three improve together and nothing opposed them.
-
-The space is whatever `src.search.reduce` left searchable, so the sensitivity
-measurements decide the per-layer precision and the search spends its budget on
-what they could not settle.
-
-    python -m src.search.study --model resnet18_cifar --trials 20 --mock
-    python -m src.search.study --model resnet18_cifar --trials 40
-"""
+# Minimizes {median latency, size, peak RAM} and maximizes top-1. Accuracy is both
+# an objective and a hard filter: the filter rejects anything under the budget, and
+# the objective ranks what survives. Accuracy as a filter alone made the front
+# degenerate, because the other three improve together and nothing opposed them.
+#
+# The space is whatever `src.search.reduce` left searchable, so the sensitivity
+# measurements decide the per-layer precision and the search spends its budget on
+# what they could not settle.
+#
+#     python -m src.search.study --model resnet18_cifar --trials 20 --mock
+#     python -m src.search.study --model resnet18_cifar --trials 40
 
 from __future__ import annotations
 

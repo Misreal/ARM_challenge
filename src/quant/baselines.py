@@ -1,27 +1,26 @@
-"""Build and score the global quantization baselines (PLAN.md Phase 4 + 6.6).
+"""Build and score the global quantization baselines (PLAN.md Phase 4 + 6.6)."""
 
-These are the bar the optimizer has to beat, so they must exist before any
-search runs and must go through the identical toolkit the search uses -- a
-baseline measured by a different code path proves nothing.
-
-    fp32                 the deployable export, unquantized
-    dynamic              dynamic INT8; ORT recommends it for RNN/transformers
-                         rather than CNNs, kept because it is a required baseline
-    static_per_tensor    diagnostic exhibit only. Presenting this as "the INT8
-                         baseline" would be a strawman: per-tensor weights are
-                         known-bad for depthwise convolutions, so beating it
-                         says nothing.
-    static_per_channel   THE headline comparison. Per-channel weights plus
-                         static activations is standard cookbook practice, and
-                         the contribution is whatever the search finds beyond it.
-
-Running this also answers, retroactively, the MobileNetV2 question the Phase 1
-pilot gate was meant to settle: if per-channel recovers what per-tensor loses,
-the architecture was never the problem.
-
-Example:
-    python -m src.quant.baselines --model mobilenetv2_cifar
-"""
+# These are the bar the optimizer has to beat, so they must exist before any
+# search runs and must go through the identical toolkit the search uses -- a
+# baseline measured by a different code path proves nothing.
+#
+#     fp32                 the deployable export, unquantized
+#     dynamic              dynamic INT8; ORT recommends it for RNN/transformers
+#                          rather than CNNs, kept because it is a required baseline
+#     static_per_tensor    diagnostic exhibit only. Presenting this as "the INT8
+#                          baseline" would be a strawman: per-tensor weights are
+#                          known-bad for depthwise convolutions, so beating it
+#                          says nothing.
+#     static_per_channel   THE headline comparison. Per-channel weights plus
+#                          static activations is standard cookbook practice, and
+#                          the contribution is whatever the search finds beyond it.
+#
+# Running this also answers, retroactively, the MobileNetV2 question the Phase 1
+# pilot gate was meant to settle: if per-channel recovers what per-tensor loses,
+# the architecture was never the problem.
+#
+# Example:
+#     python -m src.quant.baselines --model mobilenetv2_cifar
 
 from __future__ import annotations
 

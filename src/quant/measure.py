@@ -1,18 +1,17 @@
-"""Measure latency, throughput and size of quantized candidates on this host.
+"""Measure latency, throughput and size of quantized candidates on this host."""
 
-This is the first module in the project whose numbers are not automatically
-valid: accuracy transfers between x86 and ARM to within about +/-0.1 pt
-(modulo the saturation caveat in `saturation_probe`), but latency does not --
-Zen 3/AVX2 and Cortex-A76/NEON drive different MLAS kernels over different
-memory systems, which is the premise the whole project rests on. Every report
-carries an `admissible` flag that is True only on aarch64, and the filename
-is suffixed with the machine type, so a PC report and a Pi report can never
-overwrite one another and a PC latency can't reach a results table by
-accident. Run on the dev box to exercise the harness; run on the Pi for
-results.
-
-    python -m src.quant.measure --model resnet18_cifar
-"""
+# This is the first module in the project whose numbers are not automatically
+# valid: accuracy transfers between x86 and ARM to within about +/-0.1 pt
+# (modulo the saturation caveat in `saturation_probe`), but latency does not --
+# Zen 3/AVX2 and Cortex-A76/NEON drive different MLAS kernels over different
+# memory systems, which is the premise the whole project rests on. Every report
+# carries an `admissible` flag that is True only on aarch64, and the filename
+# is suffixed with the machine type, so a PC report and a Pi report can never
+# overwrite one another and a PC latency can't reach a results table by
+# accident. Run on the dev box to exercise the harness; run on the Pi for
+# results.
+#
+#     python -m src.quant.measure --model resnet18_cifar
 
 from __future__ import annotations
 

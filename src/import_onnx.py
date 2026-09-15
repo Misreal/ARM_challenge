@@ -1,11 +1,10 @@
-"""Bring an ONNX model that was not trained here into the app.
+"""Bring an ONNX model that was not trained here into the app."""
 
-Torch-free on purpose: an imported graph has no checkpoint, so everything the
-pipeline needs -- the quant-ready twin, the FP32 baseline, the group map -- is
-derived from the file itself.
-
-    python -m src.import_onnx --onnx model.onnx --name hf_resnet20
-"""
+# Torch-free on purpose: an imported graph has no checkpoint, so everything the
+# pipeline needs -- the quant-ready twin, the FP32 baseline, the group map -- is
+# derived from the file itself.
+#
+#     python -m src.import_onnx --onnx model.onnx --name hf_resnet20
 
 from __future__ import annotations
 

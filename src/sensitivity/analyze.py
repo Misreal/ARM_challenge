@@ -1,11 +1,10 @@
-"""Run the per-group sensitivity sweep and write the ranking report.
+"""Run the per-group sensitivity sweep and write the ranking report."""
 
-Belongs on the Pi: the ranking turns on a per-tensor vs per-channel contrast,
-and this project's x86 host is a confirmed saturating outlier on exactly that axis.
-
-Example:
-    python -m src.sensitivity.analyze --model custom_cnn
-"""
+# Belongs on the Pi: the ranking turns on a per-tensor vs per-channel contrast,
+# and this project's x86 host is a confirmed saturating outlier on exactly that axis.
+#
+# Example:
+#     python -m src.sensitivity.analyze --model custom_cnn
 
 from __future__ import annotations
 

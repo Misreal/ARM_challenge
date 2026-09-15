@@ -1,7 +1,6 @@
-"""Device-state guards: governor, throttling and temperature checks that decide
-whether a timing is worth recording. Probes return None off the Pi, and the
-guards only enforce on aarch64, so this still imports on the dev box.
-"""
+# Device-state guards: governor, throttling and temperature checks that decide
+# whether a timing is worth recording. Probes return None off the Pi, and the
+# guards only enforce on aarch64, so this still imports on the dev box.
 
 from __future__ import annotations
 

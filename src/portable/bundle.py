@@ -1,9 +1,8 @@
-"""Load the uint8 evaluation bundles written by `src.data.export_pi_data`.
-
-Shared with the Pi agent. The checksum verification matters more on the device
-than on the PC: files get there over SSH, and a truncated or stale transfer
-would otherwise surface as a mysterious accuracy drop attributed to INT8.
-"""
+# Load the uint8 evaluation bundles written by `src.data.export_pi_data`.
+#
+# Shared with the Pi agent. The checksum verification matters more on the device
+# than on the PC: files get there over SSH, and a truncated or stale transfer
+# would otherwise surface as a mysterious accuracy drop attributed to INT8.
 
 from __future__ import annotations
 

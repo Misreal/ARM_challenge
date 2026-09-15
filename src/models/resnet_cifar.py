@@ -1,17 +1,16 @@
-"""ResNet-18 adapted for 32x32 CIFAR input.
-
-Torchvision's ImageNet ResNet-18 opens with a 7x7 stride-2 convolution followed
-by a stride-2 max-pool, downsampling 224 -> 56 before the first residual block.
-Applied to a 32x32 image that collapses the map to 8x8 immediately and throws
-away most of the spatial signal, costing roughly 10 accuracy points on CIFAR.
-
-The standard fix -- a 3x3 stride-1 stem with the max-pool removed -- keeps the
-map at 32x32 into layer1 and yields the familiar 32 -> 16 -> 8 -> 4 progression.
-
-Role in this project: the quantization-ROBUST anchor. It is heavily
-over-parameterized for 100 classes, so INT8 barely dents it. That makes it the
-control against which MobileNetV2's INT8 sensitivity is measured.
-"""
+# ResNet-18 adapted for 32x32 CIFAR input.
+#
+# Torchvision's ImageNet ResNet-18 opens with a 7x7 stride-2 convolution followed
+# by a stride-2 max-pool, downsampling 224 -> 56 before the first residual block.
+# Applied to a 32x32 image that collapses the map to 8x8 immediately and throws
+# away most of the spatial signal, costing roughly 10 accuracy points on CIFAR.
+#
+# The standard fix -- a 3x3 stride-1 stem with the max-pool removed -- keeps the
+# map at 32x32 into layer1 and yields the familiar 32 -> 16 -> 8 -> 4 progression.
+#
+# Role in this project: the quantization-ROBUST anchor. It is heavily
+# over-parameterized for 100 classes, so INT8 barely dents it. That makes it the
+# control against which MobileNetV2's INT8 sensitivity is measured.
 
 from __future__ import annotations
 

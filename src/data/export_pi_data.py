@@ -1,17 +1,16 @@
-"""Export CIFAR-100 evaluation data as .npy bundles for the Raspberry Pi agent.
+"""Export CIFAR-100 evaluation data as .npy bundles for the Raspberry Pi agent."""
 
-The Pi agent is torch-free (requirements-pi.txt), so it can't reuse
-`loaders.py` -- preprocessing drift between PC and Pi would show up as an
-unexplained accuracy drop indistinguishable from quantization damage (PLAN.md
-DO-NOT #7). Images ship as raw uint8, never pre-normalized floats, so
-normalization runs on-device via the torch-free `normalize_uint8_nchw` rather
-than baking one machine's arithmetic into the artifact; before writing
-anything, that numpy path is checked against the torchvision path
-image-by-image. The test split stays unexported and sealed until Phase 7
-(DO-NOT #3) rather than sitting queryable on the benchmark device.
-
-    python -m src.data.export_pi_data
-"""
+# The Pi agent is torch-free (requirements-pi.txt), so it can't reuse
+# `loaders.py` -- preprocessing drift between PC and Pi would show up as an
+# unexplained accuracy drop indistinguishable from quantization damage (PLAN.md
+# DO-NOT #7). Images ship as raw uint8, never pre-normalized floats, so
+# normalization runs on-device via the torch-free `normalize_uint8_nchw` rather
+# than baking one machine's arithmetic into the artifact; before writing
+# anything, that numpy path is checked against the torchvision path
+# image-by-image. The test split stays unexported and sealed until Phase 7
+# (DO-NOT #3) rather than sitting queryable on the benchmark device.
+#
+#     python -m src.data.export_pi_data
 
 from __future__ import annotations
 

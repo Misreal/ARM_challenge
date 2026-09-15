@@ -1,11 +1,10 @@
-"""Drive the Pi from the PC over SSH, with retries and a measurement cache.
+"""Drive the Pi from the PC over SSH, with retries and a measurement cache."""
 
-Key auth is mandatory: under password auth an unattended run does not fail, it
-hangs at a prompt nobody answers, so BatchMode is forced on.
-
-    python -m src.bench.remote --check
-    python -m src.bench.remote --model resnet18_cifar --configs fp32 --threads 1 2 4
-"""
+# Key auth is mandatory: under password auth an unattended run does not fail, it
+# hangs at a prompt nobody answers, so BatchMode is forced on.
+#
+#     python -m src.bench.remote --check
+#     python -m src.bench.remote --model resnet18_cifar --configs fp32 --threads 1 2 4
 
 from __future__ import annotations
 

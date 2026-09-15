@@ -1,10 +1,9 @@
-"""Staged evaluation of one candidate, cheap gates first.
-
-Ordering is the point: a candidate that fails to build, or that a 500-image
-screen already rejects, must never reach a latency measurement. Running an
-expensive stage before a cheap one that would have rejected the candidate is
-the main performance trap in the search loop.
-"""
+# Staged evaluation of one candidate, cheap gates first.
+#
+# Ordering is the point: a candidate that fails to build, or that a 500-image
+# screen already rejects, must never reach a latency measurement. Running an
+# expensive stage before a cheap one that would have rejected the candidate is
+# the main performance trap in the search loop.
 
 from __future__ import annotations
 

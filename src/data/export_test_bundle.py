@@ -1,11 +1,10 @@
-"""Export the sealed CIFAR-100 test set as a Pi bundle, for final evaluation only.
+"""Export the sealed CIFAR-100 test set as a Pi bundle, for final evaluation only."""
 
-Separate from `export_pi_data` on purpose: that module must keep excluding the
-test set, so breaking the seal stays a deliberate, auditable act rather than a
-flag someone flips during the search campaign.
-
-    python -m src.data.export_test_bundle --confirm
-"""
+# Separate from `export_pi_data` on purpose: that module must keep excluding the
+# test set, so breaking the seal stays a deliberate, auditable act rather than a
+# flag someone flips during the search campaign.
+#
+#     python -m src.data.export_test_bundle --confirm
 
 from __future__ import annotations
 

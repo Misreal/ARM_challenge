@@ -1,8 +1,7 @@
-"""A fake device, so the study can be debugged without spending Pi hours.
-
-Numbers are plausible but invented. Nothing this produces may reach a results
-table; `--mock` marks the study name so a mock run cannot be mistaken for one.
-"""
+# A fake device, so the study can be debugged without spending Pi hours.
+#
+# Numbers are plausible but invented. Nothing this produces may reach a results
+# table; `--mock` marks the study name so a mock run cannot be mistaken for one.
 
 from __future__ import annotations
 

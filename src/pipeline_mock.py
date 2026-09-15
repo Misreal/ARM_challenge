@@ -1,9 +1,8 @@
-"""A simulated campaign, so the whole app runs with no Raspberry Pi attached.
-
-Every number here is invented. It exists to prove the plumbing end to end and to
-let someone without the hardware see the app work; the run is stamped `mock` and
-the page says so in a banner.
-"""
+# A simulated campaign, so the whole app runs with no Raspberry Pi attached.
+#
+# Every number here is invented. It exists to prove the plumbing end to end and to
+# let someone without the hardware see the app work; the run is stamped `mock` and
+# the page says so in a banner.
 
 from __future__ import annotations
 

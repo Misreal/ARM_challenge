@@ -1,9 +1,8 @@
-"""The stages of one campaign, declared as data so a run can be resumed.
-
-A stage knows what it needs, what it produces and whether it touches the device.
-The orchestrator skips whatever a run has already completed, which is what makes
-an interrupted overnight campaign restartable rather than repeatable.
-"""
+# The stages of one campaign, declared as data so a run can be resumed.
+#
+# A stage knows what it needs, what it produces and whether it touches the device.
+# The orchestrator skips whatever a run has already completed, which is what makes
+# an interrupted overnight campaign restartable rather than repeatable.
 
 from __future__ import annotations
 

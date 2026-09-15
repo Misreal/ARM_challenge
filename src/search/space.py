@@ -1,7 +1,6 @@
-"""Map an Optuna trial onto a DeploymentConfig: artifact knobs plus runtime knobs.
-
-Both reductions here are measured, from `*_runtime_sweep.json` on the Pi.
-"""
+# Map an Optuna trial onto a DeploymentConfig: artifact knobs plus runtime knobs.
+#
+# Both reductions here are measured, from `*_runtime_sweep.json` on the Pi.
 
 from __future__ import annotations
 

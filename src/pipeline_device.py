@@ -1,10 +1,9 @@
-"""The same campaign, measured on the Raspberry Pi.
-
-Three of these stages run *on* the device over SSH because their reports are
-only meaningful there: the x86 host's INT8 kernels saturate (see CLAUDE.md), so
-a quantization accuracy number measured here would be wrong in a direction that
-targets exactly the candidates most likely to win.
-"""
+# The same campaign, measured on the Raspberry Pi.
+#
+# Three of these stages run *on* the device over SSH because their reports are
+# only meaningful there: the x86 host's INT8 kernels saturate (see CLAUDE.md), so
+# a quantization accuracy number measured here would be wrong in a direction that
+# targets exactly the candidates most likely to win.
 
 from __future__ import annotations
 

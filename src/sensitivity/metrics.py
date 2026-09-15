@@ -1,9 +1,8 @@
-"""Compare a quantized candidate's logits against the FP32 reference on identical images.
-
-Top-1 delta cannot rank layers here: full INT8 costs 3-11 images out of 3000, so
-per-group deltas sit at the sampling floor. These metrics are continuous or
-high-count instead, which is what gives the ranking any resolution at all.
-"""
+# Compare a quantized candidate's logits against the FP32 reference on identical images.
+#
+# Top-1 delta cannot rank layers here: full INT8 costs 3-11 images out of 3000, so
+# per-group deltas sit at the sampling floor. These metrics are continuous or
+# high-count instead, which is what gives the ranking any resolution at all.
 
 from __future__ import annotations
 
