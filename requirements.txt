@@ -16,6 +16,10 @@ tqdm>=4.66
 onnx==1.22.0
 onnxruntime==1.27.0
 
+# NSGA-II for the search stage. PC-side only -- the Pi measures candidates but
+# never chooses them, so this stays out of requirements-pi.txt.
+optuna>=3.6
+
 # Testing. Scope is deliberately narrow: correctness-critical pure logic only
 # (split guards, LR schedule, later config hashing and gate decisions).
 # Measurement code is validated by parity checks against a reference, not by
