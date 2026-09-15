@@ -1,0 +1,114 @@
+{
+  "model": "vit_cifar",
+  "eval_split": "optval",
+  "eval_limit": null,
+  "on_target": true,
+  "host": {
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "machine": "arm64",
+    "processor": "arm"
+  },
+  "run_config": {
+    "intra_op_num_threads": 4,
+    "graph_optimization_level": "all",
+    "enable_cpu_mem_arena": true,
+    "allow_intra_op_spinning": true
+  },
+  "baselines": {
+    "fp32": {
+      "status": "ok",
+      "config": {
+        "quant_type": "none",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [],
+        "reduce_range": false
+      },
+      "quant_hash": "621cee21bf4b25e3",
+      "bytes": 21605648,
+      "qdq_nodes": 0,
+      "build_seconds": 0.0,
+      "accuracy": {
+        "samples": 3000,
+        "top1": 61.56666666666667,
+        "top5": 80.06666666666666
+      },
+      "top1_delta_vs_fp32": 0.0
+    },
+    "dynamic": {
+      "status": "ok",
+      "config": {
+        "quant_type": "dynamic",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [],
+        "reduce_range": false
+      },
+      "quant_hash": "9965282d98520e1e",
+      "bytes": 5743129,
+      "qdq_nodes": 0,
+      "build_seconds": 0.15,
+      "accuracy": {
+        "samples": 3000,
+        "top1": 61.53333333333333,
+        "top5": 80.26666666666667
+      },
+      "top1_delta_vs_fp32": -0.03
+    },
+    "static_per_tensor": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": false,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [],
+        "reduce_range": false
+      },
+      "quant_hash": "06e1b9094831a2a6",
+      "bytes": 5929349,
+      "qdq_nodes": 1037,
+      "build_seconds": 3.9,
+      "accuracy": {
+        "samples": 3000,
+        "top1": 60.36666666666667,
+        "top5": 79.6
+      },
+      "top1_delta_vs_fp32": -1.2
+    },
+    "static_per_channel": {
+      "status": "ok",
+      "config": {
+        "quant_type": "static",
+        "per_channel": true,
+        "activation_type": "uint8",
+        "weight_type": "int8",
+        "calibration_method": "minmax",
+        "calibration_size": 512,
+        "excluded_groups": [],
+        "reduce_range": false
+      },
+      "quant_hash": "6c2712900e73dc56",
+      "bytes": 6205224,
+      "qdq_nodes": 1037,
+      "build_seconds": 4.18,
+      "accuracy": {
+        "samples": 3000,
+        "top1": 59.86666666666667,
+        "top5": 79.93333333333334
+      },
+      "top1_delta_vs_fp32": -1.7
+    }
+  },
+  "onnxruntime": "1.27.0",
+  "created_at_utc": "2026-09-15T06:24:33.238099+00:00",
+  "note": "Measured on the aarch64 target (Raspberry Pi 5). These are deployment numbers, not screening numbers."
+}

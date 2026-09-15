@@ -61,7 +61,7 @@
       0.2762
     ],
     "recipe": "x = images.astype(float32) / 255.0; x = (x - mean) / std",
-    "reference_implementation": "src.data.export_pi_data.normalize_uint8_nchw",
+    "reference_implementation": "src.portable.preprocess.normalize_uint8_nchw",
     "note": "Normalization is NOT in the ONNX graph; the consumer applies it. Any divergence from this recipe shows up as unexplained accuracy loss."
   },
   "excluded": {
@@ -70,8 +70,8 @@
     "trainval": "Checkpoint-selection split; has no role in deployment measurement."
   },
   "package_versions": {
-    "numpy": "2.4.4",
-    "torch": "2.13.0+cu126"
+    "numpy": "2.4.6",
+    "torch": "2.14.0"
   },
-  "created_at_utc": "2026-07-25T11:54:29.732088+00:00"
+  "created_at_utc": "2026-09-15T06:23:53.758422+00:00"
 }

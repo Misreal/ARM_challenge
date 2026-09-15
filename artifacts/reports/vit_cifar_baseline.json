@@ -1,0 +1,99 @@
+{
+  "model": "vit_cifar",
+  "checkpoint": {
+    "path": "artifacts/checkpoints/vit_cifar.pt",
+    "sha256": "29e3549f9feee5266fdc51bcce03dccb9d62a14d119e7d9fcef29a17f55b5079"
+  },
+  "split_fingerprint": "d692cdcdeddfac3b",
+  "onnx": {
+    "path": "artifacts/onnx/vit_cifar.onnx",
+    "sha256": "f603401ebf73b159530ded4affd9277943de41dda341cf29a660c364b12c1815",
+    "bytes": 21605648,
+    "opset": 17,
+    "input_name": "images",
+    "input_shape": [
+      1,
+      3,
+      32,
+      32
+    ],
+    "output_name": "logits",
+    "operators": {
+      "Add": 109,
+      "Concat": 2,
+      "Constant": 104,
+      "ConstantOfShape": 1,
+      "Conv": 1,
+      "Div": 12,
+      "Equal": 1,
+      "Erf": 12,
+      "Expand": 1,
+      "Gather": 1,
+      "Gemm": 1,
+      "LayerNormalization": 25,
+      "MatMul": 96,
+      "Mul": 37,
+      "Reshape": 49,
+      "Shape": 1,
+      "Slice": 1,
+      "Softmax": 12,
+      "Transpose": 49,
+      "Where": 1
+    }
+  },
+  "onnx_quant_ready": {
+    "path": "artifacts/onnx/vit_cifar_quant_ready.onnx",
+    "sha256": "e4f502d1da13a00074e49ec66e9ee47f851ff2e7b00d4aba9ed82bca5c39bf02",
+    "bytes": 21659475,
+    "operators": {
+      "Add": 37,
+      "Concat": 1,
+      "Conv": 1,
+      "Div": 12,
+      "Erf": 12,
+      "Gather": 1,
+      "Gemm": 73,
+      "LayerNormalization": 25,
+      "MatMul": 24,
+      "Mul": 36,
+      "Reshape": 145,
+      "Softmax": 12,
+      "Transpose": 49
+    },
+    "note": "Shape-inferred and fused graph. Phase 4 must quantize THIS file, never the deployable export (PLAN.md DO-NOT #4)."
+  },
+  "preprocessing": {
+    "input": "normalized_float32_nchw",
+    "mean": [
+      0.5071,
+      0.4865,
+      0.4409
+    ],
+    "std": [
+      0.2673,
+      0.2564,
+      0.2762
+    ]
+  },
+  "metrics": {
+    "optval_top1": 61.56666666666667,
+    "test_top1_sealed": null
+  },
+  "verification": {
+    "torch_vs_onnx": {
+      "samples": 512,
+      "top1_agreement": 1.0,
+      "max_logit_delta": 1.6689300537109375e-05
+    },
+    "onnx_vs_quant_ready": {
+      "samples": 512,
+      "top1_agreement": 1.0,
+      "max_logit_delta": 0.0
+    }
+  },
+  "package_versions": {
+    "torch": "2.14.0",
+    "onnxruntime": "1.27.0"
+  },
+  "created_at_utc": "2026-09-15T06:20:25.329039+00:00"
+}
